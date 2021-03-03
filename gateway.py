@@ -1,29 +1,30 @@
-from flask import Flask, request
+import middleware
+from flask import Flask, request, abort, redirect, url_for
 from flask_restful import Resource, Api
+from _thread import *
+
 app = Flask (__name__)
-api = Api(app)
+api = Api(middleware.app)
 todos = {}
-""" middleware 
-app.wsgi_app = middleware(app.wsgi_app)
-@app.route('/', methods=['GET', 'PUT'])
-"""
-class HelloWorld(Resource):
-	def get(self, todo_id):
-		if(len(todos[todo_id].password)==0):
-			return{todo_id: todos[todo_id]}
-		else:
-			return response, 401
-	def get(self,todo_id, auth):
-		if(len(todos[todo_id].password)==0 or todos[todo_id].password == auth):
-			return{todo_id: todos[todo_id]}
-		else:
-			return response, 401
-	def put(self,todo_id,auth):
-		todos[todo_id] = request.form['data',auth]
-		return {todo_id: todos[todo_id]}	
-	def put(self, todo_id):
-		todos[todo_id] = request.form['data']
-		return {todo_id: todos[todo_id]}
-api.add_resource(HelloWorld, '/<string:todo_id>')
+@app.route('/')
+def index():
+	#start_new_thread(function_name,variables as tuples)
+	return "home"
+
+@app.route('/shaq')
+def Shaq():
+	#start_new_thread(function_name,variables as tuples)
+	return "shaq"
+
+@app.route('/personal_list')
+def personal_list():
+	#start_new_thread(function_name,variables as tuples)
+	return "personal list"
+
+@app.route('/view_list')
+def view_list():
+	#start_new_thread(function_name,variables as tuples)
+	return "view list"
+
 if __name__ == '__main__':
 	app.run(debug=True)
