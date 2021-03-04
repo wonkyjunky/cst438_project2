@@ -2,6 +2,9 @@ import middleware
 from flask import Flask, request, abort, redirect, url_for, render_template
 from flask_restful import Resource, Api
 from threading import *
+import dbprocessing as db
+
+#db.init()
 
 app = Flask (__name__)
 api = Api(middleware.app)
