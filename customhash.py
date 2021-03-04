@@ -8,9 +8,5 @@ def hash(s):
 			else:
 				tmp = tmp+chr(ord(tmp2[i])^ord(tmp2[i+1]))
 		tmp2 = tmp
-	print(tmp2)
-
-while 1:
-	x = input()
-	hash(x)
-
+		
+	return tmp2

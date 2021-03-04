@@ -1,14 +1,14 @@
 import middleware
 from flask import Flask, request, abort, redirect, url_for, render_template
 from flask_restful import Resource, Api
-from _thread import *
+from threading import *
 
 app = Flask (__name__)
 api = Api(middleware.app)
 todos = {}
 @app.route('/')
 def index():
-	#start_new_thread(function_name,variables as tuples)
+	#x = start_new_thread(render_template,('index.html',))
 	return render_template('index.html')
 
 @app.route('/account')
