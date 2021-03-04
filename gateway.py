@@ -16,6 +16,11 @@ def Account():
 	#start_new_thread(function_name,variables as tuples)
 	return render_template('Account.html')
 
+@app.route('/Login')
+def Login():
+	#start_new_thread(function_name,variables as tuples)
+	return render_template('login.html')
+
 @app.route('/shaq')
 def Shaq():
 	#start_new_thread(function_name,variables as tuples)
