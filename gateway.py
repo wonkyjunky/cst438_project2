@@ -39,6 +39,11 @@ def view_list():
 	#start_new_thread(function_name,variables as tuples)
 	return render_template('ItemList.html')
 
+@app.route('/auth_user')
+def auth_user():
+	if dbprocessing.:
+		pass
+
 if __name__ == '__main__':
 	app.debug = True
 	app.run()
