@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS user (
 );
 """
 INSERT_USER_QUERY	= "INSERT INTO user (username, password, admin) VALUES (?, ?, ?)"
-DELETE_USER_QUERY	= ""
+DELETE_USER_QUERY	= "DELETE FROM user WHERE username = ?"
 SELECT_USER_QUERY	= "SELECT * FROM user WHERE username = ?"
 SELECT_USERS_QUERY	= "SELECT * FROM user"
 
@@ -22,10 +22,9 @@ CREATE TABLE IF NOT EXISTS list (
 	label	TEXT NOT NULL
 );
 """
-INSERT_LIST_QUERY	= "INSERT INTO list (userid, label) VALUES (?, ?)"
-DELETE_LIST_QUERY	= "DELETE FROM list"
-SELECT_USER_LISTS_QUERY	= "SELECT * FROM user WHERE userid = ?"
-SELECT_ALL_LISTS_QUERY	= "SELECT * FROM user"
+INSERT_LIST_QUERY		= "INSERT INTO list (userid, label) VALUES (?, ?)"
+DELETE_LIST_QUERY		= "DELETE FROM list WHERE id = ?"
+SELECT_USER_LISTS_QUERY	= "SELECT * FROM list WHERE userid = ?"
 
 # item constants
 CREATE_ITEM_TABLE_QUERY = """
@@ -39,10 +38,9 @@ CREATE TABLE IF NOT EXISTS item (
 	url		TEXT
 );
 """
-INSERT_ITEM_QUERY	= "INSERT INTO item (username, password) VALUES (?, ?)"
-DELETE_ITEM_QUERY	= ""
-SELECT_LIST_ITEMS_QUERY	= "SELECT * FROM user WHERE username = ?"
-SELECT_ALL_ITEMS_QUERY	= "SELECT * FROM user"
+INSERT_ITEM_QUERY		= "INSERT INTO item (listid, label, desc, price, img, url) VALUES (?, ?, ?, ?, ?, ?)"
+DELETE_ITEM_QUERY		= "DELETE FROM item WHERE id = ?"
+SELECT_LIST_ITEMS_QUERY	= "SELECT * FROM item WHERE listid = ?"
 
 def connect():
 	try:
