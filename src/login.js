@@ -1,7 +1,10 @@
+import Nav from "./NavBar";
+
 function login() {
     return (
       <div >
         <header>
+          <Nav/>
         <form>
               <label for="username">User Name: </label>
               <input type="text" id="username"></input><br></br>

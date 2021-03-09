@@ -5,6 +5,7 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import Home from "./home";
 import Login from "./login";
+import WishList from "./Wishlist";
 import {
   BrowserRouter as Router,
   Route,
@@ -19,6 +20,7 @@ ReactDOM.render(
   <Switch>
       <Route exact path ="/" component={Home}/>
       <Route path ="/login" component={Login}/>
+      <Route path="/Wishlist" component={WishList}/>
   </Switch>
 </BrowserRouter>
   ,
