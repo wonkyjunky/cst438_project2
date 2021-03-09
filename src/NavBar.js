@@ -1,15 +1,31 @@
-import React from 'react'
-import {Link} from 'react-router-dom'
+import React, { Component } from "react";
 import "./Nav.css";
+import App from "./App";
+import login from "./login";
+import CreateAccount from "./CreateAccount";
+import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 
-function NavBar(){
-    return(
-        <ul>
-            <li><Link to="/">Home</Link></li>
-            <li><Link to="/login">Login</Link></li>
-            <li><Link to="/Wishlist">Wishlist</Link></li>
-        </ul>
-    )
+function NavBar() {
+  return (
+    <header>
+      <nav className="Nav">
+        <span className="Nav_title" style={{ fontSize: "200%" }}>
+          WishList
+        </span>
+        <div className="Navi">
+          <Link to="/" className="Navs">
+            Home
+          </Link>
+          <Link to="/wishlist" className="Navs">
+            My List
+          </Link>
+          <Link to="/login" className="Navs">
+            Login
+          </Link>
+        </div>
+      </nav>
+    </header>
+  );
 }
 
 export default NavBar;
