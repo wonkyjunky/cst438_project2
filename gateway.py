@@ -1,6 +1,7 @@
 import middleware
 from flask import Flask, request, abort, redirect, url_for, render_template
 from flask_restful import Resource, Api
+from flask_login import login_required, current_user
 from threading import *
 import db
 
@@ -30,6 +31,7 @@ def Shaq():
 	return "shaq"
 
 @app.route('/personal_list')
+@login_required
 def personal_list():
 	#start_new_thread(function_name,variables as tuples)
 	return render_template('MyWishlist.html')
@@ -38,6 +40,13 @@ def personal_list():
 def view_list():
 	#start_new_thread(function_name,variables as tuples)
 	return render_template('ItemList.html')
+
+@app.route('/auth_user')
+def auth_user():
+	username = request.form.get('username')
+	password = request.form.get('password')
+	if db.get_user(curr,username,password):
+		pass#logged in user
 
 if __name__ == '__main__':
 	app.debug = True
