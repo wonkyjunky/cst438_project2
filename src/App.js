@@ -1,14 +1,3 @@
-<<<<<<< Updated upstream
-import "./App.css";
-import Navi from "./Navi";
-
-function App() {
-  return (
-    <div className="App">
-      <br />
-      <br />
-      <body></body>
-=======
 import "./Nav.css";
 import NavBar from "./NavBar";
 import {
@@ -36,7 +25,6 @@ function App() {
           </Switch>
         </Router>
       </div>
->>>>>>> Stashed changes
     </div>
   );
 }

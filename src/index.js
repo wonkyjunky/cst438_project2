@@ -1,15 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import App from "./App";
-<<<<<<< Updated upstream
-import "./index.css";
-import Navi from "./Navi";
-
-ReactDOM.render(
-  <div>
-    <Navi />
-  </div>,
-=======
 import home from "./home";
 import login from "./login";
 import "./index.css";
@@ -34,7 +25,6 @@ ReactDOM.render(
       <Route path="/createaccount" component={CreateAccount} />
     </Switch>
   </BrowserRouter>,
->>>>>>> Stashed changes
   document.getElementById("root")
 );
 

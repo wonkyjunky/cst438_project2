@@ -1,16 +1,10 @@
 import React from "react";
-<<<<<<< Updated upstream
-=======
 import NavBar from "./NavBar";
->>>>>>> Stashed changes
 
 function CreateAccount() {
   return (
     <div style={{ textAlign: "center" }}>
-<<<<<<< Updated upstream
-=======
       <NavBar></NavBar>
->>>>>>> Stashed changes
       <br />
       <br />
       <header>
