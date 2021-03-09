@@ -62,10 +62,13 @@ Example Usage:
 	some_db_function(cur)	# requires the cursor object from connection
 	conn.close()			# closes the connection (very important)
 
+Params:
+	testing		(bool)	if true, changes will not affect db
+
 Return:
 	connection object for db
 """
-def connect():
+def connect(testing = False):
 	if not username or not password or not hostname or not database or not port:
 		load_credentials()
 	try:
@@ -75,7 +78,7 @@ def connect():
 			host = hostname,
 			database = database,
 			port = port,
-			autocommit = True
+			autocommit = not testing
 		)
 		return conn
 	except mariadb.Error as e:
@@ -302,7 +305,7 @@ DO NOT CALL THIS FUNCTION
 Function to test if everything is working right.
 """
 def test():
-	conn = connect()
+	conn = connect(True)
 	cur = conn.cursor()
 	clear_database(cur)
 	init_tables(cur)
