@@ -1,37 +1,32 @@
-import logo from './logo.svg';
-import './App.css';
-import Home from './home'
-import Login from './login'
-import WishList from "./Wishlist";
-
+import "./Nav.css";
+import NavBar from "./NavBar";
 import {
   BrowserRouter as Router,
   Route,
   Switch,
   Link,
-  Redirect
-} from "react-router-dom"
-import { render } from 'react-dom/cjs/react-dom.development'
-import NavBar from './NavBar'
-//This is a default App template;
-
+  Redirect,
+} from "react-router-dom";
+import home from "./home";
+import login from "./login";
+import Wishlist from "./Wishlist";
+import CreateAccount from "./CreateAccount";
 
 function App() {
-  return(
-    <div className="App">
-    <Router>
-      <Switch>
-          <Route exact path="/" component={Home}/>
-          <Route exact path="/login" component={Login}/>
-          <Route exact path="/wishlist" component={WishList}/>
-        </Switch>
-
-    </Router>
+  return (
+    <div className="App" style={{ textAlign: "center" }}>
+      <div>
+        <Router>
+          <Switch>
+            <Route exact path="/" component={home} />
+            <Route exact path="/login" component={login} />
+            <Route exact path="/wishlist" component={Wishlist} />
+            <Route exact path="/createaccount" component={CreateAccount} />
+          </Switch>
+        </Router>
+      </div>
     </div>
   );
-   
-  }
-
-
+}
 
 export default App;
