@@ -2,6 +2,7 @@ import logo from './logo.svg';
 import './App.css';
 import Home from './home'
 import Login from './login'
+import WishList from "./Wishlist";
 
 import {
   BrowserRouter as Router,
@@ -22,6 +23,7 @@ function App() {
       <Switch>
           <Route exact path="/" component={Home}/>
           <Route exact path="/login" component={Login}/>
+          <Route exact path="/wishlist" component={WishList}/>
         </Switch>
 
     </Router>
