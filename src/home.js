@@ -1,30 +1,15 @@
-import {
-  BrowserRouter as Router,
-  Route,
-  Switch,
-  Link,
-  Redirect
-} from "react-router-dom"
-import Login from "./login";
-import "./home.css";
-import Nav from "./NavBar";
-
-  function home() {
-    return (
-      <div className="App">
-        <header>
-          <Nav/>
-        </header>
-        <h1 id="Welcome">Welcome to the wishlist</h1>
-          <div id="login">
-            <h2>Please login in to continue</h2>
-            
-            
-          </div>
-      </div>
-    );
-  }
-
-
+import React from "react";
+import NavBar from "./NavBar";
+function home() {
+  return (
+    <div style={{ textAlign: "center" }}>
+      <header>
+        <NavBar />
+      </header>
+      <br></br> d<br></br>
+      <h1>Home</h1>
+    </div>
+  );
+}
 
 export default home;
