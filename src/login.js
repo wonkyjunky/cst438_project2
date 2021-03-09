@@ -1,5 +1,5 @@
 import Nav from "./NavBar";
-
+import "./login.css";
 function login() {
     return (
       <div >

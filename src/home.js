@@ -6,6 +6,7 @@ import {
   Redirect
 } from "react-router-dom"
 import Login from "./login";
+import "./home.css";
 import Nav from "./NavBar";
 
   function home() {
@@ -14,7 +15,7 @@ import Nav from "./NavBar";
         <header>
           <Nav/>
         </header>
-        <h1>Welcome to the wishlist</h1>
+        <h1 id="Welcome">Welcome to the wishlist</h1>
           <div id="login">
             <h2>Please login in to continue</h2>
             
