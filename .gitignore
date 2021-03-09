@@ -3,3 +3,5 @@ bundle.js
 *.bundle.js
 node_modules
 .DS_Store
+dbcred.txt
+dbprocessing.py
