@@ -4,6 +4,7 @@ from flask_restful import Resource, Api
 from flask_login import login_required, current_user, LoginManager
 from threading import *
 import db
+import time
 
 #db.init()
 
@@ -38,6 +39,10 @@ def logining():
 def index():
 	#x = start_new_thread(render_template,('index.html',))
 	return render_template('index.html')
+
+@app.route('/time')
+def get_current_time():
+	return {'time':"this was submitted from back end"}
 
 @app.route('/account')
 def Account():
