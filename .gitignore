@@ -4,3 +4,4 @@ bundle.js
 .DS_Store
 dbcred.txt
 dbprocessing.py
+node_modules
