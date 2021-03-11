@@ -16,12 +16,23 @@ function NavBar() {
           <Link to="/" className="Navs">
             Home
           </Link>
+          {"  "}
+          &nbsp;
+          <Link to="/itemlists" className="Navs">
+            Recommendation
+          </Link>
+          {"  "}
+          &nbsp;
           <Link to="/wishlist" className="Navs">
             My List
           </Link>
+          {"  "}
+          &nbsp;
           <Link to="/login" className="Navs">
             Login
           </Link>
+          {"  "}
+          &nbsp;
         </div>
       </nav>
     </header>
