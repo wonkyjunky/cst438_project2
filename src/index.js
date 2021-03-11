@@ -7,6 +7,8 @@ import "./index.css";
 import NavBar from "./NavBar";
 import Wishlist from "./Wishlist";
 import CreateAccount from "./CreateAccount";
+import itemDetails from "./itemDetails";
+import itemlists from "./itemlists";
 import {
   BrowserRouter as Router,
   Route,
@@ -23,6 +25,8 @@ ReactDOM.render(
       <Route path="/login" component={login} />
       <Route path="/Wishlist" component={Wishlist} />
       <Route path="/createaccount" component={CreateAccount} />
+      <Route path="/itemdetails" component={itemDetails} />
+      <Route path="/itemlists" component={itemlists} />
     </Switch>
   </BrowserRouter>,
   document.getElementById("root")
