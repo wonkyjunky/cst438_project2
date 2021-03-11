@@ -32,12 +32,13 @@ def logining():
 		return flask.redirect(next or flask.url_for('index'))
 	return flask.render_template('login.html', form=form)
 
-
+@app.route('/index')
+def index():
+	return render_template('index.html')
 
 @app.route('/')
-def index():
-	#x = start_new_thread(render_template,('index.html',))
-	return render_template('index.html')
+def index2():
+	return index()
 
 @app.route('/account')
 def Account():
