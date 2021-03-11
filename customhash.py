@@ -1,4 +1,4 @@
-def hash(s):
+def custom_hash(s):
 	tmp2 = s
 	for j in range(len(s)):
 		tmp =""
@@ -9,4 +9,4 @@ def hash(s):
 				tmp = tmp+chr(ord(tmp2[i])^ord(tmp2[i+1]))
 		tmp2 = tmp
 		
-	return tmp2
+	return hash(tmp2)

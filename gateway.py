@@ -33,16 +33,19 @@ def logining():
 		return flask.redirect(next or flask.url_for('index'))
 	return flask.render_template('login.html', form=form)
 
-
-
-@app.route('/')
+@app.route('/index')
 def index():
-	#x = start_new_thread(render_template,('index.html',))
 	return render_template('index.html')
 
+<<<<<<< HEAD
+@app.route('/')
+def index2():
+	return index()
+=======
 @app.route('/time')
 def get_current_time():
 	return {'time':"this was submitted from back end"}
+>>>>>>> 7923cb4d6d7673896e4749ed96990f6da8d76ec6
 
 @app.route('/account')
 def Account():
