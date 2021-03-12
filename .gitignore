@@ -2,6 +2,10 @@
 customhash.py
 middleware.py
 dbprocessing.py
+
+# shell scripts
+runbackend.sh
+
 # project files
 bundle.js
 *.bundle.js

@@ -1,4 +1,5 @@
 import mariadb
+import os
 
 CLEAR_DATABASE_QUERY = """
 DROP TABLE IF EXISTS user, list, item
@@ -9,11 +10,11 @@ CREATE_USER_TABLE_QUERY = """
 CREATE TABLE IF NOT EXISTS user (
 	id			INT PRIMARY KEY AUTO_INCREMENT,
 	username	TEXT UNIQUE NOT NULL,
-	password	BIGINT NOT NULL,
+	passhash	BIGINT NOT NULL,
 	admin		BOOLEAN NOT NULL
 );
 """
-INSERT_USER_QUERY	= "INSERT INTO user (username, password, admin) VALUES (?, ?, ?)"
+INSERT_USER_QUERY	= "INSERT INTO user (username, passhash, admin) VALUES (?, ?, ?)"
 DELETE_USER_QUERY	= "DELETE FROM user WHERE username = ?"
 SELECT_USER_QUERY	= "SELECT * FROM user WHERE username = ?"
 SELECT_USERS_QUERY	= "SELECT * FROM user"
@@ -70,7 +71,9 @@ Return:
 """
 def connect(testing = False):
 	if not username or not password or not hostname or not database or not port:
-		load_credentials()
+		if not load_credentials():
+			print("Failed to load credentials from environment variable")
+			pass
 	try:
 		conn = mariadb.connect(
 			user = username,
@@ -91,9 +94,10 @@ Loads credentials from dbcred.txt
 Automatically called by connect if any of the credentials are invalid
 """
 def load_credentials():
-	f = open("./dbcred.txt")
-	string = f.read()
-	toks = string.split(',')
+	cred = os.getenv("PROJECT2_DB_CRED")
+	if cred == None:
+		return False
+	toks = cred.split(',')
 	global username
 	global password
 	global hostname
@@ -104,7 +108,7 @@ def load_credentials():
 	hostname = toks[2]
 	database = toks[3]
 	port = int(toks[4])
-	pass
+	return True
 
 ##################################################################
 #	TABLE FUNCTIIONS
@@ -145,7 +149,7 @@ Params:
 	admin		(bool)	whether or not they have admin privileges
 """
 def add_user(cur, username, password, admin):
-	cur.execute(INSERT_USER_QUERY, (username, password, admin))
+	cur.execute(INSERT_USER_QUERY, (username, hash(password), admin))
 
 """
 Gets all users in user table
@@ -306,11 +310,18 @@ Function to test if everything is working right.
 """
 def test():
 	conn = connect(True)
+	if conn == None:
+		pass
+	print("Db connection successful")
 	cur = conn.cursor()
 	clear_database(cur)
 	init_tables(cur)
 
 	add_user(cur, "ike", "password", False)
+
+	print("Ike:",get_user(cur, "ike"))
+	
+
 	add_user(cur, "jeff", "mynamejeff", True)
 	user = get_user(cur, "ike")
 	add_user_list(cur, user[0], "Ike's Wish List")
@@ -332,5 +343,3 @@ def test():
 	print("Items:", items)
 
 	conn.close()
-
-#test()
