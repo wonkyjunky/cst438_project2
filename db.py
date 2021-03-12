@@ -199,7 +199,7 @@ def authenticate_user(cur, username, password):
 	cur.execute(SELECT_USER_QUERY, (username,))
 	user = cur.fetchone()
 	if (user):
-		if user[2] == password:
+		if user[2] == hash(password):
 			return user
 		else:
 			return False
