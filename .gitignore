@@ -1,7 +1,10 @@
+# old source files that don't need to be used anymore
 customhash.py
+middleware.py
+dbprocessing.py
+# project files
 bundle.js
 *.bundle.js
 .DS_Store
 dbcred.txt
-dbprocessing.py
 node_modules
