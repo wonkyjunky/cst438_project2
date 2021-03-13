@@ -12,3 +12,4 @@ bundle.js
 .DS_Store
 dbcred.txt
 node_modules
+venv/
