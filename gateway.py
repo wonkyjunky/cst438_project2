@@ -43,6 +43,10 @@ def test_route():
 	return {	"msg"	: "Hello, frontend!",
 				"time"	: time.time() }
 
+@app.route("/api/test2")
+def test2_route():
+	return { "msg"	: "this is test route 2" }
+
 ################################################################################
 #	Meme Routes
 ################################################################################
