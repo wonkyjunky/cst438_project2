@@ -4,29 +4,29 @@ from flask_login import login_required, current_user, LoginManager
 import db
 import time
 
-app = Flask (__name__)
+app = Flask (__name__, static_folder="public")
 
-login_manager = LoginManager()
-login_manager.init_app(app)
-@login_manager.user_loader
-def load_user(user_id):
-	return User.get(user_id)
+# login_manager = LoginManager()
+# login_manager.init_app(app)
+# @login_manager.user_loader
+# def load_user(user_id):
+# 	return User.get(user_id)
 
 ################################################################################
 #	Api Routes
 ################################################################################
 
-@app.route("/item")
+@app.route("/api/item")
 def item_route():
 	# TODO: add db calls/ arguments that this route will take
 	return { "msg"	: "this feature is not implemented yet" }
 
-@app.route("/list")
+@app.route("/api/list")
 def list_route():
 	# TODO: add db calls/ arguments that this route will take
 	return { "msg"	: "this feature is not implemented yet" }
 
-@app.route("/user")
+@app.route("/api/user")
 def user_route():
 	# TODO: add db calls/ arguments that this route will take
 	return { "msg"	: "this features isn't implemented yet" }
@@ -36,7 +36,7 @@ def user_route():
 ################################################################################
 
 
-@app.route("/test")
+@app.route("/api/test")
 def test_route():
 	return {	"msg"	: "Hello, frontend!",
 				"time"	: time.time() }
@@ -45,7 +45,7 @@ def test_route():
 #	Meme Routes
 ################################################################################
 
-@app.route("/shaq")
+@app.route("/api/shaq")
 def shaq_route():
 	return { "msg"	: "Shaq ist die Liebe. Shaq ist das Leben." }
 
