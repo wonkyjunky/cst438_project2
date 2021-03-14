@@ -1,15 +1,9 @@
-# old source files that don't need to be used anymore
-customhash.py
-middleware.py
-dbprocessing.py
-
-# shell scripts
-runbackend.sh
-
-# project files
-bundle.js
-*.bundle.js
+# random files
 .DS_Store
-dbcred.txt
-node_modules
+
+# libraries
+node_modules/
 venv/
+
+# cache
+__pycache__/

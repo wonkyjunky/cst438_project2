@@ -1,17 +1,16 @@
-from flask import Flask, request, abort, redirect, url_for, render_template
-from flask_restful import Resource, Api
-from flask_login import login_required, current_user, LoginManager
 import db
 import time
-import os
+import flask
 
-app = Flask (__name__, static_folder="public")
+app = flask.Flask (__name__, static_folder="client/build", static_url_path="")
 
-# login_manager = LoginManager()
-# login_manager.init_app(app)
-# @login_manager.user_loader
-# def load_user(user_id):
-# 	return User.get(user_id)
+################################################################################
+#	Client Routes
+################################################################################
+
+@app.route("/")
+def home_route():
+	return flask.send_from_directory(app.static_folder, "index.html")
 
 ################################################################################
 #	Api Routes
@@ -56,6 +55,4 @@ def shaq_route():
 	return { "msg"	: "Shaq ist die Liebe. Shaq ist das Leben." }
 
 if __name__ == '__main__':
-	run_port = os.environ.get("PORT", 8000)
-	print("Binding to port:", run_port)
-	app.run(host='0.0.0.0', debug=False, port=run_port)
+	app.run(debug=True)
