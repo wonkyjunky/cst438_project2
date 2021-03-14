@@ -1,6 +1,6 @@
 const { createProxyMiddleware } = require('http-proxy-middleware');
 
-const API_SERVER_ADDRESS = "http://localhost:" + (process.env.PORT || 8000);
+const API_SERVER_ADDRESS = (process.env.IP || "localhost:") + (process.env.PORT || 8000);
 
 module.exports = function(app)
 {
