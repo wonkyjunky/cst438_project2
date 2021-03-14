@@ -4,7 +4,7 @@ function Wishlist() {
   const [currentTime, setCurrentTime] = useState(0);
 
   useEffect(() => {
-    fetch('/test').then(res => res.json().then(data => {
+    fetch('/api/test').then(res => res.json().then(data => {
       setCurrentTime(data.time);
     }))
   },[])
