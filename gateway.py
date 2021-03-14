@@ -3,6 +3,7 @@ from flask_restful import Resource, Api
 from flask_login import login_required, current_user, LoginManager
 import db
 import time
+import os
 
 app = Flask (__name__, static_folder="public")
 
@@ -15,6 +16,7 @@ app = Flask (__name__, static_folder="public")
 ################################################################################
 #	Api Routes
 ################################################################################
+
 
 @app.route("/api/item")
 def item_route():
@@ -50,5 +52,6 @@ def shaq_route():
 	return { "msg"	: "Shaq ist die Liebe. Shaq ist das Leben." }
 
 if __name__ == '__main__':
-	app.debug = True
-	app.run()
+	run_port = os.environ.get("PORT", 8000)
+	print("Binding to port:", run_port)
+	app.run(host='0.0.0.0', debug=False, port=run_port)

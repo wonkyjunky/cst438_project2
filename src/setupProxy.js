@@ -1,10 +1,13 @@
 const { createProxyMiddleware } = require('http-proxy-middleware');
 
+const API_SERVER_ADDRESS = "http://localhost:" + (process.env.PORT || 8000);
+
 module.exports = function(app)
 {
-    app.use(createProxyMiddleware("/api/test", { target: "http://localhost:8000" }));
-	app.use(createProxyMiddleware("/api/item", { target: "http://localhost:8000" }));
-	app.use(createProxyMiddleware("/api/list", { target: "http://localhost:8000" }));
-	app.use(createProxyMiddleware("/api/user", { target: "http://localhost:8000" }));
-	app.use(createProxyMiddleware("/api/shaq", { target: "http://localhost:8000" }));
+	console.log("Creating proxies to: ", API_SERVER_ADDRESS);
+    app.use(createProxyMiddleware("/api/test", { target: API_SERVER_ADDRESS }));
+	app.use(createProxyMiddleware("/api/item", { target: API_SERVER_ADDRESS }));
+	app.use(createProxyMiddleware("/api/list", { target: API_SERVER_ADDRESS }));
+	app.use(createProxyMiddleware("/api/user", { target: API_SERVER_ADDRESS }));
+	app.use(createProxyMiddleware("/api/shaq", { target: API_SERVER_ADDRESS }));
 };
