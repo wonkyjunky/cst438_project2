@@ -8,6 +8,7 @@ import NavBar from "./NavBar";
 import Wishlist from "./Wishlist";
 import CreateAccount from "./CreateAccount";
 import itemDetails from "./itemDetails";
+import wishlistdetails from "./wishlistdetails";
 import itemlists from "./itemlists";
 import {
   BrowserRouter as Router,
@@ -27,6 +28,7 @@ ReactDOM.render(
       <Route path="/createaccount" component={CreateAccount} />
       <Route path="/itemdetails" component={itemDetails} />
       <Route path="/itemlists" component={itemlists} />
+      <Route path="/wishlistdetails" component={wishlistdetails} />
     </Switch>
   </BrowserRouter>,
   document.getElementById("root")
