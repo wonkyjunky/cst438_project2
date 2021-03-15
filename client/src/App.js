@@ -13,6 +13,7 @@ import Wishlist from "./Wishlist";
 import CreateAccount from "./CreateAccount";
 import itemDetails from "./itemDetails";
 import itemlists from "./itemlists";
+import wishlistdetails from "./wishlistdetails";
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
             <Route exact path="/createaccount" component={CreateAccount} />
             <Route exact path="/itemDetails" component={itemDetails} />
             <Route exact path="/itemlists" component={itemlists} />
+            <Route exact path="/wishlistdetails" component={wishlistdetails} />
           </Switch>
         </Router>
       </div>
