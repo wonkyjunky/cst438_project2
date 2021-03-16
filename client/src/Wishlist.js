@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import NavBar from "./NavBar";
+import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 function Wishlist() {
   const [currentTime, setCurrentTime] = useState(0);
 
@@ -27,7 +28,7 @@ function Wishlist() {
         style={{ display: "flex", flexWrap: "wrap", justifyContent: "center" }}
         id="wishlists"
       >
-        <a href="/wishlistdetails">
+        <Link to="/wishlistdetails">
           <figure
             style={{
               width: "320px",
@@ -43,8 +44,8 @@ function Wishlist() {
             ></img>
             <figcaption id="wishlisttitle">My first Wishlist</figcaption>
           </figure>
-        </a>
-        <a href="/wishlistdetails">
+        </Link>
+        <Link to="/wishlistdetails">
           <figure
             style={{
               width: "320px",
@@ -60,8 +61,8 @@ function Wishlist() {
             ></img>
             <figcaption id="wishlisttitle">My first Wishlist</figcaption>
           </figure>
-        </a>
-        <a href="/wishlistdetails">
+        </Link>
+        <Link to="/wishlistdetails">
           <figure
             style={{
               width: "320px",
@@ -77,8 +78,8 @@ function Wishlist() {
             ></img>
             <figcaption id="wishlisttitle">My first Wishlist</figcaption>
           </figure>
-        </a>
-        <a href="/wishlistdetails">
+        </Link>
+        <Link to="/wishlistdetails">
           <figure
             style={{
               width: "320px",
@@ -94,8 +95,8 @@ function Wishlist() {
             ></img>
             <figcaption id="wishlisttitle">My first Wishlist</figcaption>
           </figure>
-        </a>
-        <a href="/wishlistdetails">
+        </Link>
+        <Link to="/wishlistdetails">
           <figure
             style={{
               width: "320px",
@@ -111,7 +112,7 @@ function Wishlist() {
             ></img>
             <figcaption id="wishlisttitle">My first Wishlist</figcaption>
           </figure>
-        </a>
+        </Link>
       </div>
     </div>
   );
