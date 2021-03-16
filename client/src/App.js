@@ -25,9 +25,9 @@ function App() {
             <Route exact path="/login" component={login} />
             <Route exact path="/wishlist" component={Wishlist} />
             <Route exact path="/createaccount" component={CreateAccount} />
-            <Route exact path="/itemDetails" component={itemDetails} />
+            {/* <Route exact path="/itemDetails" component={itemDetails} /> */}
             <Route exact path="/itemlists" component={itemlists} />
-            <Route exact path="/wishlistdetails" component={wishlistdetails} />
+            {/* <Route exact path="/wishlistdetails" component={wishlistdetails} /> */}
           </Switch>
         </Router>
       </div>
