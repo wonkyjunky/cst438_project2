@@ -22,34 +22,42 @@ def get_users():
 	c = DatabaseConnection()
 	return { "users": c.get_users() }, 200
 
-@app.route("/api/items", methods=["GET"])
-def get_list_items():
 
-	if not "listid" in request.args:
-		return { "err": "listid must not be empty" }, 400
-
-	id = request.args["listid"]
-	c = DatabaseConnection()
-
-	return { "items": c.get_list_items(id) }, 200
-
+#THIS ROUTE IS GUCCI
 # requires arg "id" or "username" that correspond to user
 @app.route("/api/lists", methods=["GET"])
-def get_user_lists():
+def get_lists():
 	# getting request args
 
 	c = DatabaseConnection()
 
-	id = 0
-	if not "id" in request.args:
+	userid = 0
+	if not "userid" in request.args:
 		if not "username" in request.args:
-			return { "err": "must pass user id or username" }, 400
-		u = c.get_user(request.args["username"])
-		id = u["id"]
+			return { "lists": c.get_lists() }, 200
+		else:
+			u = c.get_user(username=request.args["username"])
+			if u:
+				userid = u["id"]
 	else:
-		id = request.args["id"]
-	
-	return { "lists": c.get_user_lists(id), "msg": "successfully retrieved lists" }, 200
+		userid = int(request.args["userid"])
+
+	if not c.get_user(userid=userid):
+		return { "err": "user does not exist" }, 409
+
+	return { "lists": c.get_lists(userid) }, 200
+
+
+@app.route("/api/items", methods=["GET"])
+def get_items():
+	listid = 0
+	if "listid" in request.args:
+		listid = request.args["listid"]
+
+
+	c = DatabaseConnection()
+
+	return { "items": c.get_items(listid) }, 200
 
 ################################################################################
 #	POST Routes
@@ -66,8 +74,8 @@ def login():
 	return { "msg": "successfully authorized user" }, 200
 
 
-@app.route("/api/newuser", methods=["POST"])
-def new_user():
+@app.route("/api/adduser", methods=["POST"])
+def add_user():
 	j = request.get_json()
 	c = DatabaseConnection()
 
@@ -80,8 +88,8 @@ def new_user():
 	return { "msg"	: "added user '" + username + "'" }, 201
 
 
-@app.route("/api/newlist", methods=["POST"])
-def new_user_list():
+@app.route("/api/addlist", methods=["POST"])
+def add_list():
 	j = request.get_json()
 	c = DatabaseConnection()
 	if auth := check_auth(j, c):
@@ -90,15 +98,14 @@ def new_user_list():
 	if not "label" in j:
 		return { "err" : "label must not be empty" }, 400
 
-
 	if not c.add_user_list(auth, j["label"]):
 		return { "err": "user already has list with same label" }, 409
 
 	return { "msg": "successfully added list" }, 201
 
 
-@app.route("/api/newitem", methods=["POST"])
-def new_list_item():
+@app.route("/api/additem", methods=["POST"])
+def add_item():
 	j = request.get_json()
 	c = DatabaseConnection()
 	if auth := check_auth(j, c):
@@ -113,6 +120,25 @@ def new_list_item():
 		return { "err": "attempting to add item with duplicate label to list" }, 409
 	
 	return { "msg": "successfully added item to list" }, 201
+
+
+################################################################################
+#	DELETE Routes
+################################################################################
+
+@app.route("/api/deluser", methods=["DELETE"])
+def delete_user():
+	return { "msg": "this feature is not implemented yet" }, 200
+
+
+@app.route("/api/deluser", methods=["DELETE"])
+def delete_list():
+	return { "msg": "this feature is not implemented yet" }, 200
+
+
+@app.route("/api/deluser", methods=["DELETE"])
+def delete_item():
+	return { "msg": "this feature is not implemented yet" }, 200
 
 ################################################################################
 #	Test GET Routes
