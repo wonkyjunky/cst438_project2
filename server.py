@@ -3,11 +3,7 @@ import flask
 from flask import Flask, request
 from db import DatabaseConnection
 
-<<<<<<< HEAD
-app = flask.Flask (__name__, static_folder="client/build/templates", static_url_path="")
-=======
-app = Flask (__name__, static_folder="client/build", static_url_path="")
->>>>>>> 5bc0f93d3552d2cf129692bb84410f1345ab9673
+app = Flask (__name__, static_folder="public", static_url_path="")
 
 ################################################################################
 #	Client Routes
@@ -15,7 +11,7 @@ app = Flask (__name__, static_folder="client/build", static_url_path="")
 
 @app.route("/")
 def home_route():
-	return flask.send_from_directory(app.static_folder, "index.html")
+	return flask.render_template("index.html")
 
 ################################################################################
 #	GET Routes
