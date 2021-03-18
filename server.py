@@ -2,7 +2,7 @@ import db
 import time
 import flask
 
-app = flask.Flask (__name__, static_folder="client/build", static_url_path="")
+app = flask.Flask (__name__, static_folder="client/build/templates", static_url_path="")
 
 ################################################################################
 #	Client Routes
