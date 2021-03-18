@@ -1,6 +1,6 @@
 import time
 import flask
-from flask import Flask, request
+from flask import Flask, request, render_template
 from db import DatabaseConnection
 
 app = Flask (__name__, static_folder="public", static_url_path="")
@@ -11,7 +11,33 @@ app = Flask (__name__, static_folder="public", static_url_path="")
 
 @app.route("/")
 def home_route():
-	return flask.render_template("index.html")
+	return flask.render_template("home.html")
+
+@app.route("/itemlists")
+def itemlists():
+    return render_template("itemlists.html")
+
+
+@app.route("/wishlists")
+def wishlists():
+    return render_template("wishlists.html")
+
+@app.route("/login")
+def loginRoute():
+    return render_template("login.html")
+
+@app.route("/createaccount")
+def createAccount():
+    return render_template("createaccount.html")
+
+@app.route("/itemdetails")
+def itemdetails():
+    return render_template("itemdetails.html")
+
+
+@app.route("/wishlistdetails")
+def wishlistdetails():
+    return render_template("wishlistdetails.html")
 
 ################################################################################
 #	GET Routes
