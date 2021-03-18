@@ -1,5 +1,5 @@
-#!/bin/python3
 import sqlite3
+import hashlib
 
 DB_NAME = "project2-db"
 
@@ -8,7 +8,7 @@ CREATE_USER_TABLE_QUERY = """
 CREATE TABLE IF NOT EXISTS user (
 	id			INTEGER PRIMARY KEY AUTOINCREMENT,
 	username	TEXT UNIQUE NOT NULL,
-	passhash	BIGINT NOT NULL,
+	passhash	TEXT NOT NULL,
 	admin		BOOLEAN NOT NULL
 );
 """
@@ -16,7 +16,9 @@ DROP_USER_TABLE_QUERY = " DROP TABLE IF EXISTS user"
 
 INSERT_USER_QUERY	= "INSERT INTO user (username, passhash, admin) VALUES (?, ?, ?)"
 DELETE_USER_QUERY	= "DELETE FROM user WHERE username = ?"
-SELECT_USER_QUERY	= "SELECT * FROM user WHERE username = ?"
+
+SELECT_USER_BY_USERNAME_QUERY	= "SELECT * FROM user WHERE username = ?"
+SELECT_USER_BY_ID_QUERY	= "SELECT * FROM user WHERE id = ?"
 SELECT_USERS_QUERY	= "SELECT * FROM user"
 
 # list constants
@@ -28,9 +30,12 @@ CREATE TABLE IF NOT EXISTS list (
 );
 """
 DROP_LIST_TABLE_QUERY = " DROP TABLE IF EXISTS list"
+
 INSERT_LIST_QUERY		= "INSERT INTO list (userid, label) VALUES (?, ?)"
 DELETE_LIST_QUERY		= "DELETE FROM list WHERE id = ?"
+
 SELECT_USER_LISTS_QUERY	= "SELECT * FROM list WHERE userid = ?"
+SELECT_LISTS_QUERY		= "SELECT * FROM list"
 
 # item constants
 CREATE_ITEM_TABLE_QUERY = """
@@ -45,16 +50,18 @@ CREATE TABLE IF NOT EXISTS item (
 );
 """
 DROP_ITEM_TABLE_QUERY = " DROP TABLE IF EXISTS item"
+
 INSERT_ITEM_QUERY		= "INSERT INTO item (listid, label, descr, img, url, price) VALUES (?, ?, ?, ?, ?, ?)"
 DELETE_ITEM_QUERY		= "DELETE FROM item WHERE id = ?"
 DELETE_LIST_ITEMS_QUERY	= "DELETE FROM item WHERE listid = ?"
+
 SELECT_ITEM_QUERY		= "SELECT * FROM item WHERE id = ?"
 SELECT_LIST_ITEMS_QUERY	= "SELECT * FROM item WHERE listid = ?"
-
+SELECT_ITEMS_QUERY		= "SELECT * FROM item"
 
 class DatabaseConnection:
 	
-	def __init__(self, testing):
+	def __init__(self, testing = False):
 		self.testing = testing
 		self.conn = sqlite3.connect(DB_NAME)
 		self.init_tables()
@@ -69,7 +76,7 @@ class DatabaseConnection:
 		conn = db.connect()		# connection object for db
 		cur = db.cursor()		# pointer to db data
 		some_db_function(cur)	# requires the cursor object from connection
-		conn.close()			# closes the connection (very important)
+		conn.close()			# ce digest of the data passedoses the connection (very important)
 
 	Params:
 		testing		(bool)	if true, changes will not affect db
@@ -119,62 +126,87 @@ class DatabaseConnection:
 		admin		(bool)	whether or not they have admin privileges
 	"""
 	def add_user(self, username, password, admin):
-		self.conn.execute(INSERT_USER_QUERY, (username, hash(password), admin))
+		if self.get_user(username):
+			return False
+		h = hashlib.sha256()
+		h.update(password.encode())
+		self.conn.execute(INSERT_USER_QUERY, (username, h.digest(), admin))
+		self.conn.commit()
+		return True
 
 	"""
 	Gets all users in user table
 
-	Params:
-		cur		(obj)	database cursor
-
 	Returns:
-		Array of user tuples
+		Array of user objects
 	"""
 	def get_users(self):
 		cur = self.conn.execute(SELECT_USERS_QUERY)
 		users = []
-
-		for (id, username, password, admin) in cur:
-			users.append((id, username, password, admin))
-
+		for (id, username, passhash, admin) in cur:
+			user = {}
+			user["id"] = id
+			user["username"] = username
+			user["admin"] = bool(admin)
+			users.append(user)
 		return users
 
 	"""
 	Gets user from database
 
 	Params:
-		cur 		(obj)	database cursor
 		username	(str)	username of user
 
 	Return:
 		User object if user exists
 		None if user doesn't exist
 	"""
-	def get_user(self, username):
-		cur = self.conn.execute("SELECT * FROM user WHERE username=?", (username,))
-		return cur.fetchone()
+	def get_user(self, username = "", userid = 0):
+		tup = ()
+		if not username:
+			if not userid:
+				return None
+			else:
+				tup = self.conn.execute(SELECT_USER_BY_ID_QUERY, (userid,)).fetchone()
+		else:
+			tup = self.conn.execute(SELECT_USER_BY_USERNAME_QUERY, (username,)).fetchone()
+
+		if not tup:
+			return None
+
+		user = {}
+		user["id"] = int(tup[0])
+		user["username"] = str(tup[1])
+		user["admin"] = bool(tup[3])
+		return user
 
 	"""
 	Gets user from database and checks credentials
 
 	Params:
-		cur			(obj)	database cursor
 		username	(str)	username of user
 		password	(str)	password of user
 
 	Return: 
-		User tuple if correct credentials
-		None if incorrect username
+		True if correct credentials
 		False if incorrect password
+		None if incorrect username
 	"""
-	def authenticate_user(self, username, password):
+	def auth_user(self, username, password):
 		user = self.conn.execute(SELECT_USER_QUERY, (username,)).fetchone()
-		if (user):
-			if user[2] == hash(password):
-				return user
+		if user:
+			h = hashlib.sha256()
+			h.update(password.encode())
+			if user[2] == h.digest():
+				return True
 			else:
 				return False
 		pass
+
+	def delete_user(self, username):
+		self.conn.execute(DELETE_USER_QUERY, (username,))
+		self.conn.commit()
+
 
 	##################################################################
 	#	LIST FUNCTIONS
@@ -184,27 +216,40 @@ class DatabaseConnection:
 	Adds list with user's id
 
 	Params:
-		cur		(obj)	database cursor
 		userid	(int)	id of user
 		label	(str)	label for list
 	"""
-	def add_user_list(self, userid, label):
+	def add_list(self, userid, label):
+		lists = self.get_user_lists(userid)
+		for l in lists:
+			if l["label"] == label:
+				return False
+
 		self.conn.execute(INSERT_LIST_QUERY, (userid, label))
+		self.conn.commit()
+		return True
 
 	"""
 	Gets array of user's lists
 
 	Params:
-		cur		(obj)	database cursor
-		userid	(int)	id of user
+		(optional) userid	(int)	id of user
 
 	Return:
-		array of list tuples
+		array of list objects
 	"""
-	def get_user_lists(self, userid):
-		cur = self.conn.execute(SELECT_USER_LISTS_QUERY, (userid,))
+	def get_lists(self, userid = 0):
+		if userid > 0:
+			cur = self.conn.execute(SELECT_USER_LISTS_QUERY, (userid,))
+		else:
+			cur = self.conn.execute(SELECT_LISTS_QUERY)
+
 		lists = []
-		for l in cur:
+		for (id, userid, label) in cur:
+			l = {}
+			l["id"] = id
+			l["userid"] = userid
+			l["label"] = label
 			lists.append(l)
 		return lists
 
@@ -213,7 +258,6 @@ class DatabaseConnection:
 	Deletes list
 
 	Params:
-		cur		(obj)	database cursor
 		id		(int)	id of list
 	"""
 	def delete_list(self, id):
@@ -227,7 +271,6 @@ class DatabaseConnection:
 	Adds item to list
 
 	Params:
-		cur		(obj)	database cursor
 		listid	(int)	list id
 		label	(str)	item label
 		descr	(str)	item description
@@ -235,24 +278,45 @@ class DatabaseConnection:
 		url		(str)	URL to item web page
 		price	(float)	item price
 	"""
-	def add_list_item(self, listid, label, descr, img, url, price):
+	def add_item(self, listid, label, descr, img, url, price):
+		items = self.get_list_items(listid)
+
+		for i in items:
+			if i["label"] == label:
+				return False
+
 		self.conn.execute(INSERT_ITEM_QUERY, (listid, label, descr, img, url, price))
+		self.conn.commit()
+		return True
 
 	"""
-	Gets array of items in a list
+	Gets array of items
 
 	Params:
-		cur		(obj)	database cursor
-		listid	(int)	list id
+		(optional) listid	(int)	list id
 
 	Return:
-		array of item tuples
+		array of item maps
 	"""
-	def get_list_items(self, listid):
-		cur = self.conn.execute(SELECT_LIST_ITEMS_QUERY, (listid,))
+	def get_items(self, listid = 0):
+
+		if listid > 0:
+			cur = self.conn.execute(SELECT_LIST_ITEMS_QUERY, (listid,))
+		else:
+			cur = self.conn.execute(SELECT_ITEMS_QUERY)
 		items = []
-		for i in cur:
-				items.append(i)
+
+		for (listid, listid, label, descr, img, url, price) in cur:
+			i = {}
+			i["id"] = listid
+			i["listid"] = listid
+			i["label"] = label
+			i["descr"] = descr
+			i["img"] = img
+			i["url"] = url
+			i["price"] = price
+			items.append(i)
+
 		return items
 
 	"""
@@ -269,7 +333,6 @@ class DatabaseConnection:
 	Deletes item from table
 
 	Params:
-		cur		(obj)	database cursor
 		id		(int)	item id
 	"""
 	def delete_item(self, id):
@@ -347,3 +410,4 @@ def test():
 
 	items = conn.get_list_items(listid)
 	print("\tRemaining list items:", items)
+

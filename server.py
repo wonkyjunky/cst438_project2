@@ -1,8 +1,13 @@
-import db
 import time
 import flask
+from flask import Flask, request
+from db import DatabaseConnection
 
+<<<<<<< HEAD
 app = flask.Flask (__name__, static_folder="client/build/templates", static_url_path="")
+=======
+app = Flask (__name__, static_folder="client/build", static_url_path="")
+>>>>>>> 5bc0f93d3552d2cf129692bb84410f1345ab9673
 
 ################################################################################
 #	Client Routes
@@ -13,38 +18,140 @@ def home_route():
 	return flask.send_from_directory(app.static_folder, "index.html")
 
 ################################################################################
-#	Api Routes
+#	GET Routes
 ################################################################################
 
+@app.route("/api/users", methods=["GET"])
+def get_users():
+	c = DatabaseConnection()
+	return { "users": c.get_users() }, 200
 
-@app.route("/api/item")
-def item_route():
-	# TODO: add db calls/ arguments that this route will take
-	return { "msg"	: "this feature is not implemented yet" }
 
-@app.route("/api/list")
-def list_route():
-	# TODO: add db calls/ arguments that this route will take
-	return { "msg"	: "this feature is not implemented yet" }
+#THIS ROUTE IS GUCCI
+# requires arg "id" or "username" that correspond to user
+@app.route("/api/lists", methods=["GET"])
+def get_lists():
+	# getting request args
 
-@app.route("/api/user")
-def user_route():
-	# TODO: add db calls/ arguments that this route will take
-	return { "msg"	: "this features isn't implemented yet" }
+	c = DatabaseConnection()
+
+	userid = 0
+	if not "userid" in request.args:
+		if not "username" in request.args:
+			return { "lists": c.get_lists() }, 200
+		else:
+			u = c.get_user(username=request.args["username"])
+			if u:
+				userid = u["id"]
+	else:
+		userid = int(request.args["userid"])
+
+	if not c.get_user(userid=userid):
+		return { "err": "user does not exist" }, 409
+
+	return { "lists": c.get_lists(userid) }, 200
+
+
+@app.route("/api/items", methods=["GET"])
+def get_items():
+	listid = 0
+	if "listid" in request.args:
+		listid = request.args["listid"]
+
+
+	c = DatabaseConnection()
+
+	return { "items": c.get_items(listid) }, 200
 
 ################################################################################
-#	Test Routes
+#	POST Routes
 ################################################################################
 
+@app.route("/api/login", methods=["POST"])
+def login():
+	j = request.get_json()
+	c = DatabaseConnection()
+
+	if auth := check_auth(j, c):
+		return auth
+
+	return { "msg": "successfully authorized user" }, 200
+
+
+@app.route("/api/adduser", methods=["POST"])
+def add_user():
+	j = request.get_json()
+	c = DatabaseConnection()
+
+	if auth := check_auth(j, c):
+		return auth
+	
+	if not c.add_user(j["username"], j["password"], False):
+		return { "err"	: "user already exists" }, 409
+
+	return { "msg"	: "added user '" + username + "'" }, 201
+
+
+@app.route("/api/addlist", methods=["POST"])
+def add_list():
+	j = request.get_json()
+	c = DatabaseConnection()
+	if auth := check_auth(j, c):
+		return auth
+
+	if not "label" in j:
+		return { "err" : "label must not be empty" }, 400
+
+	if not c.add_user_list(auth, j["label"]):
+		return { "err": "user already has list with same label" }, 409
+
+	return { "msg": "successfully added list" }, 201
+
+
+@app.route("/api/additem", methods=["POST"])
+def add_item():
+	j = request.get_json()
+	c = DatabaseConnection()
+	if auth := check_auth(j, c):
+		return auth
+	
+	# assuring all the required variables are in the request
+	for n in ["listid", "label", "descr", "img", "url", "price"]:
+		if not n in j:
+			return { "err": n + " must not be empty" }, 400
+	
+	if not c.add_list_item(j["listid"], j["label"], j["descr"], j["img"], j["url"], j["price"]):
+		return { "err": "attempting to add item with duplicate label to list" }, 409
+	
+	return { "msg": "successfully added item to list" }, 201
+
+
+################################################################################
+#	DELETE Routes
+################################################################################
+
+@app.route("/api/deluser", methods=["DELETE"])
+def delete_user():
+	return { "msg": "this feature is not implemented yet" }, 200
+
+
+@app.route("/api/deluser", methods=["DELETE"])
+def delete_list():
+	return { "msg": "this feature is not implemented yet" }, 200
+
+
+@app.route("/api/deluser", methods=["DELETE"])
+def delete_item():
+	return { "msg": "this feature is not implemented yet" }, 200
+
+################################################################################
+#	Test GET Routes
+################################################################################
 
 @app.route("/api/test")
 def test_route():
 	return {	"msg"	: "Hello, frontend!",
-				"time"	: time.time() }
-
-@app.route("/api/test2")
-def test2_route():
-	return { "msg"	: "this is test route 2" }
+				"time"	: time.time() }, 200
 
 ################################################################################
 #	Meme Routes
@@ -52,7 +159,26 @@ def test2_route():
 
 @app.route("/api/shaq")
 def shaq_route():
-	return { "msg"	: "Shaq ist die Liebe. Shaq ist das Leben." }
+	return { "msg"	: "Welcome to the Shaq Shack" }
+
+################################################################################
+#	Util functions
+################################################################################
+
+def check_auth(j, c):
+	if not "username" in j:
+		return { "err": "username must not be empty" }, 400
+	if not "password" in j:
+		return { "err" : "password must not be empty" }, 400
+
+	auth = c.auth_user(j["username"], j["password"])
+
+	if auth == None:
+		return { "err": "no such user exists" }, 409
+	elif auth == False:
+		return { "err": "incorrect password" }, 401
+
+	pass
 
 if __name__ == '__main__':
 	app.run(debug=True)
