@@ -103,7 +103,16 @@ def new_list_item():
 	c = DatabaseConnection()
 	if auth := check_auth(j, c):
 		return auth
-	return { "msg": "this feature is not implemented yet" }
+	
+	# assuring all the required variables are in the request
+	for n in ["listid", "label", "descr", "img", "url", "price"]:
+		if not n in j:
+			return { "err": n + " must not be empty" }, 400
+	
+	if not c.add_list_item(j["listid"], j["label"], j["descr"], j["img"], j["url"], j["price"]):
+		return { "err": "attempting to add item with duplicate label to list" }, 409
+	
+	return { "msg": "successfully added item to list" }, 201
 
 ################################################################################
 #	Test GET Routes
@@ -112,7 +121,7 @@ def new_list_item():
 @app.route("/api/test")
 def test_route():
 	return {	"msg"	: "Hello, frontend!",
-				"time"	: time.time() }
+				"time"	: time.time() }, 200
 
 ################################################################################
 #	Meme Routes

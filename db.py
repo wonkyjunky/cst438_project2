@@ -252,7 +252,7 @@ class DatabaseConnection:
 		price	(float)	item price
 	"""
 	def add_list_item(self, listid, label, descr, img, url, price):
-		items = get_list_items(listid)
+		items = self.get_list_items(listid)
 		for i in items:
 			if i["label"] == label:
 				return False
