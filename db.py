@@ -170,9 +170,9 @@ class DatabaseConnection:
 		password	(str)	password of user
 
 	Return: 
-		User id if correct credentials
-		None if incorrect username
+		True if correct credentials
 		False if incorrect password
+		None if incorrect username
 	"""
 	def auth_user(self, username, password):
 		user = self.conn.execute(SELECT_USER_QUERY, (username,)).fetchone()
@@ -180,7 +180,7 @@ class DatabaseConnection:
 			h = hashlib.sha256()
 			h.update(password.encode())
 			if user[2] == h.digest():
-				return user[0]
+				return True
 			else:
 				return False
 		pass
@@ -254,8 +254,8 @@ class DatabaseConnection:
 	def add_list_item(self, listid, label, descr, img, url, price):
 		items = get_list_items(listid)
 		for i in items:
-			if i["label"] == label
-			return False
+			if i["label"] == label:
+				return False
 
 		self.conn.execute(INSERT_ITEM_QUERY, (listid, label, descr, img, url, price))
 		self.conn.commit()

@@ -58,38 +58,21 @@ def get_user_lists():
 @app.route("/api/login", methods=["POST"])
 def login():
 	j = request.get_json()
-
-	if not "username" in j:
-		return { "err" : "username must not be empty" }, 400
-	if not "password" in j:
-		return { "err" : "password must not be empty" }, 400
-
 	c = DatabaseConnection()
-	auth = c.auth_user(j["username"], j["password"])
 
-	if auth == None:
-		return { "err": "no such user exists" }, 409
-	elif auth == False:
-		return { "err": "incorrect password" }, 401
+	if auth := check_auth(j, c):
+		return auth
 
 	return { "msg": "successfully authorized user" }, 200
+
 
 @app.route("/api/newuser", methods=["POST"])
 def new_user():
 	j = request.get_json()
-
-	if not "username" in j:
-		return { "err" : "username must not be empty" }, 400
-	if not "password" in j:
-		return { "err" : "password must not be empty" }, 400
-
 	c = DatabaseConnection()
-	auth = c.auth_user(j["username"], j["password"])
 
-	if auth == None:
-		return { "err": "no such user exists" }, 409
-	elif auth == False:
-		return { "err": "incorrect password" }, 401
+	if auth := check_auth(j, c):
+		return auth
 	
 	if not c.add_user(j["username"], j["password"], False):
 		return { "err"	: "user already exists" }, 409
@@ -100,27 +83,27 @@ def new_user():
 @app.route("/api/newlist", methods=["POST"])
 def new_user_list():
 	j = request.get_json()
+	c = DatabaseConnection()
+	if auth := check_auth(j, c):
+		return auth
 
-	if not "username" in j:
-		return { "err": "username must not be empty" }, 400
-	if not "password" in j:
-		return { "err" : "password must not be empty" }, 400
 	if not "label" in j:
 		return { "err" : "label must not be empty" }, 400
 
-	c = DatabaseConnection()
-	auth = c.auth_user(j["username"], j["password"])
-
-	if auth == None:
-		return { "err": "no such user exists" }, 409
-	elif auth == False:
-		return { "err": "incorrect password" }, 401
 
 	if not c.add_user_list(auth, j["label"]):
 		return { "err": "user already has list with same label" }, 409
 
 	return { "msg": "successfully added list" }, 201
 
+
+@app.route("/api/newitem", methods=["POST"])
+def new_list_item():
+	j = request.get_json()
+	c = DatabaseConnection()
+	if auth := check_auth(j, c):
+		return auth
+	return { "msg": "this feature is not implemented yet" }
 
 ################################################################################
 #	Test GET Routes
@@ -138,6 +121,25 @@ def test_route():
 @app.route("/api/shaq")
 def shaq_route():
 	return { "msg"	: "Welcome to the Shaq Shack" }
+
+################################################################################
+#	Util functions
+################################################################################
+
+def check_auth(j, c):
+	if not "username" in j:
+		return { "err": "username must not be empty" }, 400
+	if not "password" in j:
+		return { "err" : "password must not be empty" }, 400
+
+	auth = c.auth_user(j["username"], j["password"])
+
+	if auth == None:
+		return { "err": "no such user exists" }, 409
+	elif auth == False:
+		return { "err": "incorrect password" }, 401
+
+	pass
 
 if __name__ == '__main__':
 	app.run(debug=True)
