@@ -16,7 +16,9 @@ DROP_USER_TABLE_QUERY = " DROP TABLE IF EXISTS user"
 
 INSERT_USER_QUERY	= "INSERT INTO user (username, passhash, admin) VALUES (?, ?, ?)"
 DELETE_USER_QUERY	= "DELETE FROM user WHERE username = ?"
-SELECT_USER_QUERY	= "SELECT * FROM user WHERE username = ?"
+
+SELECT_USER_BY_USERNAME_QUERY	= "SELECT * FROM user WHERE username = ?"
+SELECT_USER_BY_ID_QUERY	= "SELECT * FROM user WHERE id = ?"
 SELECT_USERS_QUERY	= "SELECT * FROM user"
 
 # list constants
@@ -28,9 +30,12 @@ CREATE TABLE IF NOT EXISTS list (
 );
 """
 DROP_LIST_TABLE_QUERY = " DROP TABLE IF EXISTS list"
+
 INSERT_LIST_QUERY		= "INSERT INTO list (userid, label) VALUES (?, ?)"
 DELETE_LIST_QUERY		= "DELETE FROM list WHERE id = ?"
+
 SELECT_USER_LISTS_QUERY	= "SELECT * FROM list WHERE userid = ?"
+SELECT_LISTS_QUERY		= "SELECT * FROM list"
 
 # item constants
 CREATE_ITEM_TABLE_QUERY = """
@@ -45,12 +50,14 @@ CREATE TABLE IF NOT EXISTS item (
 );
 """
 DROP_ITEM_TABLE_QUERY = " DROP TABLE IF EXISTS item"
+
 INSERT_ITEM_QUERY		= "INSERT INTO item (listid, label, descr, img, url, price) VALUES (?, ?, ?, ?, ?, ?)"
 DELETE_ITEM_QUERY		= "DELETE FROM item WHERE id = ?"
 DELETE_LIST_ITEMS_QUERY	= "DELETE FROM item WHERE listid = ?"
+
 SELECT_ITEM_QUERY		= "SELECT * FROM item WHERE id = ?"
 SELECT_LIST_ITEMS_QUERY	= "SELECT * FROM item WHERE listid = ?"
-
+SELECT_ITEMS_QUERY		= "SELECT * FROM item"
 
 class DatabaseConnection:
 	
@@ -154,11 +161,22 @@ class DatabaseConnection:
 		User object if user exists
 		None if user doesn't exist
 	"""
-	def get_user(self, username):
-		tup = self.conn.execute("SELECT * FROM user WHERE username=?", (username,)).fetchone()
+	def get_user(self, username = "", userid = 0):
+		tup = ()
+		if not username:
+			if not userid:
+				return None
+			else:
+				tup = self.conn.execute(SELECT_USER_BY_ID_QUERY, (userid,)).fetchone()
+		else:
+			tup = self.conn.execute(SELECT_USER_BY_USERNAME_QUERY, (username,)).fetchone()
+
+		if not tup:
+			return None
+
 		user = {}
-		user["id"] = tup[0]
-		user["username"] = tup[1]
+		user["id"] = int(tup[0])
+		user["username"] = str(tup[1])
 		user["admin"] = bool(tup[3])
 		return user
 
@@ -170,9 +188,9 @@ class DatabaseConnection:
 		password	(str)	password of user
 
 	Return: 
-		User id if correct credentials
-		None if incorrect username
+		True if correct credentials
 		False if incorrect password
+		None if incorrect username
 	"""
 	def auth_user(self, username, password):
 		user = self.conn.execute(SELECT_USER_QUERY, (username,)).fetchone()
@@ -180,10 +198,15 @@ class DatabaseConnection:
 			h = hashlib.sha256()
 			h.update(password.encode())
 			if user[2] == h.digest():
-				return user[0]
+				return True
 			else:
 				return False
 		pass
+
+	def delete_user(self, username):
+		self.conn.execute(DELETE_USER_QUERY, (username,))
+		self.conn.commit()
+
 
 	##################################################################
 	#	LIST FUNCTIONS
@@ -196,7 +219,7 @@ class DatabaseConnection:
 		userid	(int)	id of user
 		label	(str)	label for list
 	"""
-	def add_user_list(self, userid, label):
+	def add_list(self, userid, label):
 		lists = self.get_user_lists(userid)
 		for l in lists:
 			if l["label"] == label:
@@ -210,13 +233,17 @@ class DatabaseConnection:
 	Gets array of user's lists
 
 	Params:
-		userid	(int)	id of user
+		(optional) userid	(int)	id of user
 
 	Return:
 		array of list objects
 	"""
-	def get_user_lists(self, userid):
-		cur = self.conn.execute(SELECT_USER_LISTS_QUERY, (userid,))
+	def get_lists(self, userid = 0):
+		if userid > 0:
+			cur = self.conn.execute(SELECT_USER_LISTS_QUERY, (userid,))
+		else:
+			cur = self.conn.execute(SELECT_LISTS_QUERY)
+
 		lists = []
 		for (id, userid, label) in cur:
 			l = {}
@@ -251,32 +278,37 @@ class DatabaseConnection:
 		url		(str)	URL to item web page
 		price	(float)	item price
 	"""
-	def add_list_item(self, listid, label, descr, img, url, price):
-		items = get_list_items(listid)
+	def add_item(self, listid, label, descr, img, url, price):
+		items = self.get_list_items(listid)
+
 		for i in items:
-			if i["label"] == label
-			return False
+			if i["label"] == label:
+				return False
 
 		self.conn.execute(INSERT_ITEM_QUERY, (listid, label, descr, img, url, price))
 		self.conn.commit()
 		return True
 
 	"""
-	Gets array of items in a list
+	Gets array of items
 
 	Params:
-		listid	(int)	list id
+		(optional) listid	(int)	list id
 
 	Return:
-		array of item tuples
+		array of item maps
 	"""
-	def get_list_items(self, listid):
-		cur = self.conn.execute(SELECT_LIST_ITEMS_QUERY, (listid,))
+	def get_items(self, listid = 0):
+
+		if listid > 0:
+			cur = self.conn.execute(SELECT_LIST_ITEMS_QUERY, (listid,))
+		else:
+			cur = self.conn.execute(SELECT_ITEMS_QUERY)
 		items = []
 
-		for (id, listid, label, descr, img, url, price) in cur:
+		for (listid, listid, label, descr, img, url, price) in cur:
 			i = {}
-			i["id"] = id
+			i["id"] = listid
 			i["listid"] = listid
 			i["label"] = label
 			i["descr"] = descr
