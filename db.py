@@ -252,7 +252,14 @@ class DatabaseConnection:
 		price	(float)	item price
 	"""
 	def add_list_item(self, listid, label, descr, img, url, price):
+		items = get_list_items(listid)
+		for i in items:
+			if i["label"] == label
+			return False
+
 		self.conn.execute(INSERT_ITEM_QUERY, (listid, label, descr, img, url, price))
+		self.conn.commit()
+		return True
 
 	"""
 	Gets array of items in a list
@@ -266,8 +273,18 @@ class DatabaseConnection:
 	def get_list_items(self, listid):
 		cur = self.conn.execute(SELECT_LIST_ITEMS_QUERY, (listid,))
 		items = []
-		for i in cur:
-				items.append(i)
+
+		for (id, listid, label, descr, img, url, price) in cur:
+			i = {}
+			i["id"] = id
+			i["listid"] = listid
+			i["label"] = label
+			i["descr"] = descr
+			i["img"] = img
+			i["url"] = url
+			i["price"] = price
+			items.append(i)
+
 		return items
 
 	"""
