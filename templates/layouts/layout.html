@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8" />
+    <title>Wishlist</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static',filename='css/nav.css') }}"
+    />
+  </head>
+  <body>
+    {% block nav %}
+    <nav>
+      <nav class="Nav">
+        <a href="/" class="Navs"> <span class="Nav_title"> WishList </span></a>
+        <div class="Navi">
+          <a href="itemlists" class="Navs"> Recommendation </a>&nbsp;
+          <a href="wishlists" class="Navs"> My List </a>&nbsp;
+          <a href="login" class="Navs"> Login </a>&nbsp;
+        </div>
+      </nav>
+    </nav>
+    {% endblock %}<br /><br />
+    {% block content %} {% endblock %}
+  </body>
+</html>
