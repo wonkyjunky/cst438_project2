@@ -44,6 +44,17 @@ def wishlistdetails():
 ################################################################################
 
 
+@app.route("/api/login", methods=["POST"])
+def api_login():
+	j = request.get_json()
+	c = DatabaseConnection()
+
+	if auth:= check_auth(j, c):
+		return auth
+
+	return {"msg":"successfully authenicated user"}, 200
+
+
 @app.route("/api/user", methods=["GET"])
 def get_users():
 	c = DatabaseConnection()
