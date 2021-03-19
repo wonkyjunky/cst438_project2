@@ -7,6 +7,21 @@
   </head>
   <body>
     {% block nav %} {{super()}} {% endblock %} {% block content %}
+    <script type=text/javascript>
+        $(function() {  
+          $('#submitAccount').on('click', function(e) {
+            var user = document.getElementById('pass').value;
+            var pass = document.getElementById('pass').value;
+            var data = {"username": user, "password": pass};
+             $.ajax({
+                type: "POST",
+                url: "http://127.0.0.1:5000/api/adduser",
+                data: JSON.stringify(data),
+                contentType: "application/json"
+             })
+          });
+        });
+      </script>
     <div style="text-align: center;"> 
         <h2>Create Account</h2>
         <br />
@@ -14,6 +29,7 @@
         <form>
           <input
             type="text"
+            id="user"
             className="username"
             placeholder="Username"
           ></input>
@@ -21,11 +37,12 @@
           <br />
           <input
             type="text"
+            id="pass"
             className="password"
             placeholder="password"
           ></input>
           <br /> <br />
-          <button type="button" className="btn">
+          <a href="login"><button type="button" id="submitAccount" className="btn">submit</a
             Sign up
           </button>
         </form>
