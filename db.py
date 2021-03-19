@@ -34,6 +34,7 @@ DROP_LIST_TABLE_QUERY = " DROP TABLE IF EXISTS list"
 INSERT_LIST_QUERY		= "INSERT INTO list (userid, label) VALUES (?, ?)"
 DELETE_LIST_QUERY		= "DELETE FROM list WHERE id = ?"
 
+SELECT_LIST_QUERY		= "SELECT * FROM list WHERE id = ?"
 SELECT_USER_LISTS_QUERY	= "SELECT * FROM list WHERE userid = ?"
 SELECT_LISTS_QUERY		= "SELECT * FROM list"
 
@@ -147,6 +148,7 @@ class DatabaseConnection:
 			user = {}
 			user["id"] = id
 			user["username"] = username
+			user["passhash"] = str(passhash)
 			user["admin"] = bool(admin)
 			users.append(user)
 		return users
@@ -193,7 +195,7 @@ class DatabaseConnection:
 		None if incorrect username
 	"""
 	def auth_user(self, username, password):
-		user = self.conn.execute(SELECT_USER_QUERY, (username,)).fetchone()
+		user = self.conn.execute(SELECT_USER_BY_USERNAME_QUERY, (username,)).fetchone()
 		if user:
 			h = hashlib.sha256()
 			h.update(password.encode())
@@ -220,7 +222,7 @@ class DatabaseConnection:
 		label	(str)	label for list
 	"""
 	def add_list(self, userid, label):
-		lists = self.get_user_lists(userid)
+		lists = self.get_lists(userid)
 		for l in lists:
 			if l["label"] == label:
 				return False
@@ -228,6 +230,12 @@ class DatabaseConnection:
 		self.conn.execute(INSERT_LIST_QUERY, (userid, label))
 		self.conn.commit()
 		return True
+
+	def get_list(self, listid):
+		cur = self.conn.execute(SELECT_LIST_QUERY, (listid,)).fetchone()
+		if not cur:
+			return None
+		return { "id": cur[0], "userid": cur[1], "label": cur[2] }
 
 	"""
 	Gets array of user's lists
@@ -263,6 +271,7 @@ class DatabaseConnection:
 	def delete_list(self, id):
 		self.conn.execute(DELETE_LIST_QUERY, (id,))
 		self.conn.execute(DELETE_LIST_ITEMS_QUERY, (id,))
+		self.conn.commit()
 
 	##################################################################
 	#	ITEM FUNCTIONS
@@ -279,7 +288,7 @@ class DatabaseConnection:
 		price	(float)	item price
 	"""
 	def add_item(self, listid, label, descr, img, url, price):
-		items = self.get_list_items(listid)
+		items = self.get_items(listid)
 
 		for i in items:
 			if i["label"] == label:
@@ -368,23 +377,23 @@ def test():
 	print("\tGot user by username 'ike':\t", user)
 
 	# authenticating users
-	print("\tAuth with nonexistent user:\t", conn.authenticate_user("Billy", "password"))
-	print("\tAuth with incorrect password:\t", conn.authenticate_user("ike", "password1"))
-	print("\tAuth with correct password:\t", conn.authenticate_user("ike", "password"))
+	print("\tAuth with nonexistent user:\t", conn.auth_user("Billy", "password"))
+	print("\tAuth with incorrect password:\t", conn.auth_user("ike", "password1"))
+	print("\tAuth with correct password:\t", conn.auth_user("ike", "password"))
 
 	print("\nTesting list functions...")
 
 	# adding a list
-	conn.add_user_list(user[0], "Wish List")
+	conn.add_list(user[0], "Wish List")
 	print("\tAdded list 'Wish List' to 'ike'")
 
 
-	conn.add_user_list(user[0], "Grocery List")
+	conn.add_list(user[0], "Grocery List")
 	print("\tAdded list 'Grocery List' to 'ike'")
 
 
 	# getting lists by user id
-	lists = conn.get_user_lists(user[0])
+	lists = conn.get_lists(user[0])
 	print("\tGot all list of 'ike':\t", lists)
 
 	listid = lists[1][0]
@@ -396,11 +405,11 @@ def test():
 	print("\nTesting item functions...")
 
 	#testing adding items
-	conn.add_list_item(listid, "Goldbond", "Feel the fresh", "...", "...", 19.99)
+	conn.add_item(listid, "Goldbond", "Feel the fresh", "...", "...", 19.99)
 	print("\tAdded item to list:\t", listid)
-	conn.add_list_item(listid, "IcyHot", "Icy, icy, hot, hot", "...", "...", 10.95)
+	conn.add_item(listid, "IcyHot", "Icy, icy, hot, hot", "...", "...", 10.95)
 	print("\tAdded item to list:\t", listid)
-	items = conn.get_list_items(listid)
+	items = conn.get_items(listid)
 	print("\tGot items by list id:\t", items)
 	print("\tGot item with id 1:\t",conn.get_item(1))
 	# testing deleting items
@@ -408,6 +417,8 @@ def test():
 	conn.delete_item(items[0][0])
 	print("\tDeleted item with id:", items[0][0])
 
-	items = conn.get_list_items(listid)
+	items = conn.get_items(listid)
 	print("\tRemaining list items:", items)
 
+if __name__ == "__main__":
+	test()
