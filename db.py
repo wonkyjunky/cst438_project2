@@ -315,9 +315,9 @@ class DatabaseConnection:
 			cur = self.conn.execute(SELECT_ITEMS_QUERY)
 		items = []
 
-		for (listid, listid, label, descr, img, url, price) in cur:
+		for (itemid, listid, label, descr, img, url, price) in cur:
 			i = {}
-			i["id"] = listid
+			i["id"] = itemid
 			i["listid"] = listid
 			i["label"] = label
 			i["descr"] = descr
@@ -335,8 +335,10 @@ class DatabaseConnection:
 		id		(int)	item id
 	"""
 	def get_item(self, id):
-		cur = self.conn.execute(SELECT_ITEM_QUERY, (id,))
-		return cur.fetchone()
+		tup = self.conn.execute(SELECT_ITEM_QUERY, (id,)).fetchone()
+		item = {"id": tup[0], "listid": tup[1], "label": tup[2],
+		"descr": tup[3], "img": tup[4], "url": tup[5], "price": tup[6] }
+		return item
 
 	"""
 	Deletes item from table
@@ -346,6 +348,7 @@ class DatabaseConnection:
 	"""
 	def delete_item(self, id):
 		self.conn.execute(DELETE_ITEM_QUERY, (id,))
+		self.conn.commit()
 
 """
 DO NOT CALL THIS FUNCTION

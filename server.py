@@ -20,7 +20,7 @@ def home_route():
 @app.route("/api/user", methods=["GET"])
 def get_users():
 	c = DatabaseConnection()
-	
+
 	username = request.args.get("username", "")
 	if not username:
 		return { "users": c.get_users() }, 200
@@ -37,11 +37,11 @@ def add_user():
 	j = request.get_json()
 	c = DatabaseConnection()
 
-	username = str(j.get("username", ""))
+	username = j.get("username", "")
 	if not username:
 		return { "err": "username must not be empty" }, 400
 
-	password = str(j.get("password", ""))
+	password = j.get("password", "")
 	if not password:
 		return { "err": "password must not be empty" }, 400
 
@@ -134,7 +134,7 @@ def delete_list():
 @app.route("/api/item", methods=["GET"])
 def get_items():
 	c = DatabaseConnection()
-	listid = int(request.args.get("listid", 0))
+	listid = request.args.get("listid", 0)
 	return { "items": c.get_items(listid) }, 200
 
 
@@ -158,6 +158,7 @@ def add_item():
 	l = c.get_list(vs[0])
 	if not l:
 		return { "err": "list does not exist" }, 409
+
 	if user["id"] != l["userid"]:
 		return { "err": "list does not belong to user" }, 400
 
@@ -169,7 +170,28 @@ def add_item():
 
 @app.route("/api/deleteitem", methods=["POST"])
 def delete_item():
+	j = request.get_json()
+	c = DatabaseConnection()
+
+	if auth := check_auth(j, c):
+		return auth
 	
+	itemid = j.get("itemid", 0)
+	if not itemid:
+		return { "err": "itemid must not be empty" }, 400
+
+	user = c.get_user(username=j["username"])
+	item = c.get_item(itemid)
+	if not item:
+		return { "err": "item does not exist" }, 400
+	l = c.get_list(item["listid"])
+	if l["userid"] != user["id"]:
+		return { "err": "list does not belong to user" }, 409
+	
+	c.delete_item(itemid)
+	return { "msg": "successfully deleted item" }, 200
+
+
 
 
 ################################################################################
