@@ -40,64 +40,23 @@ def wishlistdetails():
     return flask.render_template("wishlistdetails.html")
 
 ################################################################################
-#	GET Routes
+#	USER Route
 ################################################################################
 
-@app.route("/api/users", methods=["GET"])
+
+@app.route("/api/user", methods=["GET"])
 def get_users():
 	c = DatabaseConnection()
-	return { "users": c.get_users() }, 200
 
+	username = request.args.get("username", "")
+	if not username:
+		return { "users": c.get_users() }, 200
 
-#THIS ROUTE IS GUCCI
-# requires arg "id" or "username" that correspond to user
-@app.route("/api/lists", methods=["GET"])
-def get_lists():
-	# getting request args
-
-	c = DatabaseConnection()
-
-	userid = 0
-	if not "userid" in request.args:
-		if not "username" in request.args:
-			return { "lists": c.get_lists() }, 200
-		else:
-			u = c.get_user(username=request.args["username"])
-			if u:
-				userid = u["id"]
-	else:
-		userid = int(request.args["userid"])
-
-	if not c.get_user(userid=userid):
+	user = c.get_user(username=username)
+	if not user:
 		return { "err": "user does not exist" }, 409
 
-	return { "lists": c.get_lists(userid) }, 200
-
-
-@app.route("/api/items", methods=["GET"])
-def get_items():
-	listid = 0
-	if "listid" in request.args:
-		listid = request.args["listid"]
-
-
-	c = DatabaseConnection()
-
-	return { "items": c.get_items(listid) }, 200
-
-################################################################################
-#	POST Routes
-################################################################################
-
-@app.route("/api/login", methods=["POST"])
-def login():
-	j = request.get_json()
-	c = DatabaseConnection()
-
-	if auth := check_auth(j, c):
-		return auth
-
-	return { "msg": "successfully authorized user" }, 200
+	return { "user": user }, 200
 
 
 @app.route("/api/adduser", methods=["POST"])
@@ -105,66 +64,163 @@ def add_user():
 	j = request.get_json()
 	c = DatabaseConnection()
 
-	if auth := check_auth(j, c):
-		return auth
-	
-	if not c.add_user(j["username"], j["password"], False):
+	username = j.get("username", "")
+	if not username:
+		return { "err": "username must not be empty" }, 400
+
+	password = j.get("password", "")
+	if not password:
+		return { "err": "password must not be empty" }, 400
+
+	if not c.add_user(username, password, False):
 		return { "err"	: "user already exists" }, 409
 
-	return { "msg"	: "added user '" + username + "'" }, 201
+	return { "msg"	: "successfully created user" }, 201
+
+
+@app.route("/api/deleteuser", methods=["POST"])
+def delete_user():
+	j = request.get_json()
+	c = DatabaseConnection()
+
+	if auth := check_auth(j, c):
+		return auth
+
+	c.delete_user(j["username"])
+	return { "msg": "successfully deleted user" }, 200
+
+################################################################################
+#	LIST Routes
+################################################################################
+
+
+@app.route("/api/list", methods=["GET"])
+def get_lists():
+	c = DatabaseConnection()
+
+	username = request.args.get("username", "")
+	if not username:
+		return { "lists": c.get_lists() }, 200
+
+	user = c.get_user(username=username)
+	if not user:
+		return { "err": "user does not exist" }, 409
+
+	return { "lists": c.get_lists(userid=user["id"]) }, 200
 
 
 @app.route("/api/addlist", methods=["POST"])
 def add_list():
 	j = request.get_json()
 	c = DatabaseConnection()
+
 	if auth := check_auth(j, c):
 		return auth
 
-	if not "label" in j:
-		return { "err" : "label must not be empty" }, 400
+	label = j.get("label", "")
+	if not label:
+		return { "err": "label must not be empty" }, 400
 
-	if not c.add_user_list(auth, j["label"]):
+	user = c.get_user(j["username"])
+
+	if not c.add_list(user["id"], label):
 		return { "err": "user already has list with same label" }, 409
 
 	return { "msg": "successfully added list" }, 201
+
+
+@app.route("/api/deletelist", methods=["POST"])
+def delete_list():
+	j = request.get_json()
+	c = DatabaseConnection()
+
+	if auth := check_auth(j, c):
+		return auth
+
+	listid = j.get("listid", None)
+	if not listid:
+		return { "err": "listid must not be empty" }, 400
+
+	l = c.get_list(listid)
+	if not l:
+		return { "err": "list does not exist" }, 409
+
+	user = c.get_user(j["username"])
+	if l["userid"] != user["id"]:
+		return { "err": "list does not belong to user" }, 400
+
+	c.delete_list(listid)
+
+	return { "msg": "successfully deleted list" }, 200
+
+
+################################################################################
+#	ITEM Routes
+################################################################################
+
+
+@app.route("/api/item", methods=["GET"])
+def get_items():
+	c = DatabaseConnection()
+	listid = int(request.args.get("listid", 0))
+	return { "items": c.get_items(listid) }, 200
 
 
 @app.route("/api/additem", methods=["POST"])
 def add_item():
 	j = request.get_json()
 	c = DatabaseConnection()
+
 	if auth := check_auth(j, c):
 		return auth
+
+	vs = [None, None, None, None, None, None]
+	varnames = ["listid", "label", "descr", "img", "url", "price"]
+
+	for i in range(len(varnames)):
+		vs[i] = j.get(varnames[i], None)
+		if not vs[i]:
+			return { "err": varnames[i] + " must not be empty" }, 400
 	
-	# assuring all the required variables are in the request
-	for n in ["listid", "label", "descr", "img", "url", "price"]:
-		if not n in j:
-			return { "err": n + " must not be empty" }, 400
-	
-	if not c.add_list_item(j["listid"], j["label"], j["descr"], j["img"], j["url"], j["price"]):
+	user = c.get_user(username=j["username"])
+	l = c.get_list(vs[0])
+	if not l:
+		return { "err": "list does not exist" }, 409
+
+	if user["id"] != l["userid"]:
+		return { "err": "list does not belong to user" }, 400
+
+	if not c.add_item(vs[0], vs[1], vs[2], vs[3], vs[4], vs[5]):
 		return { "err": "attempting to add item with duplicate label to list" }, 409
 	
 	return { "msg": "successfully added item to list" }, 201
 
 
-################################################################################
-#	DELETE Routes
-################################################################################
-
-@app.route("/api/deluser", methods=["DELETE"])
-def delete_user():
-	return { "msg": "this feature is not implemented yet" }, 200
-
-
-@app.route("/api/deluser", methods=["DELETE"])
-def delete_list():
-	return { "msg": "this feature is not implemented yet" }, 200
-
-
-@app.route("/api/deluser", methods=["DELETE"])
+@app.route("/api/deleteitem", methods=["POST"])
 def delete_item():
-	return { "msg": "this feature is not implemented yet" }, 200
+	j = request.get_json()
+	c = DatabaseConnection()
+
+	if auth := check_auth(j, c):
+		return auth
+	
+	itemid = j.get("itemid", 0)
+	if not itemid:
+		return { "err": "itemid must not be empty" }, 400
+
+	user = c.get_user(username=j["username"])
+	item = c.get_item(itemid)
+	if not item:
+		return { "err": "item does not exist" }, 400
+	l = c.get_list(item["listid"])
+	if l["userid"] != user["id"]:
+		return { "err": "item does not belong to user" }, 409
+	
+	c.delete_item(itemid)
+	return { "msg": "successfully deleted item" }, 200
+
+
+
 
 ################################################################################
 #	Test GET Routes
@@ -196,11 +252,11 @@ def check_auth(j, c):
 	auth = c.auth_user(j["username"], j["password"])
 
 	if auth == None:
-		return { "err": "no such user exists" }, 409
+		return { "err": "user does not exist" }, 409
 	elif auth == False:
 		return { "err": "incorrect password" }, 401
 
-	pass
+	return None
 
-if __name__ == '__main__':
+if __name__ == "__main__":
 	app.run(debug=True)

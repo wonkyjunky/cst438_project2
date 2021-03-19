@@ -34,6 +34,7 @@ DROP_LIST_TABLE_QUERY = " DROP TABLE IF EXISTS list"
 INSERT_LIST_QUERY		= "INSERT INTO list (userid, label) VALUES (?, ?)"
 DELETE_LIST_QUERY		= "DELETE FROM list WHERE id = ?"
 
+SELECT_LIST_QUERY		= "SELECT * FROM list WHERE id = ?"
 SELECT_USER_LISTS_QUERY	= "SELECT * FROM list WHERE userid = ?"
 SELECT_LISTS_QUERY		= "SELECT * FROM list"
 
@@ -61,8 +62,7 @@ SELECT_ITEMS_QUERY		= "SELECT * FROM item"
 
 class DatabaseConnection:
 	
-	def __init__(self, testing = False):
-		self.testing = testing
+	def __init__(self):
 		self.conn = sqlite3.connect(DB_NAME)
 		self.init_tables()
 
@@ -99,6 +99,7 @@ class DatabaseConnection:
 		self.conn.execute(CREATE_ITEM_TABLE_QUERY)
 		self.conn.execute(CREATE_USER_TABLE_QUERY)
 		self.conn.execute(CREATE_LIST_TABLE_QUERY)
+		self.conn.commit()
 
 	"""
 	WARNING!
@@ -111,6 +112,7 @@ class DatabaseConnection:
 		self.conn.execute(DROP_USER_TABLE_QUERY)
 		self.conn.execute(DROP_LIST_TABLE_QUERY)
 		self.conn.execute(DROP_ITEM_TABLE_QUERY)
+		self.conn.commit()
 
 	##################################################################
 	#	USER FUNCTIONS
@@ -143,11 +145,11 @@ class DatabaseConnection:
 	def get_users(self):
 		cur = self.conn.execute(SELECT_USERS_QUERY)
 		users = []
-		for (id, username, passhash, admin) in cur:
+		for u in cur:
 			user = {}
-			user["id"] = id
-			user["username"] = username
-			user["admin"] = bool(admin)
+			user["id"] = int(u[0])
+			user["username"] = str(u[1])
+			user["admin"] = bool(u[3])
 			users.append(user)
 		return users
 
@@ -193,15 +195,17 @@ class DatabaseConnection:
 		None if incorrect username
 	"""
 	def auth_user(self, username, password):
-		user = self.conn.execute(SELECT_USER_QUERY, (username,)).fetchone()
+		user = self.conn.execute(SELECT_USER_BY_USERNAME_QUERY, (username,)).fetchone()
 		if user:
 			h = hashlib.sha256()
 			h.update(password.encode())
+			print("user2:", str(user[2]))
+			print("digest", str(h.digest()))
 			if user[2] == h.digest():
 				return True
 			else:
 				return False
-		pass
+		return None
 
 	def delete_user(self, username):
 		self.conn.execute(DELETE_USER_QUERY, (username,))
@@ -220,7 +224,7 @@ class DatabaseConnection:
 		label	(str)	label for list
 	"""
 	def add_list(self, userid, label):
-		lists = self.get_user_lists(userid)
+		lists = self.get_lists(userid)
 		for l in lists:
 			if l["label"] == label:
 				return False
@@ -228,6 +232,12 @@ class DatabaseConnection:
 		self.conn.execute(INSERT_LIST_QUERY, (userid, label))
 		self.conn.commit()
 		return True
+
+	def get_list(self, listid):
+		cur = self.conn.execute(SELECT_LIST_QUERY, (listid,)).fetchone()
+		if not cur:
+			return None
+		return { "id": cur[0], "userid": cur[1], "label": cur[2] }
 
 	"""
 	Gets array of user's lists
@@ -263,6 +273,7 @@ class DatabaseConnection:
 	def delete_list(self, id):
 		self.conn.execute(DELETE_LIST_QUERY, (id,))
 		self.conn.execute(DELETE_LIST_ITEMS_QUERY, (id,))
+		self.conn.commit()
 
 	##################################################################
 	#	ITEM FUNCTIONS
@@ -279,7 +290,7 @@ class DatabaseConnection:
 		price	(float)	item price
 	"""
 	def add_item(self, listid, label, descr, img, url, price):
-		items = self.get_list_items(listid)
+		items = self.get_items(listid)
 
 		for i in items:
 			if i["label"] == label:
@@ -306,9 +317,9 @@ class DatabaseConnection:
 			cur = self.conn.execute(SELECT_ITEMS_QUERY)
 		items = []
 
-		for (listid, listid, label, descr, img, url, price) in cur:
+		for (itemid, listid, label, descr, img, url, price) in cur:
 			i = {}
-			i["id"] = listid
+			i["id"] = itemid
 			i["listid"] = listid
 			i["label"] = label
 			i["descr"] = descr
@@ -326,8 +337,10 @@ class DatabaseConnection:
 		id		(int)	item id
 	"""
 	def get_item(self, id):
-		cur = self.conn.execute(SELECT_ITEM_QUERY, (id,))
-		return cur.fetchone()
+		tup = self.conn.execute(SELECT_ITEM_QUERY, (id,)).fetchone()
+		item = {"id": tup[0], "listid": tup[1], "label": tup[2],
+		"descr": tup[3], "img": tup[4], "url": tup[5], "price": tup[6] }
+		return item
 
 	"""
 	Deletes item from table
@@ -337,6 +350,7 @@ class DatabaseConnection:
 	"""
 	def delete_item(self, id):
 		self.conn.execute(DELETE_ITEM_QUERY, (id,))
+		self.conn.commit()
 
 """
 DO NOT CALL THIS FUNCTION
@@ -344,7 +358,7 @@ Function to test if everything is working right.
 """
 def test():
 	# creating connection object
-	conn = DatabaseConnection(False)
+	conn = DatabaseConnection()
 	# dropping all info from db
 	conn.clear_database()
 	# initializing fresh tables
@@ -368,46 +382,53 @@ def test():
 	print("\tGot user by username 'ike':\t", user)
 
 	# authenticating users
-	print("\tAuth with nonexistent user:\t", conn.authenticate_user("Billy", "password"))
-	print("\tAuth with incorrect password:\t", conn.authenticate_user("ike", "password1"))
-	print("\tAuth with correct password:\t", conn.authenticate_user("ike", "password"))
+	print("\tAuth with nonexistent user:\t", conn.auth_user("Billy", "password"))
+	print("\tAuth with incorrect password:\t", conn.auth_user("ike", "password1"))
+	print("\tAuth with correct password:\t", conn.auth_user("ike", "password"))
 
 	print("\nTesting list functions...")
 
+	
 	# adding a list
-	conn.add_user_list(user[0], "Wish List")
-	print("\tAdded list 'Wish List' to 'ike'")
+	conn.add_list(user["id"], "Wish List")
+	print("\tAdded list 'Wish List' to user:", user["username"])
 
+	user = conn.get_user("jeff")
+	print("\tGot user by username: jeff")
 
-	conn.add_user_list(user[0], "Grocery List")
-	print("\tAdded list 'Grocery List' to 'ike'")
-
+	conn.add_list(user["id"], "Grocery List")
+	print("\tAdded list 'Grocery List' to user:", user["username"])
 
 	# getting lists by user id
-	lists = conn.get_user_lists(user[0])
-	print("\tGot all list of 'ike':\t", lists)
+	lists = conn.get_lists(user["id"])
+	print("\tGot all list of user:", user["username"], lists)
 
-	listid = lists[1][0]
+	lists = conn.get_lists()
+	print("\tGot all lists in table:", lists)
+
+	l = lists[0]
 
 	# deleting list
-	conn.delete_list(1)
-	print("\tDeleted list with id:\t", 1)
+	conn.delete_list(lists[1]["id"])
+	print("\tDeleted list with id:", lists[1]["id"])
 
 	print("\nTesting item functions...")
 
 	#testing adding items
-	conn.add_list_item(listid, "Goldbond", "Feel the fresh", "...", "...", 19.99)
-	print("\tAdded item to list:\t", listid)
-	conn.add_list_item(listid, "IcyHot", "Icy, icy, hot, hot", "...", "...", 10.95)
-	print("\tAdded item to list:\t", listid)
-	items = conn.get_list_items(listid)
+	conn.add_item(l["id"], "Goldbond", "Feel the fresh", "...", "...", 19.99)
+	print("\tAdded item to list:\t", l["id"])
+	conn.add_item(l["id"], "IcyHot", "Icy to dull the pain, and hot to relax it away", "...", "...", 10.95)
+	print("\tAdded item to list:\t", l["id"])
+	items = conn.get_items(l["id"])
 	print("\tGot items by list id:\t", items)
 	print("\tGot item with id 1:\t",conn.get_item(1))
 	# testing deleting items
 
-	conn.delete_item(items[0][0])
-	print("\tDeleted item with id:", items[0][0])
+	conn.delete_item(items[0]["id"])
+	print("\tDeleted item with id:", items[0]["id"])
 
-	items = conn.get_list_items(listid)
+	items = conn.get_items(l["id"])
 	print("\tRemaining list items:", items)
 
+if __name__ == "__main__":
+	test()
