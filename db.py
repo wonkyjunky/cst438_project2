@@ -62,8 +62,7 @@ SELECT_ITEMS_QUERY		= "SELECT * FROM item"
 
 class DatabaseConnection:
 	
-	def __init__(self, testing = False):
-		self.testing = testing
+	def __init__(self):
 		self.conn = sqlite3.connect(DB_NAME)
 		self.init_tables()
 
@@ -100,6 +99,7 @@ class DatabaseConnection:
 		self.conn.execute(CREATE_ITEM_TABLE_QUERY)
 		self.conn.execute(CREATE_USER_TABLE_QUERY)
 		self.conn.execute(CREATE_LIST_TABLE_QUERY)
+		self.conn.commit()
 
 	"""
 	WARNING!
@@ -112,6 +112,7 @@ class DatabaseConnection:
 		self.conn.execute(DROP_USER_TABLE_QUERY)
 		self.conn.execute(DROP_LIST_TABLE_QUERY)
 		self.conn.execute(DROP_ITEM_TABLE_QUERY)
+		self.conn.commit()
 
 	##################################################################
 	#	USER FUNCTIONS
@@ -144,12 +145,11 @@ class DatabaseConnection:
 	def get_users(self):
 		cur = self.conn.execute(SELECT_USERS_QUERY)
 		users = []
-		for (id, username, passhash, admin) in cur:
+		for u in cur:
 			user = {}
-			user["id"] = id
-			user["username"] = username
-			user["passhash"] = str(passhash)
-			user["admin"] = bool(admin)
+			user["id"] = int(u[0])
+			user["username"] = str(u[1])
+			user["admin"] = bool(u[3])
 			users.append(user)
 		return users
 
@@ -199,11 +199,13 @@ class DatabaseConnection:
 		if user:
 			h = hashlib.sha256()
 			h.update(password.encode())
+			print("user2:", str(user[2]))
+			print("digest", str(h.digest()))
 			if user[2] == h.digest():
 				return True
 			else:
 				return False
-		pass
+		return None
 
 	def delete_user(self, username):
 		self.conn.execute(DELETE_USER_QUERY, (username,))
@@ -356,7 +358,7 @@ Function to test if everything is working right.
 """
 def test():
 	# creating connection object
-	conn = DatabaseConnection(False)
+	conn = DatabaseConnection()
 	# dropping all info from db
 	conn.clear_database()
 	# initializing fresh tables
@@ -386,41 +388,46 @@ def test():
 
 	print("\nTesting list functions...")
 
+	
 	# adding a list
-	conn.add_list(user[0], "Wish List")
-	print("\tAdded list 'Wish List' to 'ike'")
+	conn.add_list(user["id"], "Wish List")
+	print("\tAdded list 'Wish List' to user:", user["username"])
 
+	user = conn.get_user("jeff")
+	print("\tGot user by username: jeff")
 
-	conn.add_list(user[0], "Grocery List")
-	print("\tAdded list 'Grocery List' to 'ike'")
-
+	conn.add_list(user["id"], "Grocery List")
+	print("\tAdded list 'Grocery List' to user:", user["username"])
 
 	# getting lists by user id
-	lists = conn.get_lists(user[0])
-	print("\tGot all list of 'ike':\t", lists)
+	lists = conn.get_lists(user["id"])
+	print("\tGot all list of user:", user["username"], lists)
 
-	listid = lists[1][0]
+	lists = conn.get_lists()
+	print("\tGot all lists in table:", lists)
+
+	l = lists[0]
 
 	# deleting list
-	conn.delete_list(1)
-	print("\tDeleted list with id:\t", 1)
+	conn.delete_list(lists[1]["id"])
+	print("\tDeleted list with id:", lists[1]["id"])
 
 	print("\nTesting item functions...")
 
 	#testing adding items
-	conn.add_item(listid, "Goldbond", "Feel the fresh", "...", "...", 19.99)
-	print("\tAdded item to list:\t", listid)
-	conn.add_item(listid, "IcyHot", "Icy, icy, hot, hot", "...", "...", 10.95)
-	print("\tAdded item to list:\t", listid)
-	items = conn.get_items(listid)
+	conn.add_item(l["id"], "Goldbond", "Feel the fresh", "...", "...", 19.99)
+	print("\tAdded item to list:\t", l["id"])
+	conn.add_item(l["id"], "IcyHot", "Icy to dull the pain, and hot to relax it away", "...", "...", 10.95)
+	print("\tAdded item to list:\t", l["id"])
+	items = conn.get_items(l["id"])
 	print("\tGot items by list id:\t", items)
 	print("\tGot item with id 1:\t",conn.get_item(1))
 	# testing deleting items
 
-	conn.delete_item(items[0][0])
-	print("\tDeleted item with id:", items[0][0])
+	conn.delete_item(items[0]["id"])
+	print("\tDeleted item with id:", items[0]["id"])
 
-	items = conn.get_items(listid)
+	items = conn.get_items(l["id"])
 	print("\tRemaining list items:", items)
 
 if __name__ == "__main__":

@@ -17,6 +17,7 @@ def home_route():
 #	USER Route
 ################################################################################
 
+
 @app.route("/api/user", methods=["GET"])
 def get_users():
 	c = DatabaseConnection()
@@ -45,7 +46,7 @@ def add_user():
 	if not password:
 		return { "err": "password must not be empty" }, 400
 
-	if not c.add_user(username, username, False):
+	if not c.add_user(username, password, False):
 		return { "err"	: "user already exists" }, 409
 
 	return { "msg"	: "successfully created user" }, 201
@@ -55,8 +56,10 @@ def add_user():
 def delete_user():
 	j = request.get_json()
 	c = DatabaseConnection()
+
 	if auth := check_auth(j, c):
 		return auth
+
 	c.delete_user(j["username"])
 	return { "msg": "successfully deleted user" }, 200
 
@@ -64,8 +67,7 @@ def delete_user():
 #	LIST Routes
 ################################################################################
 
-# COMPLETE
-# requires arg "id" or "username" that correspond to user
+
 @app.route("/api/list", methods=["GET"])
 def get_lists():
 	c = DatabaseConnection()
@@ -74,7 +76,7 @@ def get_lists():
 	if not username:
 		return { "lists": c.get_lists() }, 200
 
-	user = get_user(username=username)
+	user = c.get_user(username=username)
 	if not user:
 		return { "err": "user does not exist" }, 409
 
@@ -130,11 +132,11 @@ def delete_list():
 #	ITEM Routes
 ################################################################################
 
-# COMPLETE
+
 @app.route("/api/item", methods=["GET"])
 def get_items():
 	c = DatabaseConnection()
-	listid = request.args.get("listid", 0)
+	listid = int(request.args.get("listid", 0))
 	return { "items": c.get_items(listid) }, 200
 
 
@@ -186,7 +188,7 @@ def delete_item():
 		return { "err": "item does not exist" }, 400
 	l = c.get_list(item["listid"])
 	if l["userid"] != user["id"]:
-		return { "err": "list does not belong to user" }, 409
+		return { "err": "item does not belong to user" }, 409
 	
 	c.delete_item(itemid)
 	return { "msg": "successfully deleted item" }, 200
@@ -224,11 +226,11 @@ def check_auth(j, c):
 	auth = c.auth_user(j["username"], j["password"])
 
 	if auth == None:
-		return { "err": "no such user exists" }, 409
+		return { "err": "user does not exist" }, 409
 	elif auth == False:
 		return { "err": "incorrect password" }, 401
 
-	pass
+	return None
 
 if __name__ == "__main__":
 	app.run(debug=True)
