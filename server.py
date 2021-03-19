@@ -117,7 +117,7 @@ def delete_list():
 	if not l:
 		return { "err": "list does not exist" }, 409
 
-	user = get_user(j["username"])
+	user = c.get_user(j["username"])
 	if l["userid"] != user["id"]:
 		return { "err": "list does not belong to user" }, 400
 
