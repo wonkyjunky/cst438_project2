@@ -15,29 +15,29 @@ def home_route():
 
 @app.route("/itemlists")
 def itemlists():
-    return render_template("itemlists.html")
+    return flask.render_template("itemlists.html")
 
 
 @app.route("/wishlists")
 def wishlists():
-    return render_template("wishlists.html")
+    return flask.render_template("wishlists.html")
 
 @app.route("/login")
 def loginRoute():
-    return render_template("login.html")
+    return flask.render_template("login.html")
 
 @app.route("/createaccount")
 def createAccount():
-    return render_template("createaccount.html")
+    return flask.render_template("createaccount.html")
 
 @app.route("/itemdetails")
 def itemdetails():
-    return render_template("itemdetails.html")
+    return flask.render_template("itemdetails.html")
 
 
 @app.route("/wishlistdetails")
 def wishlistdetails():
-    return render_template("wishlistdetails.html")
+    return flask.render_template("wishlistdetails.html")
 
 ################################################################################
 #	GET Routes
