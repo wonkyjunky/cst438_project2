@@ -243,6 +243,44 @@ def add_item():
 
 
 """
+Updates item in table
+
+Params:
+	username            (str)
+	password            (str)
+	itemid              (int)    id of item
+	label (optional)    (str)    label of item
+	descr (optional)    (str)    description of item
+	img   (optional)    (str)    url to image of item
+	url   (optional)    (str)    url to item
+	price (optional)    (float)  price of the item
+"""
+@app.route("/api/updateitem", methods=["PUT"])
+def update_item():
+	j = request.get_json(force=True)
+	c = DatabaseConnection()
+
+	if auth := check_auth(j, c):
+		return auth
+
+	itemid = j.get("itemid", 0)
+	if not itemid:
+		return { "err": "itemid must not be empty" }, 400
+
+	user = c.get_user(username=j["username"])
+	item = c.get_item(itemid)
+	if not item:
+		return { "err": "item does not exist" }, 409
+
+	l = c.get_list(item["listid"])
+	if user["id"] != l["userid"]:
+		return { "err": "item does not belong to user" }, 400
+
+	c.update_item(itemid, j)
+	return { "msg": "successfully updated item" }, 200
+
+
+"""
 Deletes item from table
 
 Params:

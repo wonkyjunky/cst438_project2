@@ -336,9 +336,35 @@ class DatabaseConnection:
 	"""
 	def get_item(self, id):
 		tup = self.conn.execute(SELECT_ITEM_QUERY, (id,)).fetchone()
+		if not tup:
+			return None
 		item = {"id": tup[0], "listid": tup[1], "label": tup[2],
 		"descr": tup[3], "img": tup[4], "url": tup[5], "price": tup[6] }
 		return item
+
+	def update_item(self, id, vars):
+		query = "UPDATE item SET "
+		added = 0
+		for name in ["label", "descr", "img", "url", "price"]:
+			val = vars.get(name, None)
+			if not val:
+				continue
+			if added > 0:
+				query += ", "
+			query += name + " = "
+			if name != "price":
+				query += "'" + val + "'"
+			else:
+				query += str(val)
+			added += 1
+
+		if not added:
+			return None
+		
+		query += " WHERE id = " + str(id)
+		print("Update query:", query)
+		self.conn.execute(query)
+		self.conn.commit()
 
 	"""
 	Deletes item from table

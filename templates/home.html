@@ -12,6 +12,13 @@
 
 	  this is our wishlist
 	</div>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+	<script>
+		$.get("/api/list", {username:"penguin"}, (data) =>
+		{
+			console.log(data)
+		}, "json");
+	</script>
 	  {% endblock %}
   </body>
 </html>
