@@ -10,11 +10,12 @@
 	  this is our wishlist
 	</div>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+	<script src="js/api.js"></script>
 	<script>
-		$.get("/api/list", {username:"penguin"}, (data) =>
-		{
-			console.log(data)
-		}, "json");
+		var api = new Api("ike", "password");
+		api.get_users("ike");
+		api.get_items();
+		api.get_lists();
 	</script>
 	  {% endblock %}
   </body>
