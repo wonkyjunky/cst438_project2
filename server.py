@@ -273,7 +273,7 @@ Params:
 @app.route("/api/updateitem", methods=["PUT"])
 @app.route("/api/deleteitem", methods=["POST"])
 def modify_item():
-	j = request.get_json(force=True)
+	j = request.get_json()
 	c = DatabaseConnection()
 
 	if auth := check_auth(j, c):

@@ -14,8 +14,8 @@
 	<script>
 		var api = new Api("ike", "password");
 		api.get_users("ike");
-		api.get_items();
-		api.get_lists();
+		api.get_items(2);
+		api.get_lists("ike");
 	</script>
 	  {% endblock %}
   </body>
