@@ -6,9 +6,8 @@ class Api
 		this.password = password;
 	}
 	
-	api_get(func, body, callback)
+	async api_get(func, body)
 	{
-		if (!callback) callback = (data) => { console.log(data); };
 		let url = "/api/" + func;
 		let query = "?";
 
@@ -20,82 +19,76 @@ class Api
 
 		if (query.length > 1) url += query;
 
-		fetch(url, {
+		let call = await fetch(url, {
 			method: "GET",
 			headers: { "Content-Type": "application/json" }
-		})
-		.then(response => response.json())
-		.then(data => callback(data))
-		.catch(callback);
+		});
+		return await call.json();
 	}
 
-	api_call(func, method, body, callback)
+	async api_call(func, method, body)
 	{
-		if (!callback) callback = (res) => { console.log(res); };
-
-		fetch("/api/" + func,
+		let call = fetch("/api/" + func,
 		{
 			method: method,
 			headers: { "Content-Type": "application/json" },
 			body: JSON.stringify(body)
 		})
-		.then(response => response.json())
-		.then(data => callback(data))
-		.catch(callback);
+		return await call.json();
 	}
 
 	// User functions
-	 
-	get_users(username, callback)
+	
+	async get_users(username)
 	{
-		return this.api_get("user", { username: username }, callback);
+		return this.api_get("user", username);
 	}
 
-	login(callback)
+	async login()
 	{
 		return this.api_call("login", "POST",
 		{
 			username: this.username,
 			password: this.password
-		}, callback);
+		});
 	}
 
-	add_user(callback)
+	async add_user()
 	{
 		return this.api_call("adduser", "POST",
 		{
 			username: this.username,
 			password: this.password
-		}, callback);
+		});
 	}
 
-	delete_user(callback)
+	async delete_user()
 	{
 		return this.api_call("deleteuser", "POST",
 		{
 			username: this.username,
 			password: this.password
-		}, callback);
+		});
 	}
 
 	// List functions
 
-	get_lists(username, callback)
+	async get_lists(username)
 	{
-		return this.api_get("list", { username: username }, callback);
+		return this.api_get("list", { username: username });
 	}
 
-	add_list(label, callback)
+	async add_list(label)
 	{
 		return this.api_call("addlist", "POST",
 		{
 			username: this.username,
 			password: this.password,
 			label: label
-		}, callback);
+		});
 	}
 
-	update_list(listid, label, callback)
+	async update_list(listid, label)
 	{
 		return this.api_call("updatelist", "PUT",
 		{
@@ -103,27 +96,27 @@ class Api
 			password: this.password,
 			listid: listid,
 			label:label
-		}, callback);
+		});
 	}
 
-	delete_list(listid, callback)
+	async delete_list(listid)
 	{
 		return this.api_call("deletelist", "POST",
 		{
 			username: this.username,
 			password: this.password,
 			listid: listid
-		}, callback);
+		});
 	}
 
 	// Item funcitons
 
-	get_items(listid, callback)
+	async get_items(listid)
 	{
-		return this.api_get("item", { listid: listid }, callback);
+		return this.api_get("item", { listid: listid });
 	}
 
-	add_item(listid, label, descr, img, url, price, callback)
+	async add_item(listid, label, descr, img, url, price)
 	{
 		return this.api_call("additem", "POST",
 		{
@@ -135,10 +128,10 @@ class Api
 			img: img,
 			url: url,
 			price: price
-		}, callback);
+		});
 	}
 
-	update_item(itemid, label, descr, img, url, price, callback)
+	async update_item(itemid, label, descr, img, url, price)
 	{
 		return this.api_call("updateitem", "PUT",
 		{
@@ -150,16 +143,16 @@ class Api
 			img: img,
 			url: url,
 			price: price
-		}, callback);
+		});
 	}
 
-	delete_item(itemid, callback)
+	async delete_item(itemid)
 	{
 		return this.api_call("deleteitem", "POST",
 		{
 			username: this.username,
 			password: this.password,
 			itemid: itemid
-		}, callback);
+		});
 	}
 }

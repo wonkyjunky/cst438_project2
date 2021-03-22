@@ -1,0 +1,76 @@
+<html>
+	<head>
+		<title>Recommended List</title>
+	</head>
+	<body>
+		
+		<div id="recommended-items" class="row"></div>
+
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+		<script src="js/api.js"></script>
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"></style>
+		<script>
+			"use strict";
+
+			var username = "ike"
+			var password = "password"
+			var api = new Api(username, password);
+
+			async function get_recommended_items()
+			{
+				let res = await api.get_lists(api.username);
+				let user_lists = res.lists;
+				res = await api.get_items();
+				let items = res.items;
+				let non_user_items = [];
+
+				for (let i = 0; i < items.length; i++)
+				{
+					let user_item = false;
+					for (let j = 0; j < user_lists.length; j++)
+					{
+						if (items[i].listid == user_lists[j].id)
+						{
+							user_item = true;
+							break;
+						}
+					}
+					if (!user_item) non_user_items.push(items[i]);
+				}
+				
+				console.log(non_user_items);
+				// shuffles the array
+				non_user_items.sort(() => Math.random() - 0.5);
+
+				if (non_user_items.length > 5)
+				{
+					while (non_user_items.length > 5) non_user_items.pop()
+				}
+				else if (non_user_items.length < 5)
+				{
+					let curri = 0;
+					for (let i = non_user_items.length; i < 5; i++)
+					{
+						non_user_items.push(non_user_items[curri++]);
+						if (curri >= non_user_items.length) curri = 0;
+					}
+				}
+
+				for (let i = 0; i < non_user_items.length; i++)
+				{
+					var rec_items = $("#recommended-items");
+					rec_items.append(`
+						<div id="rec${i}" class="col">
+							<h1>${non_user_items[i].label}</h1>
+							<h5>${non_user_items[i].descr}</h5>
+							<h5>$ ${non_user_items[i].price}</h5>	
+						</div>
+					`)
+				}
+			}
+
+			get_recommended_items();
+
+		</script>
+	</body>
+</html>
