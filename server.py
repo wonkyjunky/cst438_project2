@@ -60,6 +60,7 @@ def get_users():
 	c = DatabaseConnection()
 
 	username = request.args.get("username", "")
+	print(username)
 	if not username:
 		return { "users": c.get_users() }, 200
 
@@ -155,6 +156,7 @@ Params:
 	username	(str)
 	password	(str)
 	listid		(int)	id of list to delete
+	label (optional)(str)	new name of the list
 """
 @app.route("/api/deletelist", methods=["POST"])
 @app.route("/api/updatelist", methods=["PUT"])
@@ -183,6 +185,8 @@ def modify_list():
 
 	elif request.path == "/api/updatelist":
 		label = j.get("label", "")
+		if not label:
+			return { "err": "label must not be empty" }, 400
 		if not c.update_list(listid, label):
 			return { "err": "attempted to give list duplicate name" }, 409
 		return { "msg": "successfully updated list" }, 200
