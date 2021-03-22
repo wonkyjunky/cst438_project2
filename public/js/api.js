@@ -3,103 +3,130 @@ class Api
 	constructor(username, password)
 	{
 		this.username = username;
-		this.passowrd = password;
+		this.password = password;
+	}
+	
+	api_get(func, body, callback)
+	{
+		if (!callback) callback = (data) => { console.log(data); };
+		let url = "/api/" + func;
+		let query = "?";
+
+		for (var v in body)
+		{
+			if (!body[v]) continue;
+			query += v + "=" + body[v];
+		}
+
+		if (query.length > 1) url += query;
+
+		fetch(url, {
+			method: "GET",
+			headers: { "Content-Type": "application/json" }
+		})
+		.then(response => response.json())
+		.then(data => callback(data))
+		.catch(callback);
 	}
 
-	api_call(func, obj, callback, method)
+	api_call(func, method, body, callback)
 	{
-		console.log("about to send:", obj)
+		if (!callback) callback = (res) => { console.log(res); };
 
-		if (callback == undefined) callback = (res) => { console.log(res) }
-
-		return $.ajax({
-		type:method,
-		url: "/api/" + func,
-		contentType:"application/json",
-		data: JSON.stringify(obj),
-		success: callback,
-		error: (jqXHR) => { callback(jqXHR.responseJSON) 
-		}
-		});
+		fetch("/api/" + func,
+		{
+			method: method,
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify(body)
+		})
+		.then(response => response.json())
+		.then(data => callback(data))
+		.catch(callback);
 	}
 
 	// User functions
 	 
 	get_users(username, callback)
 	{
-		if (!callback) callback = (data) => { console.log(data); };
-		return $.get("/api/user", {username:username}, callback, "json");
+		return this.api_get("user", { username: username }, callback);
 	}
 
 	login(callback)
 	{
-		return this.api_call("login", { username: this.username,
+		return this.api_call("login", "POST",
+		{
+			username: this.username,
 			password: this.password
-		}, callback, "POST");
+		}, callback);
 	}
 
 	add_user(callback)
 	{
-		return this.api_call("adduser", { username: this.username,
+		return this.api_call("adduser", "POST",
+		{
+			username: this.username,
 			password: this.password
-		}, callback, "POST");
+		}, callback);
 	}
 
 	delete_user(callback)
 	{
-		return this.api_call("deleteuser", {
+		return this.api_call("deleteuser", "POST",
+		{
 			username: this.username,
 			password: this.password
-		}, callback, "POST");
+		}, callback);
 	}
 
 	// List functions
 
-	get_lists(userid, callback)
+	get_lists(username, callback)
 	{
-		if (!callback) callback = (data) => { console.log(data); };
-		return $.get("/api/list", {userid:userid}, callback, "json");
+		return this.api_get("list", { username: username }, callback);
 	}
 
 	add_list(label, callback)
 	{
-		return this.api_call("addlist", {
+		return this.api_call("addlist", "POST",
+		{
 			username: this.username,
 			password: this.password,
-			label:label
-		}, callback, "POST");
+			label: label
+		}, callback);
 	}
 
 	update_list(listid, label, callback)
 	{
-		return this.api_call("updatelist", {
+		return this.api_call("updatelist", "PUT",
+		{
 			username: this.username,
 			password: this.password,
 			listid: listid,
 			label:label
-		}, callback, "PUT");
+		}, callback);
 	}
 
 	delete_list(listid, callback)
 	{
-		return this.api_call("deletelist", {
+		return this.api_call("deletelist", "POST",
+		{
 			username: this.username,
 			password: this.password,
 			listid: listid
-		}, callback, "POST");
+		}, callback);
 	}
 
 	// Item funcitons
 
 	get_items(listid, callback)
 	{
-		if (!callback) callback = (data) => { console.log(data); };
-		return $.get("/api/item", { listid: listid }, callback, "json");
+		return this.api_get("item", { listid: listid }, callback);
 	}
 
 	add_item(listid, label, descr, img, url, price, callback)
 	{
-		return this.api_call("additem", {
+		return this.api_call("additem", "POST",
+		{
 			username: this.username,
 			password: this.password,
 			listid: listid,
@@ -108,12 +135,13 @@ class Api
 			img: img,
 			url: url,
 			price: price
-		}, callback, "POST");
+		}, callback);
 	}
 
 	update_item(itemid, label, descr, img, url, price, callback)
 	{
-		return this.api_call("updateitem", {
+		return this.api_call("updateitem", "PUT",
+		{
 			username: this.username,
 			password: this.password,
 			itemid: itemid,
@@ -122,15 +150,16 @@ class Api
 			img: img,
 			url: url,
 			price: price
-		}, callback, "PUT");
+		}, callback);
 	}
 
 	delete_item(itemid, callback)
 	{
-		return this.api_call("deleteitem", {
+		return this.api_call("deleteitem", "POST",
+		{
 			username: this.username,
 			password: this.password,
 			itemid: itemid
-		}, callback, "POST");
+		}, callback);
 	}
-};
+}
