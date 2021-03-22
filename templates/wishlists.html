@@ -1,33 +1,25 @@
 {% extends "layouts/layout.html" %}
-<!DOCTYPE html>
-<html lang="en" dir="ltr">
-  <head>
-    <meta charset="utf-8" />
-    <title>Wishlist</title>
-
-  </head>
+{% block head %} {{super()}} {% endblock %} 
   <body>
     {% block nav %} {{super()}} {% endblock %} {% block content %}
     <div style="text-align: center">
     <h2>My Wishlist</h2>
       <br></br>
       <div style="text-align: right" id="buttons">
-        <button type="button">Create a new Wishlist</button> &nbsp;&nbsp;
-        <button type="button">Edit a wishlist</button>
+        <button type="button" id="addwishlist" data-toggle="modal" data-target="#exampleModal">Create a new Wishlist</button> &nbsp;&nbsp;
+        <button type="button" id="editwishlist">Edit a wishlist</button> &nbsp;&nbsp;
       </div>
       <br></br>
       <br></br>
       <div
         style= "display: flex; flex-wrap: wrap; justify-content: center"
-        id="wishlists"
-      >
-        <a href="/wishlistdetails">
+        id="wishlists">
+        <a href="/wishlistdetails" style="flex-basis: 20%">
           <figure
             style="
               width: 320px;
               padding: 10px;
-              border: 5px solid gray;
-              flexBasis: 20%"
+              border: 5px solid gray;"
             id="wishlist"
           >
             <img
@@ -37,89 +29,76 @@
             <figcaption id="wishlisttitle">My first Wishlist</figcaption>
           </figure>
         </a>
-           <a href="/wishlistdetails">
-          <figure
-            style="
-              width: 320px;
-              padding: 10px;
-              border: 5px solid gray;
-              flexBasis: 20%"
-            id="wishlist"
-          >
-            <img
-              src="https://cdn3.iconfinder.com/data/icons/christmas-and-new-year-13/64/Christmas_santa_bag-512.png"
-              width="200"
-            ></img>
-            <figcaption id="wishlisttitle">My first Wishlist</figcaption>
-          </figure>
-        </a>
-           <a href="/wishlistdetails">
-          <figure
-            style="
-              width: 320px;
-              padding: 10px;
-              border: 5px solid gray;
-              flexBasis: 20%"
-            id="wishlist"
-          >
-            <img
-              src="https://cdn3.iconfinder.com/data/icons/christmas-and-new-year-13/64/Christmas_santa_bag-512.png"
-              width="200"
-            ></img>
-            <figcaption id="wishlisttitle">My first Wishlist</figcaption>
-          </figure>
-        </a>
-           <a href="/wishlistdetails">
-          <figure
-            style="
-              width: 320px;
-              padding: 10px;
-              border: 5px solid gray;
-              flexBasis: 20%"
-            id="wishlist"
-          >
-            <img
-              src="https://cdn3.iconfinder.com/data/icons/christmas-and-new-year-13/64/Christmas_santa_bag-512.png"
-              width="200"
-            ></img>
-            <figcaption id="wishlisttitle">My first Wishlist</figcaption>
-          </figure>
-        </a>
-           <a href="/wishlistdetails">
-          <figure
-            style="
-              width: 320px;
-              padding: 10px;
-              border: 5px solid gray;
-              flexBasis: 20%"
-            id="wishlist"
-          >
-            <img
-              src="https://cdn3.iconfinder.com/data/icons/christmas-and-new-year-13/64/Christmas_santa_bag-512.png"
-              width="200"
-            ></img>
-            <figcaption id="wishlisttitle">My first Wishlist</figcaption>
-          </figure>
-        </a>
-           <a href="/wishlistdetails">
-          <figure
-            style="
-              width: 320px;
-              padding: 10px;
-              border: 5px solid gray;
-              flexBasis: 20%"
-            id="wishlist"
-          >
-            <img
-              src="https://cdn3.iconfinder.com/data/icons/christmas-and-new-year-13/64/Christmas_santa_bag-512.png"
-              width="200"
-            ></img>
-            <figcaption id="wishlisttitle">My first Wishlist</figcaption>
-          </figure>
-        </a>
+      </div>
+    </div>
 
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Create a Wishlist</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
       </div>
+      <div class="modal-body">
+        <form>
+          <input id="label" placeholder="Wishlist Name">
+        </form>
       </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button id="create" type="button" class="btn btn-primary">Create</button>
+      </div>
+    </div>
+  </div>
+</div>
+      <script>
+
+                $.post_json = (api_url, obj, callback) =>
+                  {
+                    return $.ajax({
+                    type:"POST",
+                    url: api_url,
+                    contentType: "application/json",
+                    data: JSON.stringify(obj),
+                    success: callback,
+                    error: (jqXHR) => { callback(jqXHR.responseJSON) }
+                  });
+                  }
+                $.get("/api/list", {}, (data) => {
+                  for (let i = 0; i < data.lists.length; i++){
+                    $("#wishlists").append(`     
+                    <a id="${data.lists.id}" href="/wishlistdetails" style="flex-basis: 20%">
+                      <figure
+                        style="
+                          width: 320px;
+                          padding: 10px;
+                          border: 5px solid gray;"
+                        id="wishlist"
+                      >
+                      <img
+                        src="https://cdn3.iconfinder.com/data/icons/christmas-and-new-year-13/64/Christmas_santa_bag-512.png"
+                        width="200"
+                      ></img>
+                        <figcaption id="wishlisttitle">${data.lists[i].label}</figcaption>
+                        </figure>
+                  </a>`)
+                  }
+                })
+                $('#create').on('click', function(e) {
+                    var userid = "ike";
+                    var label = document.getElementById('label').value;
+                    var data = {"username": userid, "label": label};
+                    if (confirm(`You want to create ${label}?`)){
+                        $.post_json("/api/addlist",data, res => {
+                          console.log(res);
+                          window.location.href = "/wishlists";
+                      });
+                    }
+                  });
+              </script>
         {% endblock %}
   </body>
 </html>

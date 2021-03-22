@@ -231,11 +231,19 @@ class DatabaseConnection:
 		self.conn.commit()
 		return True
 
+
+	"""
+	Gets single list from db
+
+	Params:
+		listid	(int)
+	"""
 	def get_list(self, listid):
 		cur = self.conn.execute(SELECT_LIST_QUERY, (listid,)).fetchone()
 		if not cur:
 			return None
 		return { "id": cur[0], "userid": cur[1], "label": cur[2] }
+
 
 	"""
 	Gets array of user's lists
@@ -261,7 +269,28 @@ class DatabaseConnection:
 			lists.append(l)
 		return lists
 
-	# deletes the list and all items associated with it
+
+	"""
+	Updates list:
+
+	Params:
+		id		(int) id of list
+		label	(str) label for list
+	"""
+	def update_list(self, id, label):
+		if not label:
+			return None
+		ls = self.get_list(id)
+		# setting to a new label
+		if label != ls["label"]:
+			# if any items in same list have that label, return False
+			if self.conn.execute("SELECT * FROM list WHERE userid = ? AND label = ?", (ls["userid"], label)).fetchone():
+				return False
+
+		self.conn.execute("UPDATE list SET label = ? WHERE id = ?", (label, id))
+		self.conn.commit()
+		return True
+
 	"""
 	Deletes list
 
@@ -273,9 +302,11 @@ class DatabaseConnection:
 		self.conn.execute(DELETE_LIST_ITEMS_QUERY, (id,))
 		self.conn.commit()
 
+
 	##################################################################
 	#	ITEM FUNCTIONS
 	##################################################################
+
 	"""
 	Adds item to list
 
@@ -297,6 +328,7 @@ class DatabaseConnection:
 		self.conn.execute(INSERT_ITEM_QUERY, (listid, label, descr, img, url, price))
 		self.conn.commit()
 		return True
+
 
 	"""
 	Gets array of items
@@ -328,6 +360,7 @@ class DatabaseConnection:
 
 		return items
 
+
 	"""
 	Gets item
 
@@ -336,9 +369,56 @@ class DatabaseConnection:
 	"""
 	def get_item(self, id):
 		tup = self.conn.execute(SELECT_ITEM_QUERY, (id,)).fetchone()
+		if not tup:
+			return None
 		item = {"id": tup[0], "listid": tup[1], "label": tup[2],
 		"descr": tup[3], "img": tup[4], "url": tup[5], "price": tup[6] }
 		return item
+
+
+	"""
+	Changes vars of an item in db
+
+	Params:
+		id		(int)
+		vars	(Dict)	dictionary of vars to change
+	"""
+	def update_item(self, id, vars):
+		query = "UPDATE item SET "
+		added = 0
+		label = vars.get("label", None)
+		# trying to set label
+		if label:
+			added = 1
+			query += "label = '" + label + "'"
+			item = self.get_item(id)
+			# label is not the current label
+			if item["label"] != label:
+				# if any items in same list have same label return False
+				if self.conn.execute("SELECT * from item WHERE listid = ? AND label = ?", (item["listid"], label)).fetchone():
+					return False
+
+		for name in ["descr", "img", "url", "price"]:
+			val = vars.get(name, None)
+			if not val:
+				continue
+			if added > 0:
+				query += ", "
+			query += name + " = "
+			if name != "price":
+				query += "'" + val + "'"
+			else:
+				query += str(val)
+			added += 1
+
+		if not added:
+			return True
+		
+		query += " WHERE id = " + str(id)
+		self.conn.execute(query)
+		self.conn.commit()
+		return True
+
 
 	"""
 	Deletes item from table
@@ -350,11 +430,13 @@ class DatabaseConnection:
 		self.conn.execute(DELETE_ITEM_QUERY, (id,))
 		self.conn.commit()
 
+
 """
 DO NOT CALL THIS FUNCTION
 Function to test if everything is working right.
 """
 def test():
+	print("Populating db with test data")
 	# creating connection object
 	conn = DatabaseConnection()
 	# dropping all info from db
@@ -362,71 +444,30 @@ def test():
 	# initializing fresh tables
 	conn.init_tables()
 
-	print("Testing user functions...")
-
-	# adding test user
+	# adding test user ike
 	conn.add_user("ike", "password", False)
-	print("\tAdded user: 'ike'")
+	# add lists to ike
+	conn.add_list(1, "Wish List")
+	conn.add_list(1, "Grocery List")
 
-	# adding test admin
+	# adding test user jeff
 	conn.add_user("jeff", "mynamejeff", True)
-	print("\tAdded admin: 'jeff'")
-
-	# getting all users
-	print("\tGot all users:\t", conn.get_users())
-
-	# getting user by username
-	user = conn.get_user("ike")
-	print("\tGot user by username 'ike':\t", user)
-
-	# authenticating users
-	print("\tAuth with nonexistent user:\t", conn.auth_user("Billy", "password"))
-	print("\tAuth with incorrect password:\t", conn.auth_user("ike", "password1"))
-	print("\tAuth with correct password:\t", conn.auth_user("ike", "password"))
-
-	print("\nTesting list functions...")
-
-	
-	# adding a list
-	conn.add_list(user["id"], "Wish List")
-	print("\tAdded list 'Wish List' to user:", user["username"])
-
-	user = conn.get_user("jeff")
-	print("\tGot user by username: jeff")
-
-	conn.add_list(user["id"], "Grocery List")
-	print("\tAdded list 'Grocery List' to user:", user["username"])
-
-	# getting lists by user id
-	lists = conn.get_lists(user["id"])
-	print("\tGot all list of user:", user["username"], lists)
-
-	lists = conn.get_lists()
-	print("\tGot all lists in table:", lists)
-
-	l = lists[0]
-
-	# deleting list
-	conn.delete_list(lists[1]["id"])
-	print("\tDeleted list with id:", lists[1]["id"])
-
-	print("\nTesting item functions...")
+	conn.add_list(2, "Shopping List")
 
 	#testing adding items
-	conn.add_item(l["id"], "Goldbond", "Feel the fresh", "...", "...", 19.99)
-	print("\tAdded item to list:\t", l["id"])
-	conn.add_item(l["id"], "IcyHot", "Icy to dull the pain, and hot to relax it away", "...", "...", 10.95)
-	print("\tAdded item to list:\t", l["id"])
-	items = conn.get_items(l["id"])
-	print("\tGot items by list id:\t", items)
-	print("\tGot item with id 1:\t",conn.get_item(1))
-	# testing deleting items
+	conn.add_item(1, "Goldbond", "...", "...", "...", 19.99)
+	conn.add_item(1, "IcyHot", "...", "...", "...", 10.95)
 
-	conn.delete_item(items[0]["id"])
-	print("\tDeleted item with id:", items[0]["id"])
+	conn.add_item(2, "Goldbond Max", "...", "...", "...", 19.99)
+	conn.add_item(2, "IcyHot Extra Strength", "...", "...", "...", 10.95)
 
-	items = conn.get_items(l["id"])
-	print("\tRemaining list items:", items)
+	conn.add_item(3, "Banana", "...", "...", "...", 0.75)
+	conn.add_item(3, "Television", "...", "...", "...", 325.00)
+	conn.add_item(3, "RTX 3090", "...", "...", "...", 325.00)
+	conn.add_item(3, "Gaming PC", "...", "...", "...", 325.00)
+	conn.add_item(3, "Air Jordans", "...", "...", "...", 999.00)
+	conn.add_item(3, "17.5lbs of coffee", "...", "...", "...", 35.00)
+	conn.add_item(3, "Stratocaster", "...", "...", "...", 1499.99)
 
 if __name__ == "__main__":
 	test()

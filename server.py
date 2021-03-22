@@ -34,6 +34,10 @@ def createAccount():
 def itemdetails():
     return flask.render_template("itemdetails.html")
 
+@app.route("/recommended")
+def recommended():
+	return flask.render_template("recommended.html")
+
 
 @app.route("/wishlistdetails")
 def wishlistdetails():
@@ -60,6 +64,7 @@ def get_users():
 	c = DatabaseConnection()
 
 	username = request.args.get("username", "")
+	print(username)
 	if not username:
 		return { "users": c.get_users() }, 200
 
@@ -149,15 +154,17 @@ def add_list():
 
 
 """
-Deletes list from db
+Modifies list from db
 
 Params:
 	username	(str)
 	password	(str)
 	listid		(int)	id of list to delete
+	label (optional)(str)	new name of the list
 """
 @app.route("/api/deletelist", methods=["POST"])
-def delete_list():
+@app.route("/api/updatelist", methods=["PUT"])
+def modify_list():
 	j = request.get_json()
 	c = DatabaseConnection()
 
@@ -176,9 +183,19 @@ def delete_list():
 	if l["userid"] != user["id"]:
 		return { "err": "list does not belong to user" }, 400
 
-	c.delete_list(listid)
+	if request.path == "/api/deletelist":
+		c.delete_list(listid)
+		return { "msg": "successfully deleted list" }, 200
 
-	return { "msg": "successfully deleted list" }, 200
+	elif request.path == "/api/updatelist":
+		label = j.get("label", "")
+		if not label:
+			return { "err": "label must not be empty" }, 400
+		if not c.update_list(listid, label):
+			return { "err": "attempted to give list duplicate name" }, 409
+		return { "msg": "successfully updated list" }, 200
+
+	return { "err": "invalid method used" }, 405
 
 
 ################################################################################
@@ -243,15 +260,23 @@ def add_item():
 
 
 """
-Deletes item from table
+Updates or deletes item in table
 
 Params:
-	username	(str)
-	password	(str)
-	itemid		(int)
+	username            (str)
+	password            (str)
+	itemid              (int)    id of item
+
+	These variables are only needed for update:
+	label (optional)    (str)    label of item
+	descr (optional)    (str)    description of item
+	img   (optional)    (str)    url to image of item
+	url   (optional)    (str)    url to item
+	price (optional)    (float)  price of the item
 """
+@app.route("/api/updateitem", methods=["PUT"])
 @app.route("/api/deleteitem", methods=["POST"])
-def delete_item():
+def modify_item():
 	j = request.get_json()
 	c = DatabaseConnection()
 
@@ -270,8 +295,18 @@ def delete_item():
 	if l["userid"] != user["id"]:
 		return { "err": "item does not belong to user" }, 409
 	
-	c.delete_item(itemid)
-	return { "msg": "successfully deleted item" }, 200
+	# deleting item
+	if request.path == "/api/deleteitem":
+		c.delete_item(itemid)
+		return { "msg": "successfully deleted item" }, 200
+	
+	# updating item
+	elif request.path == "/api/updateitem":
+		if not c.update_item(itemid, j):
+			return { "err": "attempted to give item duplicate name" }, 409
+		return { "msg": "successfully updated item" }, 200
+
+	return { "err": "invalid method used" }, 405
 
 
 ################################################################################

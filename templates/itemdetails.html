@@ -1,11 +1,5 @@
 {% extends "layouts/layout.html" %}
-<!DOCTYPE html>
-<html lang="en" dir="ltr">
-  <head>
-    <meta charset="utf-8" />
-    <title>Wishlist</title>
-
-  </head>
+{% block head %} {{super()}} {% endblock %} 
   <body>
     {% block nav %} {{super()}} {% endblock %} {% block content %}
     <div style="text-align: center">
