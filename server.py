@@ -149,7 +149,7 @@ def add_list():
 
 
 """
-Deletes list from db
+Modifies list from db
 
 Params:
 	username	(str)
@@ -157,7 +157,8 @@ Params:
 	listid		(int)	id of list to delete
 """
 @app.route("/api/deletelist", methods=["POST"])
-def delete_list():
+@app.route("/api/updatelist", methods=["PUT"])
+def modify_list():
 	j = request.get_json()
 	c = DatabaseConnection()
 
@@ -176,9 +177,17 @@ def delete_list():
 	if l["userid"] != user["id"]:
 		return { "err": "list does not belong to user" }, 400
 
-	c.delete_list(listid)
+	if request.path == "/api/deletelist":
+		c.delete_list(listid)
+		return { "msg": "successfully deleted list" }, 200
 
-	return { "msg": "successfully deleted list" }, 200
+	elif request.path == "/api/updatelist":
+		label = j.get("label", "")
+		if not c.update_list(listid, label):
+			return { "err": "attempted to give list duplicate name" }, 409
+		return { "msg": "successfully updated list" }, 200
+
+	return { "err": "invalid method used" }, 405
 
 
 ################################################################################
@@ -243,12 +252,14 @@ def add_item():
 
 
 """
-Updates item in table
+Updates or deletes item in table
 
 Params:
 	username            (str)
 	password            (str)
 	itemid              (int)    id of item
+
+	These variables are only needed for update:
 	label (optional)    (str)    label of item
 	descr (optional)    (str)    description of item
 	img   (optional)    (str)    url to image of item
@@ -256,41 +267,9 @@ Params:
 	price (optional)    (float)  price of the item
 """
 @app.route("/api/updateitem", methods=["PUT"])
-def update_item():
-	j = request.get_json(force=True)
-	c = DatabaseConnection()
-
-	if auth := check_auth(j, c):
-		return auth
-
-	itemid = j.get("itemid", 0)
-	if not itemid:
-		return { "err": "itemid must not be empty" }, 400
-
-	user = c.get_user(username=j["username"])
-	item = c.get_item(itemid)
-	if not item:
-		return { "err": "item does not exist" }, 409
-
-	l = c.get_list(item["listid"])
-	if user["id"] != l["userid"]:
-		return { "err": "item does not belong to user" }, 400
-
-	c.update_item(itemid, j)
-	return { "msg": "successfully updated item" }, 200
-
-
-"""
-Deletes item from table
-
-Params:
-	username	(str)
-	password	(str)
-	itemid		(int)
-"""
 @app.route("/api/deleteitem", methods=["POST"])
-def delete_item():
-	j = request.get_json()
+def modify_item():
+	j = request.get_json(force=True)
 	c = DatabaseConnection()
 
 	if auth := check_auth(j, c):
@@ -308,8 +287,18 @@ def delete_item():
 	if l["userid"] != user["id"]:
 		return { "err": "item does not belong to user" }, 409
 	
-	c.delete_item(itemid)
-	return { "msg": "successfully deleted item" }, 200
+	# deleting item
+	if request.path == "/api/deleteitem":
+		c.delete_item(itemid)
+		return { "msg": "successfully deleted item" }, 200
+	
+	# updating item
+	elif request.path == "/api/updateitem":
+		if not c.update_item(itemid, j):
+			return { "err": "attempted to give item duplicate name" }, 409
+		return { "msg": "successfully updated item" }, 200
+
+	return { "err": "invalid method used" }, 405
 
 
 ################################################################################
