@@ -461,5 +461,13 @@ def test():
 	conn.add_item(2, "Goldbond Max", "...", "...", "...", 19.99)
 	conn.add_item(2, "IcyHot Extra Strength", "...", "...", "...", 10.95)
 
+	conn.add_item(3, "Banana", "...", "...", "...", 0.75)
+	conn.add_item(3, "Television", "...", "...", "...", 325.00)
+	conn.add_item(3, "RTX 3090", "...", "...", "...", 325.00)
+	conn.add_item(3, "Gaming PC", "...", "...", "...", 325.00)
+	conn.add_item(3, "Air Jordans", "...", "...", "...", 999.00)
+	conn.add_item(3, "17.5lbs of coffee", "...", "...", "...", 35.00)
+	conn.add_item(3, "Stratocaster", "...", "...", "...", 1499.99)
+
 if __name__ == "__main__":
 	test()

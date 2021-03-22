@@ -34,6 +34,10 @@ def createAccount():
 def itemdetails():
     return flask.render_template("itemdetails.html")
 
+@app.route("/recommended")
+def recommended():
+	return flask.render_template("recommended.html")
+
 
 @app.route("/wishlistdetails")
 def wishlistdetails():
