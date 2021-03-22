@@ -199,8 +199,6 @@ class DatabaseConnection:
 		if user:
 			h = hashlib.sha256()
 			h.update(password.encode())
-			print("user2:", str(user[2]))
-			print("digest", str(h.digest()))
 			if user[2] == h.digest():
 				return True
 			else:

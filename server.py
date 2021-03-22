@@ -44,6 +44,17 @@ def wishlistdetails():
 ################################################################################
 
 
+@app.route("/api/login", methods=["POST"])
+def api_login():
+	j = request.get_json()
+	c = DatabaseConnection()
+
+	if auth:= check_auth(j, c):
+		return auth
+
+	return {"msg":"successfully authenicated user"}, 200
+
+
 @app.route("/api/user", methods=["GET"])
 def get_users():
 	c = DatabaseConnection()
@@ -109,6 +120,14 @@ def get_lists():
 	return { "lists": c.get_lists(userid=user["id"]) }, 200
 
 
+"""
+Adds list to db
+
+Params:
+	username	(str)
+	password	(str)
+	label		(str)	name of list
+"""
 @app.route("/api/addlist", methods=["POST"])
 def add_list():
 	j = request.get_json()
@@ -129,6 +148,14 @@ def add_list():
 	return { "msg": "successfully added list" }, 201
 
 
+"""
+Deletes list from db
+
+Params:
+	username	(str)
+	password	(str)
+	listid		(int)	id of list to delete
+"""
 @app.route("/api/deletelist", methods=["POST"])
 def delete_list():
 	j = request.get_json()
@@ -159,6 +186,12 @@ def delete_list():
 ################################################################################
 
 
+"""
+Gets list of items in db
+
+Params:
+	(optional)	listid	(int)
+"""
 @app.route("/api/item", methods=["GET"])
 def get_items():
 	c = DatabaseConnection()
@@ -166,6 +199,19 @@ def get_items():
 	return { "items": c.get_items(listid) }, 200
 
 
+"""
+Adds item to list
+
+Params:
+	username	(str)
+	password	(str)
+	listid		(int)	id of the list to add to
+	label		(str)	name of the item
+	descr		(str)	item description
+	img			(str)	url to item image
+	url			(str)	url to item website
+	price		(float)	price of item
+"""
 @app.route("/api/additem", methods=["POST"])
 def add_item():
 	j = request.get_json()
@@ -196,6 +242,14 @@ def add_item():
 	return { "msg": "successfully added item to list" }, 201
 
 
+"""
+Deletes item from table
+
+Params:
+	username	(str)
+	password	(str)
+	itemid		(int)
+"""
 @app.route("/api/deleteitem", methods=["POST"])
 def delete_item():
 	j = request.get_json()
@@ -218,8 +272,6 @@ def delete_item():
 	
 	c.delete_item(itemid)
 	return { "msg": "successfully deleted item" }, 200
-
-
 
 
 ################################################################################
