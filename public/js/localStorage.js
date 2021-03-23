@@ -8,9 +8,25 @@
 "use strict";
 
 $(document).ready( async function(){
-    console.log(sessionStorage.getItem('user'));
-})
 
+    if(sessionStorage.getItem('user') != null){
+        var user = document.getElementById('UserId1').innerHTML = "Welcome " + sessionStorage.getItem('user') + "!";
+        var login = document.getElementById('LoginButton');
+        var logout = document.getElementById('LogOutButton');
+        login.hidden = true;
+        logout.hidden = false;
+      } else {
+        var user = document.getElementById('UserId1').innerHTML = "";
+        
+      }
+    
+      $('#LogOutButton').on('click',function(){
+        sessionStorage.clear();
+        console.log("here");
+        reDirectLogin();
+        console.log("here");
+      })
+    });
 async function getAll(){
     let DB = new Api("","");
     let resp = await DB.get_users();
@@ -40,9 +56,12 @@ function logIn(){
         } else {
             console.log("Error ITS DIDNT WORK");
         }
+    }
 
 function reDirectHome(){
     location.href = "/";
 }
 
+function reDirectLogin(){
+    location.href ="login";
 }
