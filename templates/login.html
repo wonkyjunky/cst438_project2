@@ -35,3 +35,20 @@
     {% endblock %}
   </body>
 </html>
+<script type="text/javascript">
+  $(document).ready(function(){
+    $("button").click(function(){
+      if (typeof(Storage) !== "undefined") {
+        if(1==1){//logging in
+          localStorage.setItem("username", "admin");
+          localStorage.setItem("password", "password");
+        }else{
+            let password = localStorage.getItem("password");
+            let username = localStorage.getItem("username");
+        } 
+      } else {
+        // Sorry! No Web Storage support..
+      }
+    });
+  });  
+</script>
