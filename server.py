@@ -70,7 +70,7 @@ def get_users():
 
 	user = c.get_user(username=username)
 	if not user:
-		return { "err": "user does not exist" }, 409
+		return { "err": "User does not exist" }, 409
 
 	return { "user": user }, 200
 
@@ -332,16 +332,16 @@ def shaq_route():
 
 def check_auth(j, c):
 	if not "username" in j:
-		return { "err": "username must not be empty" }, 400
+		return { "err": "Username must not be empty" }, 400
 	if not "password" in j:
-		return { "err" : "password must not be empty" }, 400
+		return { "err" : "Password must not be empty" }, 400
 
 	auth = c.auth_user(j["username"], j["password"])
 
 	if auth == None:
-		return { "err": "user does not exist" }, 409
+		return { "err": "User does not exist" }, 409
 	elif auth == False:
-		return { "err": "incorrect password" }, 401
+		return { "err": "Incorrect password" }, 401
 
 	return None
 

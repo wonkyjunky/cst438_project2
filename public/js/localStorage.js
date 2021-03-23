@@ -44,19 +44,22 @@ async function logInCheck(){
     return resp;
 }
 
-function logIn(){
+async function logIn(){
     var user = document.getElementById('username2').value;
     var pass = document.getElementById('password2').value;
-    let response = logInCheck();
+    let response = await logInCheck();
+    console.log(response);
     var data = {"username": user, "password":pass} 
-    if(response.err == undefined){
+    if(response.err == "Incorrect password" || response.err == "User does not exist"){
+        var responsed = document.getElementById('LoginResponse');
+        responsed.innerHTML = response.err;
+        } else {
             sessionStorage.setItem('user', user);
             sessionStorage.setItem('pass',pass);
             reDirectHome();
-        } else {
-            console.log("Error ITS DIDNT WORK");
         }
     }
+
 
 function reDirectHome(){
     location.href = "/";
