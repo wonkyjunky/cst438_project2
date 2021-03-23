@@ -1,98 +1,50 @@
 {% extends "layouts/layout.html" %}
 {% block head %} {{super()}} {% endblock %} 
-  <body>
-    {% block nav %} {{super()}} {% endblock %} {% block content %}
-    <div style="text-align: center">
-    <h2>My Wishlist</h2>
-      <br></br>
-      <div style="text-align: right" id="buttons">
-        <button type="button" id="addwishlist" data-toggle="modal" data-target="#exampleModal">Create a new Wishlist</button> &nbsp;&nbsp;
-        <button type="button" id="editwishlist">Edit a wishlist</button> &nbsp;&nbsp;
-      </div>
-      <br></br>
-      <br></br>
-      <div
-        style= "display: flex; justify-content: center; flex-wrap: wrap;"
-        id="wishlists">
-      </div>
-    </div>
+	<body>
+		{% block nav %} {{super()}} {% endblock %} {% block content %}
+		<div class="container-fluid bg-light">
+			<div class="row">
+				<h2 class="col">My Wishlists</h2>
+				<div class="col-sm-3" id="buttons">
+					<div class="container p-3">
+						<div class="row m-1">
+							<button id="addwishlist" data-toggle="modal" data-target="#add-list-modal" class="btn btn-secondary">New Wishlist</button>
+						</div>
+						<div class="row m-1">
+							<button id="editwishlist" class="btn btn-secondary">Edit Wishlist</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- Lists will be added to this div -->
+			<div class="row p-3" id="wishlists"></div>
+		</div>
 
-<!-- Modal -->
-<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Create a Wishlist</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <form>
-          <input id="label" placeholder="Wishlist Name">
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button id="create" type="button" class="btn btn-primary">Create</button>
-      </div>
-    </div>
-  </div>
-</div>
-      <script>
-                let username2 = sessionStorage.getItem("user");
-                let password2 = sessionStorage.getItem("pass");
-                let userid2 = 0;
-                $.get("/api/user", {username: username2}, (data) => {
-                  userid2 = data.user.id;
-                });
+		<!-- Modal -->
+		<div class="modal fade" id="add-list-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="exampleModalLabel">Create a Wishlist</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<form>
+							<input id="label" placeholder="Wishlist Name">
+						</form>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+						<button id="create" type="button" class="btn btn-primary">Create</button>
+					</div>
+				</div>
+			</div>
+		</div>
 
-                $.get("/api/list", {username: username2}, (data) => {
-                  console.log(data);
-                  for (let i = 0; i < data.lists.length; i++){
-                    $("#wishlists").append(`     
-                      <figure
-                        style="
-                          width: 320px;
-                          padding: 10px;
-                          border: 5px solid gray;"
-                        id="wishlist"
-                      >
-                     <a id="${data.lists.id}" href="/wishlistdetails">
-                      <img
-                        src="https://cdn3.iconfinder.com/data/icons/christmas-and-new-year-13/64/Christmas_santa_bag-512.png"
-                        width="200"
-                      ></img>
-                        <figcaption id="wishlisttitle">${data.lists[i].label}</figcaption>
-                        </a>
-                          <button type="button" id="${data.lists[i].id}" onclick="delete_list(this.id)">
-                            <img
-                              src="https://www.pngitem.com/pimgs/m/463-4637625_x-button-close-x-button-png-transparent-png.png"
-                              width="20"
-                            ></img>
-                          </button>
-                        </figure>`)
-                  }
-                })
-                $('#create').on('click', function(e) {
-                    var label = document.getElementById('label').value;
-                    var data = {"username": username2, "password":password2, "label": label};
-                    if (confirm(`You want to create ${label}?`)){
-                        $.post_json("/api/addlist",data, res => {
-                          console.log(res);
-                          window.location.href = "/wishlists";
-                      });
-                    }
-                  });
 
-                function delete_list(id){
-                  let deleteData = {"username": username2, "password":password2, "listid": id};
-                  $.post_json("/api/deletelist", deleteData, res => {
-                      console.log(res);
-                      window.location.href = "/wishlists";
-                  });
-                }
-              </script>
-        {% endblock %}
-  </body>
+		<script src = "js/wishlists.js"></script>
+		{% endblock %}
+	</body>
 </html>

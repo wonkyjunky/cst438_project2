@@ -39,9 +39,11 @@ def recommended():
 	return flask.render_template("recommended.html")
 
 
-@app.route("/wishlistdetails")
+@app.route("/wishlistdetails", methods=["GET"])
 def wishlistdetails():
-    return flask.render_template("wishlistdetails.html")
+	listid = request.args.get("listid", 0)
+	return flask.render_template("wishlistdetails.html", listid=listid)
+
 
 ################################################################################
 #	USER Route
@@ -113,6 +115,13 @@ def delete_user():
 @app.route("/api/list", methods=["GET"])
 def get_lists():
 	c = DatabaseConnection()
+
+	listid = request.args.get("listid", 0)
+	if listid:
+		l = c.get_list(listid)
+		if not l:
+			return { "err": "list does not exist" }, 409
+		return { "list": l }, 200
 
 	username = request.args.get("username", "")
 	if not username:

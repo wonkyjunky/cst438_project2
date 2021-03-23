@@ -152,6 +152,18 @@ class Api
 	}
 
 	/**
+	 * Gets list by id
+	 * 
+	 * @param	listid
+	 * 
+	 * @return json with list or err
+	 */
+	async get_list(listid)
+	{
+		return this.api_get("list", {listid:listid});
+	}
+
+	/**
 	 * Get list of lists
 	 * 
 	 * @param	username	(optional)
