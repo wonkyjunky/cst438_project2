@@ -12,6 +12,7 @@
           <form>
             <input
               type="text"
+              id="username2"
               className="username"
               placeholder="Username"
             ></input>
@@ -19,11 +20,12 @@
             <br />
             <input
               type="text"
+              id="password2"
               className="password"
               placeholder="password"
             ></input>
             <br /> <br />
-            <button type="button" className="btn">
+            <button type="button" onclick="logIn()" className="btn">
               Login
             </button>
           </form>
@@ -35,6 +37,7 @@
     {% endblock %}
   </body>
 </html>
+
 <script type="text/javascript">
   $(document).ready(function(){
     $("button").click(function(){
