@@ -9,10 +9,18 @@ async function Con(){
 
     let resp = await Db.add_user();
     if(resp != undefined){
-        console.log(resp)
-    } else {
-        console.log("error:" + resp);
-    }
-    
+        console.log(resp);
+        if(resp.msg != "successfully created user"){
+            let response = document.getElementById('response');
+            response.innerHTML += resp.err;
+         } else {
+            alert("Account created...Redirecting");
+            setTimeout('',3000);
+            reDirect();
+         }
+    } 
 }
 
+function reDirect(){
+    location.href = "/login";
+}
