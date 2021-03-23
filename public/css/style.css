@@ -3,7 +3,22 @@ body{
 }
 
 h1{
-    color: white;
+    color: brown;
     padding: "10px";
     background-color: dodgerblue;
+}
+#test{
+  width: 100px;
+  height: 100px;
+  background-color: red;
+  animation-name: example;
+  animation-duration: 4s;
+}
+.test{
+	background: red;
+}
+
+@keyframes example {
+  from {background-color: red;}
+  to { background-color: yellow;}
 }

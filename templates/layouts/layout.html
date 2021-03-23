@@ -19,6 +19,10 @@
     <script src="js/createAccount.js"></script>
     <script src="js/api.js"></script>
     <script src="js/localStorage.js"></script>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static',filename='/css/richard.css') }}"
+    />
   </head>
   {% endblock %}
   <body>
@@ -38,7 +42,9 @@
       </nav>
     </nav>
     {% endblock %}<br /><br />
-    {% block content %} {% endblock %}
+    {% block content %}
+      
+     {% endblock %}
   </body>
 
 </html>

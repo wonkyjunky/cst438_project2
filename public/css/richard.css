@@ -1,0 +1,32 @@
+#test{
+  width: 100px;
+  height: 100px;
+  animation-name: example;
+  animation-duration: 4s;
+}
+#icyhot {
+      background-color: background-color:rgb(255, 224, 70) !important;
+}
+
+.progress-bar-success{
+		 background-color: background-color:rgb(255, 224, 70) !important;
+}
+.progress-bar{
+	background-color: background-color:rgb(255, 224, 70) !important;
+}
+@keyframes example {
+  0% { 
+  	width: 100px;
+  height: 100px;
+}
+  50% { 
+ 	width: 1000px;
+  	height: 1000px;
+  }
+  100%{ 
+	  	width: 100px;
+	  height: 100px;
+	}
+
+}
+
