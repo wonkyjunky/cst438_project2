@@ -40,20 +40,6 @@
   </div>
 </div>
       <script>
-
-                $.post_json = (api_url, obj, callback) =>
-                  {
-                    return $.ajax({
-                    type:"POST",
-                    url: api_url,
-                    contentType: "application/json",
-                    data: JSON.stringify(obj),
-                    success: callback,
-                    error: (jqXHR) => { callback(jqXHR.responseJSON) }
-                  });
-                  }
-                
-
                 let username2 = sessionStorage.getItem("user");
                 let password2 = sessionStorage.getItem("pass");
                 let userid2 = 0;

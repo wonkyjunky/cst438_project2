@@ -1,6 +1,8 @@
+# db
+project2-db
+
 # random files
 .DS_Store
-
 # libraries
 node_modules/
 venv/
