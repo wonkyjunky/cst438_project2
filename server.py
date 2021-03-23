@@ -82,14 +82,14 @@ def add_user():
 
 	username = j.get("username", "")
 	if not username:
-		return { "err": "username must not be empty" }, 400
+		return { "err": "Username must not be empty" }, 400
 
 	password = j.get("password", "")
 	if not password:
-		return { "err": "password must not be empty" }, 400
+		return { "err": "Password must not be empty" }, 400
 
 	if not c.add_user(username, password, False):
-		return { "err"	: "user already exists" }, 409
+		return { "err"	: "User already exists" }, 409
 
 	return { "msg"	: "successfully created user" }, 201
 

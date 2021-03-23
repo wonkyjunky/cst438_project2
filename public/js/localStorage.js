@@ -1,10 +1,14 @@
-$(document).ready( async function(){
-    let loggedIn = false;
-    
-    if(loggedIn == true){
+/*
+        user id = username 
+        
+        ----note temp -- 
+        store password too
 
-    }
-    
+    */
+"use strict";
+
+$(document).ready( async function(){
+    console.log(sessionStorage.getItem('user'));
 })
 
 async function getAll(){
@@ -26,10 +30,19 @@ async function logInCheck(){
 
 function logIn(){
     var user = document.getElementById('username2').value;
+    var pass = document.getElementById('password2').value;
     let response = logInCheck();
-    if(response == true){
-        loggedIn == true;
-        localStorage.setItem('Logged', user);
-    }
+    var data = {"username": user, "password":pass} 
+    if(response.err == undefined){
+            sessionStorage.setItem('user', user);
+            sessionStorage.setItem('pass',pass);
+            reDirectHome();
+        } else {
+            console.log("Error ITS DIDNT WORK");
+        }
+
+function reDirectHome(){
+    location.href = "/";
+}
 
 }

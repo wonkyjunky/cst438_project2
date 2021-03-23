@@ -14,8 +14,6 @@ async function Con(){
             let response = document.getElementById('response');
             response.innerHTML += resp.err;
          } else {
-            alert("Account created...Redirecting");
-            setTimeout('',3000);
             reDirect();
          }
     } 
