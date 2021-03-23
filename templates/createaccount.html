@@ -1,7 +1,7 @@
-{% extends "layouts/layout.html" %}
-{% block head %} {{super()}} {% endblock %} 
+{% extends "layouts/createaccountLayout.html" %}
   <body>
     {% block nav %} {{super()}} {% endblock %} {% block content %}
+
     <div style="text-align: center;"> 
         <h2>Create Account</h2>
         <br />
@@ -9,6 +9,7 @@
         <form>
           <input
             type="text"
+            id="user"
             className="username"
             placeholder="Username"
           ></input>
@@ -16,13 +17,13 @@
           <br />
           <input
             type="text"
+            id="pass"
             className="password"
             placeholder="password"
           ></input>
           <br /> <br />
-          <button type="button" className="btn">
-            Sign up
-          </button>
+          <a href="login"><button type="button" id="submitAccount" class="submitAccount" onclick="Con()" className="btn">submit</a>
+            Sign up</button>
         </form>
     </div>
     {% endblock %}
