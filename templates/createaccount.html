@@ -3,7 +3,10 @@
     {% block nav %} {{super()}} {% endblock %} {% block content %}
 
     <div style="text-align: center;"> 
-        <h2>Create Account</h2>
+        <h1>Create Account</h1>
+        <div>
+          <h2 id="response"></h2>
+        </div>
         <br />
         <br />
         <form>
@@ -22,10 +25,10 @@
             placeholder="password"
           ></input>
           <br /> <br />
-          <a href="login"><button type="button" id="submitAccount" class="submitAccount" onclick="Con()" className="btn">submit</a>
-            Sign up</button>
+         <button type="button" id="submitAccount" class="submitAccount" onclick="Con()" className="btn">Sign Up</button>
         </form>
     </div>
+    
     {% endblock %}
   </body>
 </html>
