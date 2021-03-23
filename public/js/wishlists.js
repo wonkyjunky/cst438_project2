@@ -5,31 +5,26 @@ $.get("/api/user", {username: username2}, (data) => {
 	userid2 = data.user.id;
 });
 
-$.get("/api/list", {username: username2}, (data) => {
+$.get("/api/list", {username: username2}, (data) =>
+{
 	console.log(data);
-	for (let i = 0; i < data.lists.length; i++){
-	$("#wishlists").append(`     
-		<figure
-		style="
-			width: 320px;
-			padding: 10px;
-			border: 5px solid gray;"
-		id="wishlist"
-		>
-		<a id="${data.lists.id}" href="/wishlistdetails">
-		<img
-		src="https://cdn3.iconfinder.com/data/icons/christmas-and-new-year-13/64/Christmas_santa_bag-512.png"
-		width="200"
-		></img>
-		<figcaption id="wishlisttitle">${data.lists[i].label}</figcaption>
-		</a>
-			<button type="button" id="${data.lists[i].id}" onclick="delete_list(this.id)">
-			<img
-				src="https://www.pngitem.com/pimgs/m/463-4637625_x-button-close-x-button-png-transparent-png.png"
-				width="20"
-			></img>
-			</button>
-		</figure>`)
+	for (let i = 0; i < data.lists.length; i++)
+	{
+		$("#wishlists").append(`     
+			<div class="col-sm-3 m-2" id="list-${i}>
+				<div class="container">
+					<div class="row">
+						<h1 class="col text-center border">
+							${data.lists[i].label}
+						</h1>
+					</div>
+					<div class="row pt-2 pl-5 pr-5">
+						<a href="/wishlistdetails?listid=${data.lists[i].id}" role="button" class="btn btn-secondary mb-1">View List</a>
+						<button class="btn btn-danger mt-1">Delete</button>
+					</div>
+				</div>
+			</div>
+		`)
 	}
 })
 $('#create').on('click', function(e) {

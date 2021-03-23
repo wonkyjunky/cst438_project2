@@ -1,90 +1,76 @@
 {% extends "layouts/layout.html" %}
 
 {% block head %} {{super()}} {% endblock %} 
-  <body>
-    {% block nav %} {{super()}} {% endblock %} {% block content %}
-    <div style="text-align: center">
-            <h2 id="wishlistTitle">My First Wishlist</h2>
-      <br />
-      <br />
-      <div id="buttons" style="text-align: right">
-        <button id="additem">Add item to wishlist</button> &nbsp;&nbsp;
-      </div>
-      <br />
-      <br />
-      <div
-        style="display: flex; flex-wrap: wrap; justify-content: center"
-        id="items"
-      >
-        <div style="flex-basis: 20%" id="eachitem">
-          <figure>
-            <img src="data:image/jpeg;base64,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"></img>
-            <figcaption>playstation 5</figcaption>
-            <br />
-            <button type="button">
-              <img
-                src="https://www.fiveblocks.com/wp-content/uploads/2018/01/edit-wikipedia.png"
-                width="20"
-              ></img>
-            </button>
-            &nbsp;&nbsp;
-            <button type="button">
-              <img
-                src="https://www.pngitem.com/pimgs/m/463-4637625_x-button-close-x-button-png-transparent-png.png"
-                width="20"
-              ></img>
-            </button>
-          </figure>
-        </div>
-        <div style="flex-basis: 20%" id="eachitem">
-          <figure>
-            <img src="data:image/jpeg;base64,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"></img>
-            <figcaption>playstation 5</figcaption>
-            <br />
-            <button type="button">
-              <img
-                src="https://www.fiveblocks.com/wp-content/uploads/2018/01/edit-wikipedia.png"
-                width="20"
-              ></img>
-            </button>
-            &nbsp;&nbsp;
-            <button type="button">
-              <img
-                src="https://www.pngitem.com/pimgs/m/463-4637625_x-button-close-x-button-png-transparent-png.png"
-                width="20"
-              ></img>
-            </button>
-          </figure>
-        </div>
-        <div style="flex-basis: 20%" id="eachitem">
-          <figure>
-            <img src="data:image/jpeg;base64,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"></img>
-            <figcaption>playstation 5</figcaption>
-            <br />
-            <button type="button">
-              <img
-                src="https://www.fiveblocks.com/wp-content/uploads/2018/01/edit-wikipedia.png"
-                width="20"
-              ></img>
-            </button>
-            &nbsp;&nbsp;
-            <button type="button">
-              <img
-                src="https://www.pngitem.com/pimgs/m/463-4637625_x-button-close-x-button-png-transparent-png.png"
-                width="20"
-              ></img>
-            </button>
-          </figure>
-        </div>
-      </div>
-    </div>
-    <!-- RECOMMENDED LIST -->
-    <div class="container-fluid">
-      <div id="recommended-items" class="row">
-      </div>
-    </div>
-    <script src="js/recommended.js"></script>
+	<body>
+		{% block nav %} {{super()}} {% endblock %} {% block content %}
+		<div class="container-fluid bg-light">
+			<!-- UI bar -->
+			<div class="row p-2">
+				<div class="col">
+					<h1 id="list-label"></h1>
+				</div>
+				<div class="col-sm-2 d-flex justify-content-center">
+					<button id="additem" data-toggle="modal" data-target="#add-item-modal" class="btn btn-secondary ml-3">Add New Item</button>
+				</div>
+			</div>
+			<!-- Item list -->
+			<div id="list-items" class="row" listid={{listid}}></div>
+			<!-- Recommended list -->
+			<h1 class="row mt-5">Recommended Items</h1>
+			<div id="recommended-items" class="row"></div>
+		</div>
 
-    {% endblock %}
-  </body>
+
+		<!-- Modal -->
+		<div class="modal fade" id="add-item-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="modal-label">Add New Item</h5>
+						<button class="btn" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<div class="row p-1">
+							<div class="col">Label</div>
+							<div class="col">
+								<input id="label-input" placeholder="..."/>
+							</div>
+						</div>
+						<div class="row p-1">
+							<div class="col">Description</div>
+							<div class="col">
+								<input id="descr-input" placeholder="..."/>
+							</div>
+						</div>
+						<div class="row p-1">
+							<div class="col">Image Url</div>
+							<div class="col">
+								<input id="img-input" placeholder="..."/>
+							</div>
+						</div>
+						<div class="row p-1">
+							<div class="col">Item Url</div>
+							<div class="col">
+								<input id="url-input" placeholder="..."/>
+							</div>
+						</div>
+						<div class="row p-1">
+							<div class="col">Price</div>
+							<div class="col">
+								<input id="price-input" placeholder="..."/>
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button id="create" class="btn btn-secondary">Add</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<script src="js/listdetails.js"></script>
+		{% endblock %}
+	</body>
 </html>
