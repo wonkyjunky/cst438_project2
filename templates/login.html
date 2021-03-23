@@ -1,58 +1,44 @@
 {% extends "layouts/layout.html" %}
 {% block head %} {{super()}} {% endblock %} 
-  <body>
-    {% block nav %} {{super()}} {% endblock %} {% block content %}
-    <div style="text-align: center;">
-    <h1>Login</h1>
-    <h2 id="LoginResponse"> </h2>
-        <body>
-          <br />
-          <br />
-          <br />
-          <br />
-          <form>
-            <input
-              type="text"
-              id="username2"
-              className="username"
-              placeholder="Username"
-            ></input>
-            <br />
-            <br />
-            <input
-              type="text"
-              id="password2"
-              className="password"
-              placeholder="password"
-            ></input>
-            <br /> <br />
-            <button type="button" onclick="logIn()" className="btn">
-              Login
-            </button>
-          </form>
-          <br></br>
-          <a href="/createaccount">Create Account</Link>
-        </body>
+{% block nav %} {{super()}} {% endblock %}
+{% block content %}
 
-        </div>
-    {% endblock %}
-  </body>
-</html>
+<div class="row">
+	<div class="col-sm border">
+		<div class="container-sm-3">
+			<div class="row">
+				<div class="col h5">Username</div>
+				<div class="col">
+					<input type="text" id="username-input" className="username" placeholder="Username" ></input>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col h5">Password</div>
+				<div class="col">
+					<input type="text" id="password-input" className="username" placeholder="Username" ></input>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+				
+<a href="/createaccount">Create Account</Link>
 
 <script type="text/javascript">
-  $(document).ready(function(){
-    $("button").click(function(){
-      if (typeof(Storage) !== "undefined") {
-        if(1==1){//logging in
-          localStorage.setItem("username", "admin");
-          localStorage.setItem("password", "password");
-        }else{
-            let password = localStorage.getItem("password");
-            let username = localStorage.getItem("username");
-        } 
-      } else {
-        // Sorry! No Web Storage support..
-      }
-    });
-  });  
+	$(document).ready(function(){
+		$("button").click(function(){
+			if (typeof(Storage) !== "undefined") {
+				if(1==1){//logging in
+					localStorage.setItem("username", "admin");
+					localStorage.setItem("password", "password");
+				}else{
+						let password = localStorage.getItem("password");
+						let username = localStorage.getItem("username");
+				} 
+			} else {
+				// Sorry! No Web Storage support..
+			}
+		});
+	});  
 </script>
+{% endblock %}

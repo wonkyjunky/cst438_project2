@@ -1,8 +1,10 @@
 {% extends "layouts/layout.html" %}
 
-{% block head %} {{super()}} {% endblock %} 
+{% block head %} {{super()}} 
+<script src="js/logincheck.js"></script>
+{% endblock %} 
 
-  <body>
+<body>
 	{% block nav %} {{super()}} {% endblock %} {% block content %}
 	<div style="text-align: center">
 	  <h1>Home</h1>
