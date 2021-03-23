@@ -1,22 +1,7 @@
-{% extends "layouts/layout.html" %}
-{% block head %} {{super()}} {% endblock %} 
+{% extends "layouts/createaccountLayout.html" %}
   <body>
     {% block nav %} {{super()}} {% endblock %} {% block content %}
-    <script type=text/javascript>
-        $(function() {  
-          $('#submitAccount').on('click', function(e) {
-            var user = document.getElementById('pass').value;
-            var pass = document.getElementById('pass').value;
-            var data = {"username": user, "password": pass};
-             $.ajax({
-                type: "POST",
-                url: "http://127.0.0.1:5000/api/adduser",
-                data: JSON.stringify(data),
-                contentType: "application/json"
-             })
-          });
-        });
-      </script>
+
     <div style="text-align: center;"> 
         <h2>Create Account</h2>
         <br />
@@ -37,9 +22,8 @@
             placeholder="password"
           ></input>
           <br /> <br />
-          <a href="login"><button type="button" id="submitAccount" className="btn">submit</a
-            Sign up
-          </button>
+          <a href="login"><button type="button" id="submitAccount" class="submitAccount" onclick="Con()" className="btn">submit</a>
+            Sign up</button>
         </form>
     </div>
     {% endblock %}

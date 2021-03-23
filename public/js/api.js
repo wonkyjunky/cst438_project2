@@ -43,9 +43,8 @@ async function api_example_test()
 	let listid = res.lists[0].id;
 
 	// and add some goldbond to it
-	await api.add_item(listid, "Goldbond", "Stay cool", "...", "
-	...", 12.99);
-	// in general, get_ functions return json with the object you want
+	await api.add_item(listid, "Goldbond", "Stay cool", "...", "", 12.99);
+	//in general, get_ functions return json with the object you want
 	// and everything else returns either a msg or an err object
 }
 
@@ -103,7 +102,7 @@ class Api
 	 */
 	async api_call(func, method, body)
 	{
-		let call = fetch("/api/" + func,
+		let call = await fetch("/api/" + func,
 		{
 			method: method,
 			headers: { "Content-Type": "application/json" },
