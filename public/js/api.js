@@ -1,18 +1,3 @@
-/*
-	Example usage of Api class
-
-	
-
-	We would create the api object:
-
-	var api = new Api("bob", "coconut");
-
-	then we would call
-
-
-
-*/
-
 // do not call this function
 // it is here only for example purposes
 async function api_example_test()
@@ -108,6 +93,7 @@ class Api
 			headers: { "Content-Type": "application/json" },
 			body: JSON.stringify(body)
 		})
+		
 		return await call.json();
 	}
 

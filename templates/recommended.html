@@ -15,6 +15,7 @@
 			var username = "ike"
 			var password = "password"
 			var api = new Api(username, password);
+			var listid = 1;
 
 			async function get_recommended_items()
 			{
@@ -22,50 +23,66 @@
 				let user_lists = res.lists;
 				res = await api.get_items();
 				let items = res.items;
+				let user_items = {};
 				let non_user_items = [];
+				console.log("Total items:", items.length);
+
+				// creating object that contains a bunch truth values for labels
+				for (let i = 0; i < user_lists.length; i++)
+				{
+					res = await api.get_items(user_lists[i].id);
+					let lits = res.items;
+					if (!lits) continue;
+					for (let j = 0; j < lits.length; j++)
+					{
+						user_items[lits[j].label] = true;
+					}
+				}
 
 				for (let i = 0; i < items.length; i++)
 				{
-					let user_item = false;
-					for (let j = 0; j < user_lists.length; j++)
-					{
-						if (items[i].listid == user_lists[j].id)
-						{
-							user_item = true;
-							break;
-						}
-					}
-					if (!user_item) non_user_items.push(items[i]);
+					if (user_items[items[i].label]) continue;
+					non_user_items.push(items[i]);
 				}
 				
-				console.log(non_user_items);
+				console.log("Non user:",non_user_items);
+
 				// shuffles the array
 				non_user_items.sort(() => Math.random() - 0.5);
 
-				if (non_user_items.length > 5)
+				if (non_user_items.length == 0)
 				{
-					while (non_user_items.length > 5) non_user_items.pop()
+					console.log("not Items to show");
+					return;
 				}
-				else if (non_user_items.length < 5)
+				else if (non_user_items.length > 5)
 				{
-					let curri = 0;
-					for (let i = non_user_items.length; i < 5; i++)
-					{
-						non_user_items.push(non_user_items[curri++]);
-						if (curri >= non_user_items.length) curri = 0;
-					}
+					while (non_user_items.length > 5) non_user_items.pop();
 				}
 
 				for (let i = 0; i < non_user_items.length; i++)
 				{
 					var rec_items = $("#recommended-items");
 					rec_items.append(`
-						<div id="rec${i}" class="col">
-							<h1>${non_user_items[i].label}</h1>
-							<h5>${non_user_items[i].descr}</h5>
-							<h5>$ ${non_user_items[i].price}</h5>	
+						<div id="recommended-${i}" class="col">
+							<div class="container">
+								<h3 class="row">${non_user_items[i].label}</h1>
+								<h5 class="row">${non_user_items[i].descr}</h5>
+								<h5 class="row">$ ${non_user_items[i].price}</h5>
+								<div class="row">
+								<button id="recommended-${i}-button" type="button" class="btn btn-success">Add Item</button>
+								</div>
+							</div>
 						</div>
-					`)
+					`);
+
+					$(`#recommended-${i}-button`).click(async function() {
+
+						let it = non_user_items[i];
+						let res = await api.add_item(listid, it.label, it.descr, it.img, it.url, it.price);
+						$(`#recommended-${i}`).remove();
+						console.log(res);
+					});
 				}
 			}
 
