@@ -12,7 +12,8 @@ async function Con(){
         console.log(resp);
         if(resp.msg != "successfully created user"){
             let response = document.getElementById('response');
-            response.innerHTML += resp.err;
+            response.innerHTML = "";
+            response.innerHTML = resp.err;
          } else {
             reDirect();
          }
