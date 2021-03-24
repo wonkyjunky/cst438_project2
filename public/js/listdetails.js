@@ -123,10 +123,12 @@ $("#create").on("click", function () {
   }
 });
 
-async function display(id) {
-  let res = await api.get_item(id);
+async function display(itemid) {
+  let res = await api.get_item(itemid);
   console.log(res);
+  console.log(itemid);
 }
+
 // When the page has loaded, update the list
 $(async () => {
   let username = sessionStorage.getItem("user");
