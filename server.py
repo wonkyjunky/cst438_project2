@@ -217,10 +217,19 @@ Gets list of items in db
 
 Params:
 	(optional)	listid	(int)
+	(optional)	itemid	(int)
 """
 @app.route("/api/item", methods=["GET"])
 def get_items():
 	c = DatabaseConnection()
+	itemid = int(request.args.get("itemid", 0))
+
+	if itemid:
+		item = c.get_item(itemid)
+		if not item:
+			return { "err": "item does not exist" }, 409
+		return { "item": c.get_item(itemid) }, 200
+
 	listid = int(request.args.get("listid", 0))
 	return { "items": c.get_items(listid) }, 200
 
