@@ -34,6 +34,7 @@ async function get_list() {
 					<h5 class="row">${l[i].descr}</h5>
 					<h5 class="row">$ ${l[i].price}</h5>
 					<div class="row">
+					<button id="displayitem" data-toggle="modal" data-target="#display-item-modal" onclick="display(${l[i].id})"class="btn btn-secondary ml-3">details</button>
 					<button id="item-${i}-rmbtn" type="button" class="btn btn-danger">Remove</button>
 					</div>
 				</div>
@@ -122,6 +123,10 @@ $("#create").on("click", function () {
   }
 });
 
+async function display(id) {
+  let res = await api.get_item(id);
+  console.log(res);
+}
 // When the page has loaded, update the list
 $(async () => {
   let username = sessionStorage.getItem("user");

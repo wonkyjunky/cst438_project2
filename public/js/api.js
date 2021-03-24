@@ -282,4 +282,8 @@ class Api {
       itemid: itemid,
     });
   }
+
+  async get_item(id) {
+    return this.api_get("item", { id: id });
+  }
 }
