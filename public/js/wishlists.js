@@ -24,20 +24,22 @@ $.get("/api/list", { username: username2 }, (data) => {
 					</div>
 				</div>
 			</div>
-		`);
-  }
-});
-$("#create").on("click", function (e) {
-  var label = document.getElementById("label").value;
-  var data = { username: username2, password: password2, label: label };
-  if (confirm(`You want to create ${label}?`)) {
-    api.add_list(label);
-    window.location.href = "/wishlists";
-    // $.post_json("/api/addlist", data, (res) => {
-    //   console.log(res);
-    //   window.location.href = "/wishlists";
-    // });
-  }
+
+		`)
+	}
+})
+$('#create').on('click', function(e) {
+	var label = document.getElementById('label').value;
+	var data = {"username": username2, "password":password2, "label": label};
+	if (confirm(`You want to create ${label}?`)){
+		$.post_json("/api/addlist",data, res => {
+			console.log(res);
+			window.location.href = "/wishlists";
+		});
+	}
+	});
+$('#editwishlist').on('click',function(e){
+	modal.style.display = "block";
 });
 
 function delete_list(id, label) {
