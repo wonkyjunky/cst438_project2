@@ -34,6 +34,7 @@ $('#create').on('click', function(e) {
 	var label = document.getElementById('label').value;
 	var data = {"username": username2, "password":password2, "label": label};
 	if (confirm(`You want to create ${label}?`)){
+			var api = new Api(data.username, data.password);
 			api.add_list(label);
 			window.location.href = "/wishlists";
 	}
@@ -44,12 +45,13 @@ $('#editwishlist').on('click',function(e){
 
 function delete_list(id, label) {
   console.log(label);
-  let deleteData = { username: username2, password: password2, listid: id };
+  let deleteData = { "username": username2, "password": password2, listid: id };
   //   $.post_json("/api/deletelist", deleteData, (res) => {
   //     console.log(res);
   //     window.location.href = "/wishlists";
   //   });
   if (confirm(`You want to delete ${label}?`)) {
+	var api = new Api(deleteData.username, deleteData.password);
     api.delete_list(id);
     window.location.href = "/wishlists";
   }
