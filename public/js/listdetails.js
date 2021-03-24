@@ -131,7 +131,9 @@ async function display(itemid) {
   $("#item-img").html(`<img src="${res.item.img} alt="hello" width=200>`);
   $("#item-url").html(`<a href="${res.item.url}">Link to item</a>`);
   $("#item-price").text(res.item.price);
+
 }
+
 // When the page has loaded, update the list
 $(async () => {
   let username = sessionStorage.getItem("user");
