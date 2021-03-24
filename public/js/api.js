@@ -220,6 +220,7 @@ class Api {
     return this.api_get("item", { listid: listid });
   }
 
+
   /**
    * Add item to list
    *
@@ -244,6 +245,26 @@ class Api {
       price: price,
     });
   }
+  
+	async get_item(itemid)
+	{
+		return this.api_get("item", { itemid: itemid });
+	}
+
+	/**
+	 * Gets list of items
+	 * 
+	 * @param	listid	(optional) id
+	 * 
+	 * If listid is given, items in that list will be returned,
+	 * otherwise it will be all items in the db
+	 * 
+	 * @return	json with list of items
+	 */
+	async get_items(listid)
+	{
+		return this.api_get("item", { listid: listid });
+	}
 
   /**
    * Updates item info in list

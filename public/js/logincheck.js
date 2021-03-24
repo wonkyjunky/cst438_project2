@@ -16,12 +16,13 @@ $(async () => {
   }
   var count = 0;
 
-  console.log("logged in");
-
-  $("#LogOutButton").on("click", function () {
-    sessionStorage.clear();
-    reDirectLogin();
-  });
+	console.log("logged in")
+	
+	  $('#LogOutButton').on('click',function(){
+		sessionStorage.clear();
+		reDirectLogin();
+	});
+	
 });
 
 async function is_logged_in() {
