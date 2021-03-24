@@ -70,6 +70,56 @@
 			</div>
 		</div>
 
+
+		<!-- Modal -->
+		<div class="modal fade" id="display-item-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="item-title">Add New Item</h5>
+						<button class="btn" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<div class="row p-1">
+							<div class="col">Label</div>
+							<div class="col">
+								<span id="item-label"></span>
+							</div>
+						</div>
+						<div class="row p-1">
+							<div class="col">Description</div>
+							<div class="col">
+								<span id="item-description"></span>
+							</div>
+						</div>
+						<div class="row p-1">
+							<div class="col">Image Url</div>
+							<div class="col">
+								<span id="item-img"></span>
+							</div>
+						</div>
+						<div class="row p-1">
+							<div class="col">Item Url</div>
+							<div class="col">
+								<span id="item-url"></span>
+							</div>
+						</div>
+						<div class="row p-1">
+							<div class="col">Price</div>
+							<div class="col">
+								<span id="item-price"></span>
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button id="create" class="btn btn-secondary">Add</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
 		<script src="js/listdetails.js"></script>
 		{% endblock %}
 	</body>
