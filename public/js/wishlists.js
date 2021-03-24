@@ -37,6 +37,9 @@ $('#create').on('click', function(e) {
 		});
 	}
 	});
+$('#editwishlist').on('click',function(e){
+	modal.style.display = "block";
+});
 
 function delete_list(id){
 	let deleteData = {"username": username2, "password":password2, "listid": id};
