@@ -123,9 +123,14 @@ $("#create").on("click", function () {
   }
 });
 
-async function display(id) {
-  let res = await api.get_item(id);
-  console.log(res);
+async function display(itemid) {
+  let res = await api.get_item(itemid);
+  console.log(res.item.label);
+  $("#item-title").text(res.item.label);
+  $("#item-description").text(res.item.descr);
+  $("#item-img").html(`<img src="${res.item.img} alt="hello" width=200>`);
+  $("#item-url").html(`<a href="${res.item.url}">Link to item</a>`);
+  $("#item-price").text(res.item.price);
 }
 // When the page has loaded, update the list
 $(async () => {
