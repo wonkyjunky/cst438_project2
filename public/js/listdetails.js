@@ -137,6 +137,7 @@ async function display(itemid) {
   $("#url-edit").attr("placeholder", res.item.url);
   $("#price-edit").attr("placeholder", res.item.price);
 }
+
 // When the page has loaded, update the list
 $(async () => {
   let username = sessionStorage.getItem("user");
