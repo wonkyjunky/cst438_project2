@@ -2,29 +2,28 @@
 
 $(async () => 
 {
-	console.log("Checking login");
-	if (!await is_logged_in())
-	{
-		console.log("Not logged in");
-		reDirectLogin();
-	}
-	
-	if(sessionStorage.getItem('user') != null){
-		var user = document.getElementById('UserId1').innerHTML = "Welcome " + sessionStorage.getItem('user') + "!";
-		var login = document.getElementById('LoginButton');
-		var logout = document.getElementById('LogOutButton');
-		login.hidden = true;
-		logout.hidden = false;
+	if(checkLoginValidation() == true){
+	var user = document.getElementById('UserId1').innerHTML = "Welcome " + sessionStorage.getItem('user') + "!";
+	console.log(sessionStorage.getItem('user'));
+	var login = document.getElementById('LoginButton');
+	var logout = document.getElementById('LogOutButton');
+	login.hidden = true;
+	logout.hidden = false;
 	} else {
 		var user = document.getElementById('UserId1').innerHTML = "";	
 	}
+	var count = 0;
+
+
+	console.log("logged in")
+	
+	
 	
 	  $('#LogOutButton').on('click',function(){
 		sessionStorage.clear();
-		console.log("here");
 		reDirectLogin();
-		console.log("here");
 	})
+	
 });
 
 async function is_logged_in()
@@ -44,8 +43,8 @@ async function getAll(){
 }
 
 async function logInCheck(){
-	var user = document.getElementById('username2').value;
-	var pass = document.getElementById('password2').value;
+	var user = document.getElementById('username-input').value;
+	var pass = document.getElementById('password-input').value;
 
 	let DB = new Api(user,pass);
 
@@ -55,8 +54,8 @@ async function logInCheck(){
 }
 
 async function logIn(){
-	var user = document.getElementById('username2').value;
-	var pass = document.getElementById('password2').value;
+	var user = document.getElementById('username-input').value;
+	var pass = document.getElementById('password-input').value;
 	let response = await logInCheck();
 	console.log(response);
 	var data = {"username": user, "password":pass} 
@@ -70,6 +69,13 @@ async function logIn(){
 		}
 	}
 
-
+  function checkLoginValidation(){
+	  console.log(window.location.href);
+	if(sessionStorage.getItem('user') == undefined && window.location.href != "http://127.0.0.1:5000/login" ){
+		setTimeout(function(){reDirectLogin()},-1);
+		return false;
+	}
+	return true;
+}
 function reDirectHome() { location.href = "/"; }
 function reDirectLogin() { location.href ="login"; }
