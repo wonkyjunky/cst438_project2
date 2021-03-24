@@ -128,9 +128,14 @@ async function display(itemid) {
   console.log(res.item.label);
   $("#item-title").text(res.item.label);
   $("#item-description").text(res.item.descr);
-  $("#item-img").html(`<img src="${res.item.img} alt="hello" width=200>`);
+  $("#item-img").html(`<img src="${res.item.img}" alt="hello" width=200>`);
   $("#item-url").html(`<a href="${res.item.url}">Link to item</a>`);
   $("#item-price").text(res.item.price);
+  $("#label-edit").attr("placeholder", res.item.label);
+  $("#descr-edit").attr("placeholder", res.item.descr);
+  $("#img-edit").attr("placeholder", res.item.img);
+  $("#url-edit").attr("placeholder", res.item.url);
+  $("#price-edit").attr("placeholder", res.item.price);
 }
 // When the page has loaded, update the list
 $(async () => {
