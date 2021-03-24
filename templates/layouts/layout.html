@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-		{% block head %}
 		<meta charset="utf-8" />
 		<title>Wishlist</title>
 		<link rel="stylesheet" href="{{ url_for('static',filename='css/nav.css') }}" />
@@ -14,30 +13,30 @@
 		<!-- API Wrapper -->
 		<script src="js/api.js"></script>
 		<script src="js/createAccount.js"></script>
-		<!-- <script src="js/logincheck.js"></script> -->
+		<!-- for including scripts and other things in templates -->
+		{% block head %} {% endblock %}
 		<link
 			rel="stylesheet"
 			href="{{ url_for('static',filename='/css/richard.css') }}"/>
-		{% endblock %}
+
 	</head>
-	<body>
+	<body class="bg-light">
 		<div class="container-fluid">
-			{% block nav %}
 			<div class="row">
 				<div class="row bg-success">
 					<div class="col h2">
 						<a href="/" class="Navs"> <span class="Nav_title"> WishList </span></a>
 					</div>
-					<a href="wishlists" class="col-sm-1 h4 text-center text-light pt-2">My Lists</a>
-					<a href="login" class="col-sm-1 h4 text-center text-light pt-3"  id ="LoginButton"> Login </a>
-					<a href="login" class="col-sm-1 h4 text-center text-light pt-3" hidden id ="LogOutButton"> Logout </a>
-				</nav>
+					<div id="welcome-banner" class="col h3 text-light p-3"></div>
+					<div class="col-sm-1 p-2">
+						<a role="button" href="wishlists" class="btn btn-light">My Lists</a>
+					</div>
+					<div class="col-sm-1 p-2">
+						<button class="btn btn-light" id ="logout-button">Logout</a>
+					</div>						
+				</div>
 			</div>
-			{% endblock %}
-			
-			{% block content %}
-			
-			{% endblock %}
+			{% block content %} {% endblock %}
 		</div>
 	</body>
 </html>

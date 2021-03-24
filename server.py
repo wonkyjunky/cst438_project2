@@ -10,33 +10,14 @@ app = Flask (__name__, static_folder="public", static_url_path="")
 ################################################################################
 
 @app.route("/")
-def home_route():
-	return flask.render_template("home.html")
-
-@app.route("/itemlists")
-def itemlists():
-    return flask.render_template("itemlists.html")
-
-
 @app.route("/wishlists")
 def wishlists():
     return flask.render_template("wishlists.html")
 
+
 @app.route("/login")
 def loginRoute():
     return flask.render_template("login.html")
-
-@app.route("/createaccount")
-def createAccount():
-    return flask.render_template("createaccount.html")
-
-@app.route("/itemdetails")
-def itemdetails():
-    return flask.render_template("itemdetails.html")
-
-@app.route("/recommended")
-def recommended():
-	return flask.render_template("recommended.html")
 
 
 @app.route("/wishlistdetails", methods=["GET"])

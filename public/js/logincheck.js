@@ -4,16 +4,17 @@ $(async () =>
 {
 	let logged_in = await is_logged_in();
 	if (!logged_in) location.href = "login";
-	
-	$('#LogOutButton').click(function() {
+
+	$("#welcome-banner").text("Welcome " + sessionStorage.getItem("user") + "!");
+
+	$('#logout-button').click(function() {
 		sessionStorage.clear();
-		reDirectLogin();
+		location.href = "login";
 	});
 });
 
 async function is_logged_in()
 {
-	
 	let username = sessionStorage.getItem("user");
 	let password = sessionStorage.getItem("pass");
 
