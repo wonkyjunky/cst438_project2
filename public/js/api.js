@@ -1,3 +1,5 @@
+"use strict";
+
 // do not call this function
 // it is here only for example purposes
 async function api_example_test() {

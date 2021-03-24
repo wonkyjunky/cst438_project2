@@ -1,73 +1,73 @@
 {% extends "layouts/layout.html" %}
-{% block head %} {{super()}} {% endblock %} 
-	<body>
-		{% block nav %} {{super()}} {% endblock %} {% block content %}
-		<div class="container-fluid bg-light">
-			<div class="row">
-				<h2 class="col">My Wishlists</h2>
-				<div class="col-sm-3" id="buttons">
-					<div class="container p-3">
-						<div class="row m-1">
-							<button id="addwishlist" data-toggle="modal" data-target="#add-list-modal" class="btn btn-secondary">New Wishlist</button>
-						</div>
-						<div class="row m-1">
-							<button id="editwishlist" data-toggle="modal" data-target="#edit-list-modal" class="btn btn-secondary">Edit Wishlist</button>
-						</div>
-					</div>
-				</div>
-			</div>
-			<!-- Lists will be added to this div -->
-			<div class="row p-3" id="wishlists"></div>
-		</div>
 
-		<!-- Modal -->
-		<div class="modal fade" id="add-list-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-			<div class="modal-dialog" role="document">
-				<div class="modal-content">
-					<div class="modal-header">
-						<h5 class="modal-title" id="exampleModalLabel">Create a Wishlist</h5>
-						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-							<span aria-hidden="true">&times;</span>
-						</button>
-					</div>
-					<div class="modal-body">
-						<form>
-							<input id="label" placeholder="Wishlist Name">
-						</form>
-					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-						<button id="create" type="button" class="btn btn-primary">Create</button>
-					</div>
+{% block head %}
+<script src="js/logincheck.js"></script>
+{% endblock %} 
+
+{% block content %}
+<div class="container-fluid bg-light">
+	<div class="row">
+		<h2 class="col">My Wishlists</h2>
+		<div class="col-sm-3" id="buttons">
+			<div class="container p-3">
+				<div class="row m-1">
+					<button id="addwishlist" data-toggle="modal" data-target="#add-list-modal" class="btn btn-secondary">New Wishlist</button>
+				</div>
+				<div class="row m-1">
+					<button id="editwishlist" data-toggle="modal" data-target="#edit-list-modal" class="btn btn-secondary">Edit Wishlist</button>
 				</div>
 			</div>
 		</div>
-    <!-- Edit Modal -->
-      <div class="modal fade" id="edit-list-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLabel">Edit a Wishlist</h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div class="modal-body">
-              <form>
-                <input id="label" placeholder="Wishlist Name">
-              </form>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-              <button id="create" type="button" class="btn btn-primary">Save</button>
-            </div>
-          </div>
-        </div>
-      </div>
+	</div>
+	<!-- Lists will be added to this div -->
+	<div class="row p-3" id="wishlists"></div>
+</div>
 
+<!-- Modal -->
+<div class="modal fade" id="add-list-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="exampleModalLabel">Create a Wishlist</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<form>
+					<input id="label" placeholder="Wishlist Name">
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+				<button id="create" type="button" class="btn btn-primary">Create</button>
+			</div>
+		</div>
+	</div>
+</div>
 
+<!-- Edit Modal -->
+<div class="modal fade" id="edit-list-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+		<div class="modal-header">
+			<h5 class="modal-title" id="exampleModalLabel">Edit a Wishlist</h5>
+			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			<span aria-hidden="true">&times;</span>
+			</button>
+		</div>
+		<div class="modal-body">
+			<form>
+			<input id="label" placeholder="Wishlist Name">
+			</form>
+		</div>
+		<div class="modal-footer">
+			<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+			<button id="create" type="button" class="btn btn-primary">Save</button>
+		</div>
+		</div>
+	</div>
+</div>
 
-		<script src = "js/wishlists.js"></script>
-		{% endblock %}
-	</body>
-</html>
+<script src = "js/wishlists.js"></script>
+{% endblock %}

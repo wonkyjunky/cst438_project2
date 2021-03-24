@@ -1,171 +1,168 @@
 {% extends "layouts/layout.html" %}
 
-{% block head %} {{super()}} {% endblock %} 
-	<body>
-		{% block nav %} {{super()}} {% endblock %} {% block content %}
-		<div class="container-fluid bg-light">
-			<!-- UI bar -->
-			<div class="row p-2">
-				<div class="col">
-					<h1 id="list-label"></h1>
+{% block head %} 
+<script src="js/logincheck.js"></script>
+{% endblock %} 
+
+{% block content %}
+<!-- UI bar -->
+<div class="row p-2">
+	<div class="col">
+		<h1 id="list-label"></h1>
+	</div>
+	<div class="col-sm-2 d-flex justify-content-center">
+		<button id="additem" data-toggle="modal" data-target="#add-item-modal" class="btn btn-secondary ml-3">Add New Item</button>
+	</div>
+</div>
+<!-- Item list -->
+<div id="list-items" class="row" listid={{listid}}></div>
+<!-- Recommended list -->
+<h1 class="row mt-5">Recommended Items</h1>
+<div id="recommended-items" class="row"></div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="add-item-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="modal-label">Add New Item</h5>
+				<button class="btn" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<div class="row p-1">
+					<div class="col">Label</div>
+					<div class="col">
+						<input class="form-control" id="label-input" placeholder="..."/>
+					</div>
 				</div>
-				<div class="col-sm-2 d-flex justify-content-center">
-					<button id="additem" data-toggle="modal" data-target="#add-item-modal" class="btn btn-secondary ml-3">Add New Item</button>
+				<div class="row p-1">
+					<div class="col">Description</div>
+					<div class="col">
+						<input class="form-control" id="descr-input" placeholder="..."/>
+					</div>
+				</div>
+				<div class="row p-1">
+					<div class="col">Image Url</div>
+					<div class="col">
+						<input class="form-control" id="img-input" placeholder="..."/>
+					</div>
+				</div>
+				<div class="row p-1">
+					<div class="col">Item Url</div>
+					<div class="col">
+						<input class="form-control" id="url-input" placeholder="..."/>
+					</div>
+				</div>
+				<div class="row p-1">
+					<div class="col">Price</div>
+					<div class="col">
+						<input class="form-control" id="price-input" placeholder="..."/>
+					</div>
 				</div>
 			</div>
-			<!-- Item list -->
-			<div id="list-items" class="row" listid={{listid}}></div>
-			<!-- Recommended list -->
-			<h1 class="row mt-5">Recommended Items</h1>
-			<div id="recommended-items" class="row"></div>
+			<div class="modal-footer">
+				<button id="create" class="btn btn-secondary">Add</button>
+			</div>
 		</div>
+	</div>
+</div>
 
+
+<!-- Modal -->
+<div class="modal fade" id="display-item-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h1 class="modal-title" id="item-title">></h1>
+				<button class="btn" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="row p-1">
+				<div class="col"></div>
+					<div class="col">
+						<span id="item-img"></span>
+					</div>
+				</div>
+			<div class="modal-body">
+				<div class="row p-1">
+					<div class="col">Description</div>
+					<div class="col">
+						<span id="item-description"></span>
+					</div>
+				</div>
+				<div class="row p-1">
+					<div class="col">Item Url</div>
+					<div class="col">
+						<span id="item-url"></span>
+					</div>
+				</div>
+				<div class="row p-1">
+					<div class="col">Price</div>
+					<div class="col">
+						<span id="item-price"></span>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button id="create" class="btn btn-secondary">Edit</button>
+			</div>
+		</div>
+	</div>
+</div>
 
 		<!-- Modal -->
-		<div class="modal fade" id="add-item-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-			<div class="modal-dialog" role="document">
-				<div class="modal-content">
-					<div class="modal-header">
-						<h5 class="modal-title" id="modal-label">Add New Item</h5>
-						<button class="btn" data-dismiss="modal" aria-label="Close">
-							<span aria-hidden="true">&times;</span>
-						</button>
+<div class="modal fade" id="edit-item-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="modal-label">Edit the Item</h5>
+				<button class="btn" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<div class="row p-1">
+					<div class="col">Label</div>
+					<div class="col">
+						<input id="label-edit" placeholder="..."/>
 					</div>
-					<div class="modal-body">
-						<div class="row p-1">
-							<div class="col">Label</div>
-							<div class="col">
-								<input id="label-input" placeholder="..."/>
-							</div>
-						</div>
-						<div class="row p-1">
-							<div class="col">Description</div>
-							<div class="col">
-								<input id="descr-input" placeholder="..."/>
-							</div>
-						</div>
-						<div class="row p-1">
-							<div class="col">Image Url</div>
-							<div class="col">
-								<input id="img-input" placeholder="..."/>
-							</div>
-						</div>
-						<div class="row p-1">
-							<div class="col">Item Url</div>
-							<div class="col">
-								<input id="url-input" placeholder="..."/>
-							</div>
-						</div>
-						<div class="row p-1">
-							<div class="col">Price</div>
-							<div class="col">
-								<input id="price-input" placeholder="..."/>
-							</div>
-						</div>
+				</div>
+				<div class="row p-1">
+					<div class="col">Description</div>
+					<div class="col">
+						<input id="descr-edit" placeholder="..."/>
 					</div>
-					<div class="modal-footer">
-						<button id="create" class="btn btn-secondary">Add</button>
+				</div>
+				<div class="row p-1">
+					<div class="col">Image Url</div>
+					<div class="col">
+						<input id="img-edit" placeholder="..."/>
+					</div>
+				</div>
+				<div class="row p-1">
+					<div class="col">Item Url</div>
+					<div class="col">
+						<input id="url-edit" placeholder="..."/>
+					</div>
+				</div>
+				<div class="row p-1">
+					<div class="col">Price</div>
+					<div class="col">
+						<input id="price-edit" placeholder="..."/>
 					</div>
 				</div>
 			</div>
-		</div>
-
-
-		<!-- Modal -->
-		<div class="modal fade" id="display-item-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-			<div class="modal-dialog" role="document">
-				<div class="modal-content">
-					<div class="modal-header">
-						<h1 class="modal-title" id="item-title">></h1>
-						<button class="btn" data-dismiss="modal" aria-label="Close">
-							<span aria-hidden="true">&times;</span>
-						</button>
-					</div>
-					<div class="row p-1">
-						<div class="col"></div>
-							<div class="col">
-								<span id="item-img"></span>
-							</div>
-						</div>
-					<div class="modal-body">
-						<div class="row p-1">
-							<div class="col">Description</div>
-							<div class="col">
-								<span id="item-description"></span>
-							</div>
-						</div>
-						<div class="row p-1">
-							<div class="col">Item Url</div>
-							<div class="col">
-								<span id="item-url"></span>
-							</div>
-						</div>
-						<div class="row p-1">
-							<div class="col">Price</div>
-							<div class="col">
-								<span id="item-price"></span>
-							</div>
-						</div>
-					</div>
-					<div class="modal-footer">
-						<button id="edit" data-toggle="modal" data-target="#edit-item-modal" class="btn btn-secondary ml-3">Edit</button>
-						<button id="close" class="btn btn-secondary" onclick="{$('#display-item-modal').modal('hide')}">Close</button>
-					</div>
-				</div>
+			<div class="modal-footer">
+				<button id="EditConfirm" class="btn btn-secondary">Confirm</button>
 			</div>
 		</div>
-
-				<!-- Modal -->
-		<div class="modal fade" id="edit-item-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-			<div class="modal-dialog" role="document">
-				<div class="modal-content">
-					<div class="modal-header">
-						<h5 class="modal-title" id="modal-label">Edit the Item</h5>
-						<button class="btn" data-dismiss="modal" aria-label="Close">
-							<span aria-hidden="true">&times;</span>
-						</button>
-					</div>
-					<div class="modal-body">
-						<div class="row p-1">
-							<div class="col">Label</div>
-							<div class="col">
-								<input id="label-edit" placeholder="..."/>
-							</div>
-						</div>
-						<div class="row p-1">
-							<div class="col">Description</div>
-							<div class="col">
-								<input id="descr-edit" placeholder="..."/>
-							</div>
-						</div>
-						<div class="row p-1">
-							<div class="col">Image Url</div>
-							<div class="col">
-								<input id="img-edit" placeholder="..."/>
-							</div>
-						</div>
-						<div class="row p-1">
-							<div class="col">Item Url</div>
-							<div class="col">
-								<input id="url-edit" placeholder="..."/>
-							</div>
-						</div>
-						<div class="row p-1">
-							<div class="col">Price</div>
-							<div class="col">
-								<input id="price-edit" placeholder="..."/>
-							</div>
-						</div>
-					</div>
-					<div class="modal-footer">
-						<button id="EditConfirm" class="btn btn-secondary">Confirm</button>
-					</div>
-				</div>
-			</div>
-		</div>
+	</div>
+</div>
 
 
-		<script src="js/listdetails.js"></script>
-		{% endblock %}
-	</body>
-</html>
+<script src="js/listdetails.js"></script>
+{% endblock %}
