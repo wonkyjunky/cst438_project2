@@ -32,10 +32,8 @@ $('#create').on('click', function(e) {
 	var label = document.getElementById('label').value;
 	var data = {"username": username2, "password":password2, "label": label};
 	if (confirm(`You want to create ${label}?`)){
-		$.post_json("/api/addlist",data, res => {
-			console.log(res);
+			api.add_list(label);
 			window.location.href = "/wishlists";
-		});
 	}
 	});
 $('#editwishlist').on('click',function(e){
