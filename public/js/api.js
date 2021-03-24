@@ -230,6 +230,11 @@ class Api
 		});
 	}
 
+	async get_item(itemid)
+	{
+		return this.api_get("item", { itemid: itemid });
+	}
+
 	/**
 	 * Gets list of items
 	 * 

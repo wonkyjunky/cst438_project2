@@ -17,12 +17,10 @@ $(async () =>
 
 	console.log("logged in")
 	
-	
-	
 	  $('#LogOutButton').on('click',function(){
 		sessionStorage.clear();
 		reDirectLogin();
-	})
+	});
 	
 });
 
