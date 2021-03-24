@@ -1,6 +1,6 @@
 # Wish List
 
-# Team: Joseph Newman, Wonkyu Jeong, Richard Ledbetter, Ike Hirzel
+Team: Joseph Newman, Wonkyu Jeong, Richard Ledbetter, Ike Hirzel
 
 ## Description
 
