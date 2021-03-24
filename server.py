@@ -36,7 +36,8 @@ def api_login():
 	j = request.get_json()
 	c = DatabaseConnection()
 
-	if auth:= check_auth(j, c):
+	auth = check_auth(j, c)
+	if auth:
 		return auth
 
 	return {"msg":"successfully authenicated user"}, 200
@@ -82,7 +83,8 @@ def delete_user():
 	j = request.get_json()
 	c = DatabaseConnection()
 
-	if auth := check_auth(j, c):
+	auth = check_auth(j, c)
+	if auth:
 		return auth
 
 	c.delete_user(j["username"])
@@ -128,7 +130,8 @@ def add_list():
 	j = request.get_json()
 	c = DatabaseConnection()
 
-	if auth := check_auth(j, c):
+	auth = check_auth(j, c)
+	if auth:
 		return auth
 
 	label = j.get("label", "")
@@ -158,7 +161,8 @@ def modify_list():
 	j = request.get_json()
 	c = DatabaseConnection()
 
-	if auth := check_auth(j, c):
+	auth = check_auth(j, c)
+	if auth:
 		return auth
 
 	listid = j.get("listid", None)
@@ -233,7 +237,8 @@ def add_item():
 	j = request.get_json()
 	c = DatabaseConnection()
 
-	if auth := check_auth(j, c):
+	auth = check_auth(j, c)
+	if auth:
 		return auth
 
 	vs = [None, None, None, None, None, None]
@@ -279,7 +284,8 @@ def modify_item():
 	j = request.get_json()
 	c = DatabaseConnection()
 
-	if auth := check_auth(j, c):
+	auth = check_auth(j, c)
+	if auth:
 		return auth
 	
 	itemid = j.get("itemid", 0)
