@@ -14,7 +14,7 @@ $.get("/api/list", {username: username2}, (data) =>
 			<div class="col-sm-3 m-2" id="list-${i}>
 				<div class="container">
 					<div class="row">
-						<h1 class="col text-center border">
+						<h1 class="col text-center">
 							${data.lists[i].label}
 						</h1>
 					</div>
