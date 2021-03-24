@@ -1,6 +1,7 @@
 let username2 = sessionStorage.getItem("user");
 let password2 = sessionStorage.getItem("pass");
 let userid2 = 0;
+
 $.get("/api/user", {username: username2}, (data) => {
 	userid2 = data.user.id;
 });
@@ -27,6 +28,7 @@ $.get("/api/list", {username: username2}, (data) =>
 		`)
 	}
 })
+
 $('#create').on('click', function(e) {
 	var label = document.getElementById('label').value;
 	var data = {"username": username2, "password":password2, "label": label};
