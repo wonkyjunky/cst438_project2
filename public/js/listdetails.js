@@ -26,17 +26,23 @@ async function get_list() {
   for (let i = 0; i < l.length; i++) {
     list_item_labels[l[i].label] = true;
     list_div.append(`
-			<div id="list-item-${i}" class="col-sm-3 border m-1 p-2">
+			<div id="list-item-${i}" class="col-sm-3 border rounded m-1 p-2">
 				<div class="container">
-					<figure style="text-align: center">
-						<img src="${l[i].img}" width="150" alt="Item Image">
-					</figure>
-					<h3 class="row">${l[i].label}</h1>
-					<h5 class="row">${l[i].descr}</h5>
-					<h5 class="row">$ ${l[i].price}</h5>
+					<div class="row m-1">
+						<img src="${l[i].img}" class="img-thumbnail" height="105" width="150" alt="Item Image">
+					</div>
+					<div class="row"><h3>${l[i].label}</h1></div>
+					<div class="row"><h5>$ ${l[i].price}</h5></div>
 					<div class="row">
-					<button id="displayitem" data-toggle="modal" data-target="#display-item-modal" onclick="display(${l[i].id})"class="btn btn-secondary ml-3">details</button>
-					<button id="item-${i}-rmbtn" type="button" class="btn btn-danger">Remove</button>
+						<div class="col">
+							<button id="displayitem" data-toggle="modal" data-target="#display-item-modal" onclick="display(${l[i].id})"class="btn btn-secondary ml-3">Details</button>
+						</div>
+						<div class="col">
+							<button id="edit-item" data-toggle="modal" data-target="#edit-item-modal" onclick="display(${l[i].id})" class="btn btn-secondary ml-3">Edit</button>
+						</div>
+						<div class="col">
+							<button id="item-${i}-rmbtn" type="button" class="btn btn-danger">Remove</button>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -81,7 +87,7 @@ async function get_recommendations() {
 
   for (let i = 0; i < non_user_items.length; i++) {
     rec_div.append(`
-			<div id="recommended-item-${i}" class="col-sm-3 border m-1 p-2">
+			<div id="recommended-item-${i}" class="col-sm-3 border rounded m-1 p-2">
 				<div class="container">
 					<h3 class="row">${non_user_items[i].label}</h1>
 					<h5 class="row">${non_user_items[i].descr}</h5>
@@ -129,7 +135,7 @@ async function display(itemid) {
   console.log(res.item.label);
   $("#item-title").text(res.item.label);
   $("#item-description").text(res.item.descr);
-  $("#item-img").html(`<img src="${res.item.img}" alt="hello" width=200>`);
+  $("#item-img").html(`<img class="img-thumbnail" src="${res.item.img}" alt="item image" width=200>`);
   $("#item-url").html(`<a href="${res.item.url}">Link to item</a>`);
   $("#item-price").text(res.item.price);
   $("#label-edit").attr("placeholder", res.item.label);
@@ -143,7 +149,7 @@ async function display(itemid) {
 $("#EditConfirm").on("click", async function () {
   console.log(itid);
   if (confirm("Are you sure?")) {
-    api.update_item(
+    let res = await api.update_item(
       itid,
       $("#label-edit").val(),
       $("#descr-edit").val(),
@@ -151,7 +157,10 @@ $("#EditConfirm").on("click", async function () {
       $("#url-edit").val(),
       $("#price-edit").val()
     );
-    window.location.href = `/wishlistdetails?listid=${listid}`;
+	if (res.err)
+		alert(res.err);
+	else
+    	window.location.href = `/wishlistdetails?listid=${listid}`;
   }
 });
 
