@@ -5,6 +5,7 @@ var rec_div = $("#recommended-items");
 var list_div = $("#list-items");
 var listid = parseInt(list_div.attr("listid"));
 var list_item_labels = {};
+var itid;
 
 async function get_list() {
   list_div.empty();
@@ -128,11 +129,31 @@ async function display(itemid) {
   console.log(res.item.label);
   $("#item-title").text(res.item.label);
   $("#item-description").text(res.item.descr);
-  $("#item-img").html(`<img src="${res.item.img} alt="hello" width=200>`);
+  $("#item-img").html(`<img src="${res.item.img}" alt="hello" width=200>`);
   $("#item-url").html(`<a href="${res.item.url}">Link to item</a>`);
   $("#item-price").text(res.item.price);
-
+  $("#label-edit").attr("placeholder", res.item.label);
+  $("#descr-edit").attr("placeholder", res.item.descr);
+  $("#img-edit").attr("placeholder", res.item.img);
+  $("#url-edit").attr("placeholder", res.item.url);
+  $("#price-edit").attr("placeholder", res.item.price);
+  itid = itemid;
 }
+
+$("#EditConfirm").on("click", async function () {
+  console.log(itid);
+  if (confirm("Are you sure?")) {
+    api.update_item(
+      itid,
+      $("#label-edit").val(),
+      $("#descr-edit").val(),
+      $("#img-edit").val(),
+      $("#url-edit").val(),
+      $("#price-edit").val()
+    );
+    window.location.href = `/wishlistdetails?listid=${listid}`;
+  }
+});
 
 // When the page has loaded, update the list
 $(async () => {
