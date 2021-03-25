@@ -37,5 +37,5 @@ function validpassword(string password){
 	var letterNumber2 = /[a-z]/;
 	var letterNumber3 = /[A-Z]/;
 	var letterNumber4 = /[!@#$%^&*()]/;
-	return !(password.length<5 && password.match(letterNumber)&& password.match(letterNumber2)&&password.match(letterNumber3)&&password.match(letterNumber4));
+	return !(password.length<5 || password.match(letterNumber)|| password.match(letterNumber2)||password.match(letterNumber3)||password.match(letterNumber4));
 }
