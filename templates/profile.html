@@ -1,6 +1,6 @@
 {% extends "layouts/layout.html" %} {% block head %}
-<script src="js/logincheck.js"></script>
 <script src="js/updateprofile.js"></script>
+<script src="js/logincheck.js"></script>
 {% endblock %} {% block content %}
 
 <div class="row text-center">
@@ -46,19 +46,6 @@
     </div>
   </div>
   <div class="col"></div>
-
-  <br />
-  <br />
-  <br />
-  <div class="row text-center">
-	<div class="row m-2">
-		<div class="col">
-			<div
-				id="goback"
-				class="btn btn-primary"
-				onclick="{window.location.href='/login'}"
-			>Go back
-			</button>
 		</div>
 	</div>
 </div>
@@ -89,10 +76,10 @@
                   </div>
                   <div class="modal-body">
                     <form>
-                      <input id="username-edit" placeholder="Username..." />
+                      <input id="usernameEdit" placeholder="Username..." />
                       <br /><br />
                       <input
-                        id="password-edit"
+                        id="passwordEdit"
                         placeholder="Current password..."
                       />
                     </form>
@@ -109,6 +96,7 @@
                       id="saveChange"
                       type="button"
                       class="btn btn-primary"
+                      onclick="saveUserChange()"
                     >
                       Save
                     </button>
@@ -144,10 +132,10 @@
                   <div class="modal-body">
                     <form>
                       <input
-                        id="currpassword-edit"
+                        id="currpassword"
                         placeholder="Current Password"
                       /><br /><br />
-                      <input id="newpassword-edit" placeholder="New Password" />
+                      <input id="newpassword" placeholder="New Password" />
                     </form>
                   </div>
                   <div class="modal-footer">
@@ -162,6 +150,7 @@
                       id="saveChange"
                       type="button"
                       class="btn btn-primary"
+                      onclick="changeUserPass()"
                     >
                       Save
                     </button>
@@ -195,18 +184,6 @@
                     </button>
                   </div>
                   <div class="modal-body">
-                    <form>
-                      <input
-                        id="currusrname-delete"
-                        placeholder="Current Username"
-                      />
-                      <br />
-                      <br />
-                      <input
-                        id="currpassword-delete"
-                        placeholder="Current password"
-                      />
-                    </form>
                   </div>
                   <div class="modal-footer">
                     <button
@@ -220,6 +197,7 @@
                       id="saveChange"
                       type="button"
                       class="btn btn-danger"
+                      onclick="deleteAccount()"
                     >
                       Delete
                     </button>
