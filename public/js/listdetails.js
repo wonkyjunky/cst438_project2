@@ -87,16 +87,18 @@ async function get_recommendations() {
 
   for (let i = 0; i < non_user_items.length; i++) {
     rec_div.append(`
-			<div id="recommended-item-${i}" class="col-sm-3 border rounded m-1 p-2">
-				<div class="container">
-					<h3 class="row">${non_user_items[i].label}</h1>
-					<h5 class="row">${non_user_items[i].descr}</h5>
-					<h5 class="row">$ ${non_user_items[i].price}</h5>
-					<div class="row">
+		<div id="recommended-item-${i}" class="col-sm-3 border rounded m-1 p-2">
+			<div class="container">
+				<div class="row m-1">
+					<img src="${non_user_items[i].img}" class="img-thumbnail" height="105" width="150" alt="Item Image">
+				</div>
+				<div class="row"><h3>${non_user_items[i].label}</h1></div>
+				<div class="row"><p>${non_user_items[i].descr}</p></div>
+				<div class="row">
 					<button id="recommended-${i}-button" type="button" class="btn btn-success">Add Item</button>
-					</div>
 				</div>
 			</div>
+		</div>
 		`);
 
     $(`#recommended-${i}-button`).click(async function () {
