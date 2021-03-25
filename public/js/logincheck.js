@@ -2,13 +2,6 @@
 
 $(async () => 
 {
-	let str = "PASSWORD";
-	console.log( str.match(/[A-Z]/) )
-	console.log(parseInt('c'))
-	if (!str.match(/[a-z]/) )
-	{
-		console.log("valid")
-	}
 	let logged_in = await is_logged_in();
 	if (!logged_in) location.href = "login";
 
@@ -42,6 +35,18 @@ async function is_logged_in()
 	return true;
 }
 function validpassword(password){
-	//return true
-	return (password.length > 5 && password.match(/^[a-zA-Z0-9!@#\$%\^\&*\)\(+=._-]+$/g));
+
+	if (password.length < 6) return false;
+
+	let nums = 0;
+	for (c in password)
+	{
+		
+	}
+
+	var letterNumber = /[0-9]/;
+	var letterNumber2 = /[a-z]/;
+	var letterNumber3 = /[A-Z]/;
+	var letterNumber4 = /[!@#$%^&*()]/;
+	return !(password.length<5 || password.match(letterNumber)|| password.match(letterNumber2)||password.match(letterNumber3)||password.match(letterNumber4));
 }
