@@ -83,6 +83,21 @@ def add_user():
 	return { "msg"	: "successfully created user" }, 201
 
 
+@app.route("/api/updateuser", methods=["PUT"])
+def update_user():
+	j = request.get_json()
+	c = DatabaseConnection()
+
+	auth = check_auth(j, c)
+	if auth:
+		return auth
+
+	newusername = j.get("newusername", "")
+	newpassword = j.get("newpassword", "")
+
+	c.update_user(j["username"], newusername, newpassword)
+	return {"msg": "successfully deleted user" }, 200
+
 @app.route("/api/deleteuser", methods=["POST"])
 def delete_user():
 	j = request.get_json()
