@@ -1,34 +1,176 @@
-{% extends "layouts/layout.html" %}
-
-{% block head %}
+{% extends "layouts/layout.html" %} {% block head %}
 <script src="js/logincheck.js"></script>
-{% endblock %} 
-
-{% block content %}
+{% endblock %} {% block content %}
 
 <div class="row text-center">
-	<div class="col"></div>
-	<div class="col-5 m-5">
-		<div class="container">
-			<div class="row m-2">
-				<div class="col">
-					<button id="change-username-button" class="btn btn-warning">Change Username</button>
-				</div>
-			</div>
-			<div class="row m-2">
-				<div class="col">
-					<button id="change-password-button" class="btn btn-warning">Change Pasword</button>
-				</div>
-			</div>
-			<div class="row m-2">
-				<div class="col">
-					<button id="delete-account-button" class="btn btn-danger">Delete Account</button>
-				</div>
-			</div>
+  <div class="col"></div>
+  <div class="col-5 m-5">
+    <div class="container">
+      <div class="row m-2">
+        <div class="col">
+          <button
+            id="change-username-button"
+            class="btn btn-warning"
+            data-toggle="modal"
+            data-target="#edit-usrname-modal"
+          >
+            Change Username
+          </button>
+        </div>
+      </div>
+      <div class="row m-2">
+        <div class="col">
+          <button
+            id="change-password-button"
+            class="btn btn-warning"
+            data-toggle="modal"
+            data-target="#edit-password-modal"
+          >
+            Change Pasword
+          </button>
+        </div>
+      </div>
+      <div class="row m-2">
+        <div class="col">
+          <button
+            id="delete-account-button"
+            class="btn btn-danger"
+            data-toggle="modal"
+            data-target="#delete-usr-modal"
+          >
+            Delete Account
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col"></div>
 
-		</div>
-	</div>
-	<div class="col"></div>
+  <!-- change usr name Modal -->
+  <div
+    class="modal fade"
+    id="edit-usrname-modal"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="exampleModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Change Username</h5>
+          <button
+            type="button"
+            class="close"
+            data-dismiss="modal"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <input id="username-edit" placeholder="Username..." />
+            <br /><br />
+            <input id="password-edit" placeholder="Current password..." />
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">
+            Close
+          </button>
+          <button id="saveChange" type="button" class="btn btn-primary">
+            Save
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- change password Modal -->
+  <div
+    class="modal fade"
+    id="edit-password-modal"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="exampleModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Change Password</h5>
+          <button
+            type="button"
+            class="close"
+            data-dismiss="modal"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <input
+              id="currpassword-edit"
+              placeholder="Current Password"
+            /><br /><br />
+            <input id="newpassword-edit" placeholder="New Password" />
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">
+            Close
+          </button>
+          <button id="saveChange" type="button" class="btn btn-primary">
+            Save
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- delete usr Modal -->
+  <div
+    class="modal fade"
+    id="delete-usr-modal"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="exampleModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Delete Account</h5>
+          <button
+            type="button"
+            class="close"
+            data-dismiss="modal"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <input id="currusrname-delete" placeholder="Current Username" />
+            <br />
+            <br />
+            <input id="currpassword-delete" placeholder="Current password" />
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">
+            Close
+          </button>
+          <button id="saveChange" type="button" class="btn btn-danger">
+            Delete
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
-{% endblock %} 
+{% endblock %}
