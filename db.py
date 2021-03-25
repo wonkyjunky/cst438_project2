@@ -112,7 +112,7 @@ class DatabaseConnection:
 		self.conn.execute(DROP_USER_TABLE_QUERY)
 		self.conn.execute(DROP_LIST_TABLE_QUERY)
 		self.conn.execute(DROP_ITEM_TABLE_QUERY)
-		self.conn.commit()
+		self.init_tables()
 
 	##################################################################
 	#	USER FUNCTIONS
@@ -435,39 +435,43 @@ class DatabaseConnection:
 DO NOT CALL THIS FUNCTION
 Function to test if everything is working right.
 """
-def test():
-	print("Populating db with test data")
+def populate():
 	# creating connection object
 	conn = DatabaseConnection()
-	# dropping all info from db
+	
+	if conn.get_users():
+		print("DB is already initialized. No action taken.")
+	pass
+	print("Populating db with test data")
+
 	conn.clear_database()
+	
+	# dropping all info from db
 	# initializing fresh tables
 	conn.init_tables()
 
-	# adding test user ike
-	conn.add_user("ike", "password", False)
-	# add lists to ike
+	conn.add_user("user", "password", False)
+	# add lists to user
 	conn.add_list(1, "Wish List")
 	conn.add_list(1, "Grocery List")
 
 	# adding test user jeff
-	conn.add_user("jeff", "mynamejeff", True)
-	conn.add_list(2, "Shopping List")
+	conn.add_list(1, "Shopping List")
 
 	#testing adding items
-	conn.add_item(1, "Goldbond", "...", "...", "...", 19.99)
-	conn.add_item(1, "IcyHot", "...", "...", "...", 10.95)
+	conn.add_item(1, "Goldbond", "Stay cool", "https://i.ytimg.com/vi/1ENRBHD6aKw/maxresdefault.jpg", "https://www.amazon.com/Gold-Bond-Medicated-Talc-Free-Original/dp/B08W5DK88Y/ref=sr_1_2?dchild=1&keywords=gold+bond&qid=1616641575&sr=8-2", 19.99)
+	conn.add_item(1, "Icy Hot", "Icy to dull the pain, and hot to relax it away", "https://clickhole.com/wp-content/uploads/2019/09/kspje81vjmecgftkpxrk.jpg", "https://www.amazon.com/Icy-Hot-Lidocaine-Temporarily-Associated/dp/B01GDWA5ZI/ref=sr_1_5?dchild=1&keywords=icy+hot&qid=1616641638&sr=8-5", 10.95)
+	conn.add_item(1, "PS5", "You're never getting one", "https://d2skuhm0vrry40.cloudfront.net/2020/articles/2020-06-11-23-50/ps5-exclusive-first-party-confirmed-games-6300-1591915809942.jpg/EG11/resize/1200x-1/ps5-exclusive-first-party-confirmed-games-6300-1591915809942.jpg", "https://www.target.com/p/playstation-5-console/-/A-81114595", 10.95)
+	conn.add_item(1, "Stratocaster", "American professional II Stratocaster", "https://www.fmicassets.com/Damroot/ZoomJpg/10001/0113912718_fen_ins_frt_1_rr.jpg", "https://shop.fender.com/en-US/electric-guitars/stratocaster/american-professional-ii-stratocaster-hss/0113912718.html", 1499.99)
 
-	conn.add_item(2, "Goldbond Max", "...", "...", "...", 19.99)
-	conn.add_item(2, "IcyHot Extra Strength", "...", "...", "...", 10.95)
 
-	conn.add_item(3, "Banana", "...", "...", "...", 0.75)
-	conn.add_item(3, "Television", "...", "...", "...", 325.00)
-	conn.add_item(3, "RTX 3090", "...", "...", "...", 325.00)
-	conn.add_item(3, "Gaming PC", "...", "...", "...", 325.00)
-	conn.add_item(3, "Air Jordans", "...", "...", "...", 999.00)
-	conn.add_item(3, "17.5lbs of coffee", "...", "...", "...", 35.00)
-	conn.add_item(3, "Stratocaster", "...", "...", "...", 1499.99)
+	conn.add_item(2, "A Singular Banana", "Just one", "https://st.depositphotos.com/1005707/1243/i/600/depositphotos_12438361-stock-photo-banana.jpg", "https://www.amazon.com/Congo-Plantain-Platano-Maque%C3%B1o-Kilograms/dp/B08WRFVJZK/ref=sr_1_14?dchild=1&keywords=banana&qid=1616641830&sr=8-14", 0.33)
+	conn.add_item(2, "Coffee beans", "One 2.2 pound bag of Lavazza Super Crema Italian whole coffee beans", "https://images-na.ssl-images-amazon.com/images/I/61fpw9inWTL._SL1296_.jpg", "https://www.amazon.com/Lavazza-Coffee-Medium-Espresso-2-2-Pound/dp/B000SDKDM4/ref=sr_1_3?dchild=1&keywords=lavazza+coffee+beans&qid=1616642165&sr=8-3", 12.83)
+
+	conn.add_item(3, "Television", "TCL 32-inch 3-Series 720p Roku Smart TV - 32S335, 2021 Model", "https://images-na.ssl-images-amazon.com/images/I/61ficuy07aL._AC_SL1200_.jpg", "https://www.amazon.com/TCL-32-720p-ROKU-Smart/dp/B088S3V3R4/ref=sr_1_3?dchild=1&keywords=television&qid=1616642236&sr=8-3", 148.00)
+	conn.add_item(3, "RTX 3090", "That graphics card you have heard of but never seen.", "https://images-na.ssl-images-amazon.com/images/I/61o%2B5ytOVcL._AC_SL1024_.jpg", "https://www.amazon.com/ZOTAC-Graphics-IceStorm-Advanced-ZT-A30900J-10P/dp/B08ZL6XD9H/ref=sr_1_3?dchild=1&keywords=rtx+3090&qid=1616642336&sr=8-3", 3299.00)
+	conn.add_item(3, "Gaming PC", "This powerful gaming PC is capable of running all your favorite games such as Roblox.", "https://images-na.ssl-images-amazon.com/images/I/81ULA2wYPcL._AC_SL1500_.jpg", "https://www.amazon.com/Skytech-Chronos-Mini-Gaming-Desktop/dp/B08SHV1GXF/ref=sr_1_1?dchild=1&keywords=pc&qid=1616642410&sr=8-1", 1199.00)
+	conn.add_item(3, "Air Jordans", "They are shoes. Expensive shoes.", "https://sneakernews.com/wp-content/uploads/2020/06/jordan-1-wmns-satin-snakeskin-CD0461-601-4.jpg", "https://www.amazon.com/Nike-Forever-555032-002-Athletic-Fashion/dp/B008FGSVPM/ref=sr_1_4?dchild=1&keywords=air+jordans&qid=1616642480&sr=8-4", 1224.60)
 
 if __name__ == "__main__":
-	test()
+	populate()
