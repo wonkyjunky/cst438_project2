@@ -16,11 +16,30 @@ $(async () =>
 	$("#delete-button").click(() =>	{ handle_input(EDIT)});
 });
 
+function validpassword(password)
+{
+	if (password.length < 6) return false;
+	let specials = "`~!@#$%^&*()-_=+[{]}\\|'\":;?/>.<,";
+	
+	for (let i = 0; i < password.length; i++)
+	{
+		for (let j = 0; j < specials.length; j++)
+		{
+			if (password[i] == specials[j])
+			{
+				return true;
+			}
+		}
+	}
+	return false
+}
+
 async function handle_input(type)
 {
 	e = -1;
 	var username = $("#username-input").val();
 	var password = $("#password-input").val();
+	$("#login-response").empty()
 
 	if (!username)
 	{
@@ -28,13 +47,6 @@ async function handle_input(type)
 		$("#login-response").text("Username must not be empty");
 		return;
 	}
-
-	var letterNumber = /[0-9]/;
-	var letterNumber2 = /[a-z]/;
-	var letterNumber3 = /[A-Z]/;
-	var letterNumber4 = /[!@#$%^&*()]/;
-
-	console.log("line 30");
 
 	let api = new Api(username, password);
 	let res;
@@ -45,7 +57,7 @@ async function handle_input(type)
 		res = await api.login();
 		break;
 	case CREATE:
-		if (password.length<5 || !password.match(letterNumber)|| !password.match(letterNumber2)|| !password.match(letterNumber3)|| !password.match(letterNumber4))
+		if (!validpassword(password))
 		{
 			$("#login-response").text("enforcing a simple password rules (minimum length >=6 characters, alphanumeric with at least one special character)");
 			return;

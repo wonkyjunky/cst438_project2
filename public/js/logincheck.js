@@ -13,6 +13,7 @@ $(async () =>
 		sessionStorage.clear();
 		location.href = "login";
 	});
+	
 	$('#profile-button').click(function() {
 		location.href = "profile";
 	});
@@ -33,7 +34,4 @@ async function is_logged_in()
 	if (res.err) return false;
 
 	return true;
-}
-function validpassword(password){
-	return (password.length > 5 && password.match(/^[a-zA-Z0-9!@#\$%\^\&*\)\(+=._-]+$/g));
 }
