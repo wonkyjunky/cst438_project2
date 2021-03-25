@@ -1,5 +1,26 @@
-let user = sessionStorage.getItem('user');
-let pass = sessionStorage.getItem('pass');
+
+var user;
+var pass;
+var api
+
+$(async () =>
+{
+    user = sessionStorage.getItem('user');
+    pass = sessionStorage.getItem('pass');
+
+    api = new Api(user, pass);
+
+    $("#delete-account-button").click(() =>
+    {
+        if (confirm("Are you sure"))
+        {
+            api.delete_user();
+            location.href="login";
+        }
+    });
+});
+
+
 console.log("test");
 
 function saveUserChange(){
