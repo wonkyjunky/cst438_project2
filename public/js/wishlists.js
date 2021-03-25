@@ -2,6 +2,7 @@
 
 let username2 = sessionStorage.getItem("user");
 let password2 = sessionStorage.getItem("pass");
+var api = new Api(username2, password2);
 let userid2 = 0;
 let userId;
 
@@ -12,8 +13,9 @@ $.get("/api/user", {username: username2}, (data) => {
 $.get("/api/list", { username: username2 }, (data) => {
   console.log(data);
   for (let i = 0; i < data.lists.length; i++) {
-    $("#wishlists").append(`     
-			<div class="col-sm-3 m-2" id="list-${i}>
+
+    $("#wishlists").append(`
+			<div class="col-sm-3 m-2" id="list-${i}">
 				<div class="container">
 					<div class="row">
 						<h1 class="col text-center">
@@ -23,14 +25,23 @@ $.get("/api/list", { username: username2 }, (data) => {
 					<div class="row pt-2 pl-5 pr-5">
 						<a href="/wishlistdetails?listid=${data.lists[i].id}" role="button" class="btn btn-secondary mb-1">View List</a>
 						<button id="editwishlist" data-toggle="modal" data-target="#edit-list-modal" class="btn btn-secondary" onclick="get_id(${data.lists[i].id})"">Edit Wishlist</button>
-						<button id="${data.lists[i].label}" class="btn btn-danger mt-1" onclick="delete_list(${data.lists[i].id}, this.id)">Delete</button>
-						
+						<button id="wish-list-${i}" class="btn btn-danger mt-1">Delete</button>
 					</div>
 				</div>
 			</div>
 
 		`)
+
+		$(`#wish-list-${i}`).click(async function() {
+			console.log(data.lists[i].userid);
+			let res = await api.get_users(username2)
+			console.log(res);
+			res = await api.delete_list(data.lists[i].id);
+			if (res.err) console.error(res.err);
+			$(`#list-${i}`).remove()
+		});
 	}
+
 })
 
 $('#create').on('click', function(e) {
