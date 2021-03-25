@@ -442,7 +442,7 @@ def populate():
 	if conn.get_users():
 		print("DB is already initialized. No action taken.")
 		return
-		
+
 	print("Populating db with test data")
 	
 	# dropping all info from db
@@ -477,6 +477,3 @@ def populate():
 	conn.add_item(3, "RTX 3090", "That graphics card you have heard of but never seen.", "https://images-na.ssl-images-amazon.com/images/I/61o%2B5ytOVcL._AC_SL1024_.jpg", "https://www.amazon.com/ZOTAC-Graphics-IceStorm-Advanced-ZT-A30900J-10P/dp/B08ZL6XD9H/ref=sr_1_3?dchild=1&keywords=rtx+3090&qid=1616642336&sr=8-3", 3299.00)
 	conn.add_item(3, "Gaming PC", "This powerful gaming PC is capable of running all your favorite games such as Roblox.", "https://images-na.ssl-images-amazon.com/images/I/81ULA2wYPcL._AC_SL1500_.jpg", "https://www.amazon.com/Skytech-Chronos-Mini-Gaming-Desktop/dp/B08SHV1GXF/ref=sr_1_1?dchild=1&keywords=pc&qid=1616642410&sr=8-1", 1199.00)
 	conn.add_item(3, "Air Jordans", "They are shoes. Expensive shoes.", "https://sneakernews.com/wp-content/uploads/2020/06/jordan-1-wmns-satin-snakeskin-CD0461-601-4.jpg", "https://www.amazon.com/Nike-Forever-555032-002-Athletic-Fashion/dp/B008FGSVPM/ref=sr_1_4?dchild=1&keywords=air+jordans&qid=1616642480&sr=8-4", 1224.60)
-
-if __name__ == "__main__":
-	populate()
