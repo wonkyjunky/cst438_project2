@@ -31,8 +31,7 @@ async function get_list() {
 					<div class="row m-1">
 						<img src="${l[i].img}" class="img-thumbnail" height="105" width="150" alt="Item Image">
 					</div>
-					<div class="row"><h3>${l[i].label}</h1></div>
-					<div class="row"><h5>$ ${l[i].price}</h5></div>
+					<div class="row text-center m-4"><h3>${l[i].label}</h1></div>
 					<div class="row">
 						<div class="col">
 							<button id="displayitem" data-toggle="modal" data-target="#display-item-modal" onclick="display(${l[i].id})"class="btn btn-secondary ml-3">Details</button>
@@ -87,16 +86,21 @@ async function get_recommendations() {
 
   for (let i = 0; i < non_user_items.length; i++) {
     rec_div.append(`
-			<div id="recommended-item-${i}" class="col-sm-3 border rounded m-1 p-2">
-				<div class="container">
-					<h3 class="row">${non_user_items[i].label}</h1>
-					<h5 class="row">${non_user_items[i].descr}</h5>
-					<h5 class="row">$ ${non_user_items[i].price}</h5>
-					<div class="row">
-					<button id="recommended-${i}-button" type="button" class="btn btn-success">Add Item</button>
+		<div id="recommended-item-${i}" class="col-sm-3 border rounded m-1 p-2">
+			<div class="container justify-content-end">
+				<div class="row m-1" style="height: 200px;">
+					<img src="${non_user_items[i].img}" class="img-thumbnail" alt="Item Image" style="max-height: 200px; object-fit: cover;">
+				</div>
+				<div class="row text-center"><h3>${non_user_items[i].label}</h1></div>
+				<div class="row"><p>${non_user_items[i].descr}</p></div>
+
+				<div class="row text-center border">
+				<button id="recommended-${i}-button" type="button" class="btn btn-success">Add Item</button>
+					<div class="col">
 					</div>
 				</div>
 			</div>
+		</div>
 		`);
 
     $(`#recommended-${i}-button`).click(async function () {

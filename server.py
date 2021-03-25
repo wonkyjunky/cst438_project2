@@ -1,9 +1,11 @@
 import time
 import flask
 from flask import Flask, request, render_template
+import db
 from db import DatabaseConnection
 
 app = Flask (__name__, static_folder="public", static_url_path="")
+db.populate()
 
 ################################################################################
 #	Client Routes
@@ -25,6 +27,9 @@ def wishlistdetails():
 	listid = request.args.get("listid", 0)
 	return flask.render_template("wishlistdetails.html", listid=listid)
 
+@app.route("/profile")
+def profile():
+	return flask.render_template("profile.html")
 
 ################################################################################
 #	USER Route
@@ -77,6 +82,21 @@ def add_user():
 
 	return { "msg"	: "successfully created user" }, 201
 
+
+@app.route("/api/updateuser", methods=["PUT"])
+def update_user():
+	j = request.get_json()
+	c = DatabaseConnection()
+
+	auth = check_auth(j, c)
+	if auth:
+		return auth
+
+	newusername = j.get("newusername", "")
+	newpassword = j.get("newpassword", "")
+
+	c.update_user(j["username"], newusername, newpassword)
+	return {"msg": "successfully deleted user" }, 200
 
 @app.route("/api/deleteuser", methods=["POST"])
 def delete_user():
@@ -173,9 +193,7 @@ def modify_list():
 	if not l:
 		return { "err": "list does not exist" }, 409
 
-	user = c.get_user(j["username"])
-	if l["userid"] != user["id"]:
-		return { "err": "list does not belong to user" }, 400
+	return { "err": "list does not belong to user" }, 400
 
 	if request.path == "/api/deletelist":
 		c.delete_list(listid)

@@ -126,6 +126,16 @@ class Api {
     });
   }
 
+  async update_user(newusername, newpassword)
+  {
+	  return this.api_call("updateuser", "PUT", {
+		username: this.username,
+		password: this.password,
+		newusername: newusername,
+		newpassword: newpassword
+	  });
+  }
+
   /**
    * Deletes user account
    *
