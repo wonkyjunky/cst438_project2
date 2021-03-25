@@ -441,7 +441,8 @@ def populate():
 	
 	if conn.get_users():
 		print("DB is already initialized. No action taken.")
-	pass
+		return
+		
 	print("Populating db with test data")
 	
 	# dropping all info from db

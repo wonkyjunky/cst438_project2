@@ -1,6 +1,7 @@
 import time
 import flask
 from flask import Flask, request, render_template
+import db
 from db import DatabaseConnection
 
 app = Flask (__name__, static_folder="public", static_url_path="")
@@ -174,7 +175,7 @@ def modify_list():
 	if not l:
 		return { "err": "list does not exist" }, 409
 
-	usized that I can deactiv		return { "err": "list does not belong to user" }, 400
+	return { "err": "list does not belong to user" }, 400
 
 	if request.path == "/api/deletelist":
 		c.delete_list(listid)
