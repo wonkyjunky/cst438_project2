@@ -21,6 +21,25 @@ $(async () =>
 });
 
 
+function validpassword(password)
+{
+	if (password.length < 6) return false;
+	let specials = "`~!@#$%^&*()-_=+[{]}\\|'\":;?/>.<,";
+	
+	for (let i = 0; i < password.length; i++)
+	{
+		for (let j = 0; j < specials.length; j++)
+		{
+			if (password[i] == specials[j])
+			{
+				return true;
+			}
+		}
+	}
+	return false
+}
+
+
 console.log("test");
 
 function saveUserChange(){
