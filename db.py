@@ -517,4 +517,6 @@ def populate():
 	conn.add_item(3, "Air Jordans", "They are shoes. Expensive shoes.", "https://sneakernews.com/wp-content/uploads/2020/06/jordan-1-wmns-satin-snakeskin-CD0461-601-4.jpg", "https://www.amazon.com/Nike-Forever-555032-002-Athletic-Fashion/dp/B008FGSVPM/ref=sr_1_4?dchild=1&keywords=air+jordans&qid=1616642480&sr=8-4", 1224.60)
 
 if __name__ == "__main__":
+	c = DatabaseConnection()
+	print(c.get_users())
 	pass

@@ -192,10 +192,13 @@ def modify_list():
 	l = c.get_list(listid)
 	if not l:
 		return { "err": "list does not exist" }, 409
+	u = c.get_user(j["username"])
 
-	return { "err": "list does not belong to user" }, 400
+	if l["userid"] != u["id"]:
+		return { "err": "list does not belong to user" }, 400
 
 	if request.path == "/api/deletelist":
+		print("deleting list")
 		c.delete_list(listid)
 		return { "msg": "successfully deleted list" }, 200
 
