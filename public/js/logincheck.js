@@ -2,16 +2,25 @@
 
 $(async () => 
 {
+	let str = "PASSWORD";
+	console.log( str.match(/[A-Z]/) )
+	console.log(parseInt('c'))
+	if (!str.match(/[a-z]/) )
+	{
+		console.log("valid")
+	}
 	let logged_in = await is_logged_in();
 	if (!logged_in) location.href = "login";
 
 	$("#welcome-banner").text("Welcome " + sessionStorage.getItem("user") + "!");
 
+	$("#lists-button").click(function() { location.href="wishlists" });
+
 	$('#logout-button').click(function() {
 		sessionStorage.clear();
 		location.href = "login";
 	});
-	$('#Profile-button').click(function() {
+	$('#profile-button').click(function() {
 		location.href = "profile";
 	});
 });

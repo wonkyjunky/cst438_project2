@@ -14,9 +14,6 @@
 		<script src="js/api.js"></script>
 		<!-- for including scripts and other things in templates -->
 		{% block head %} {% endblock %}
-		<link
-			rel="stylesheet"
-			href="{{ url_for('static',filename='/css/richard.css') }}"/>
 
 	</head>
 	<body class="bg-light">
@@ -24,10 +21,10 @@
 			<div class="col display-2 text-light" style="font-family: 'Jalnan';">WishList</div>
 			<div id="welcome-banner" class="col h3 text-light p-3"></div>
 			<div class="col-sm-1 p-2">
-				<button class="btn btn-light"  id ="Profile-button">My Profile</a>
+				<button class="btn btn-light"  id ="profile-button">My Profile</a>
 			</div>
 			<div class="col-sm-1 p-2">
-				<a role="button" href="wishlists" class="btn btn-light">My Lists</a>
+				<button class="btn btn-light" id="lists-button">My Lists</button>
 			</div>
 			<div class="col-sm-1 p-2">
 				<button class="btn btn-light" id ="logout-button">Logout</a>
