@@ -21,6 +21,8 @@ SELECT_USER_BY_USERNAME_QUERY	= "SELECT * FROM user WHERE username = ?"
 SELECT_USER_BY_ID_QUERY	= "SELECT * FROM user WHERE id = ?"
 SELECT_USERS_QUERY	= "SELECT * FROM user"
 
+
+
 UPDATE_USER_QUERY	= "UPDATE user SET username = ?, passhash = ? WHERE id = ?"
 
 # list constants
@@ -149,7 +151,7 @@ class DatabaseConnection:
 			return None
 
 		if not newusername:
-			newusername = usernamee
+			newusername = username
 
 		# trying to change password
 		passhash = None
@@ -234,8 +236,16 @@ class DatabaseConnection:
 		return None
 
 	def delete_user(self, username):
+		u = self.get_user(username)
+		if not u:
+			return False
+		print("user id :", u["id"])
+		lists = self.get_lists(u["id"])
+		for l in lists:
+			self.delete_list(l["id"])
 		self.conn.execute(DELETE_USER_QUERY, (username,))
 		self.conn.commit()
+		return True
 
 
 	##################################################################
@@ -326,8 +336,8 @@ class DatabaseConnection:
 		id		(int)	id of list
 	"""
 	def delete_list(self, id):
-		self.conn.execute(DELETE_LIST_QUERY, (id,))
 		self.conn.execute(DELETE_LIST_ITEMS_QUERY, (id,))
+		self.conn.execute(DELETE_LIST_QUERY, (id,))
 		self.conn.commit()
 
 
