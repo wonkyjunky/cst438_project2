@@ -16,14 +16,17 @@ function changeUserPass(){
     var newPass = document.getElementById('newpassword').value;
     console.log("test");
     if(oldPass == pass){
+        if(validpassword(newPass)){
         console.log("here");
         let api = new Api(user,pass);
         api.update_user(user, newPass);
         console.log("updated");
         location.href = "/login";
+        } else {
+            console.log("didnt meet reqs");
+        }
     }
 }
-
 function deleteAccount(){
     let api = new Api(user,pass);
     api.deleteAccount();

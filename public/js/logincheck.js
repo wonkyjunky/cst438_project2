@@ -32,7 +32,7 @@ async function is_logged_in()
 
 	return true;
 }
-function validpassword(string password){
+function validpassword(password){
 	var letterNumber = /[0-9]/;
 	var letterNumber2 = /[a-z]/;
 	var letterNumber3 = /[A-Z]/;

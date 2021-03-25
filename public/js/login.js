@@ -32,11 +32,6 @@ async function handle_input(type)
 	var letterNumber4 = /[!@#$%^&*()]/;
 
 	console.log("line 30");
-	if (password.length<5 || password.match(letterNumber)|| password.match(letterNumber2)||password.match(letterNumber3)||password.match(letterNumber4))
-	{
-		$("#login-response").text("Password must meet minnimum requirments");
-		return;
-	}
 
 	let api = new Api(username, password);
 	let res;
@@ -47,7 +42,7 @@ async function handle_input(type)
 		res = await api.login();
 		break;
 	case CREATE:
-		if (password.length<5 || password.match(letterNumber)|| password.match(letterNumber2)||password.match(letterNumber3)||password.match(letterNumber4))
+		if (password.length<5 || !password.match(letterNumber)|| !password.match(letterNumber2)|| !password.match(letterNumber3)|| !password.match(letterNumber4))
 		{
 			$("#login-response").text("enforcing a simple password rules (minimum length >=6 characters, alphanumeric with at least one special character)");
 			return;
@@ -65,7 +60,7 @@ async function handle_input(type)
 		console.log(res.err);
 		$("#login-response").text(res.err);
 	}
-	if(e == 5){
+	else if(e == 5){
 		sessionStorage.setItem("user", username);
 		sessionStorage.setItem("pass", password);
 		location.href = "/profile";
