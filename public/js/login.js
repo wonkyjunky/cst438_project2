@@ -7,7 +7,10 @@ let e = -1;
 
 $(async () =>
 {
+	$("#lists-button").hide()
 	$("#logout-button").hide()
+	$("#profile-button").hide()
+	
 	$("#create-button").click(() =>	{ handle_input(CREATE) });
 	$("#login-button").click(() =>	{ handle_input(LOGIN) });
 	$("#delete-button").click(() =>	{ handle_input(EDIT)});
