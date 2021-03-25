@@ -14,9 +14,6 @@
 		<script src="js/api.js"></script>
 		<!-- for including scripts and other things in templates -->
 		{% block head %} {% endblock %}
-		<link
-			rel="stylesheet"
-			href="{{ url_for('static',filename='/css/richard.css') }}"/>
 
 	</head>
 	<body class="bg-light">
@@ -27,7 +24,7 @@
 				<button class="btn btn-light"  id ="profile-button">My Profile</a>
 			</div>
 			<div class="col-sm-1 p-2">
-				<button id="lists-button" class="btn btn-light"></button>
+				<button class="btn btn-light" id="lists-button">My Lists</button>
 			</div>
 			<div class="col-sm-1 p-2">
 				<button class="btn btn-light" id ="logout-button">Logout</a>

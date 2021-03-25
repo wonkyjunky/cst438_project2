@@ -14,11 +14,13 @@ $(async () =>
 
 	$("#welcome-banner").text("Welcome " + sessionStorage.getItem("user") + "!");
 
+	$("#lists-button").click(function() { location.href="wishlists" });
+
 	$('#logout-button').click(function() {
 		sessionStorage.clear();
 		location.href = "login";
 	});
-	$('#Profile-button').click(function() {
+	$('#profile-button').click(function() {
 		location.href = "profile";
 	});
 });
