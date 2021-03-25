@@ -2,18 +2,20 @@
 
 let LOGIN	= 0;
 let CREATE	= 1;
-let DELETE	= 2;
+let EDIT	= 2;
+let e = -1;
 
 $(async () =>
 {
 	$("#logout-button").hide()
 	$("#create-button").click(() =>	{ handle_input(CREATE) });
 	$("#login-button").click(() =>	{ handle_input(LOGIN) });
-	$("#delete-button").click(() =>	{ handle_input(DELETE)});
+	$("#delete-button").click(() =>	{ handle_input(EDIT)});
 });
 
 async function handle_input(type)
 {
+	e = -1;
 	var username = $("#username-input").val();
 	var password = $("#password-input").val();
 
@@ -48,8 +50,9 @@ async function handle_input(type)
 		}
 		res = await api.add_user();
 		break;
-	case DELETE:
-		res = await api.delete_user();
+	case EDIT:
+		res = await api.login();
+		e = 5;
 		break;
 	}
 
@@ -57,6 +60,11 @@ async function handle_input(type)
 	{
 		console.log(res.err);
 		$("#login-response").text(res.err);
+	}
+	if(e == 5){
+		sessionStorage.setItem("user", username);
+		sessionStorage.setItem("pass", password);
+		location.href = "/profile";
 	}
 	else
 	{
