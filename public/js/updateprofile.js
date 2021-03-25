@@ -1,5 +1,6 @@
 let user = sessionStorage.getItem('user');
 let pass = sessionStorage.getItem('pass');
+console.log("test");
 
 function saveUserChange(){
     var username = document.getElementById('usernameEdit').value;
@@ -29,6 +30,6 @@ function changeUserPass(){
 }
 function deleteAccount(){
     let api = new Api(user,pass);
-    api.deleteAccount();
+    api.delete_user();
     location.href = "/login";
 }

@@ -42,9 +42,6 @@ async function is_logged_in()
 	return true;
 }
 function validpassword(password){
-	var letterNumber = /[0-9]/;
-	var letterNumber2 = /[a-z]/;
-	var letterNumber3 = /[A-Z]/;
-	var letterNumber4 = /[!@#$%^&*()]/;
-	return !(password.length<5 || password.match(letterNumber)|| password.match(letterNumber2)||password.match(letterNumber3)||password.match(letterNumber4));
+	//return true
+	return (password.length > 5 && password.match(/^[a-zA-Z0-9!@#\$%\^\&*\)\(+=._-]+$/g));
 }
