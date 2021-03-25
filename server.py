@@ -4,6 +4,7 @@ from flask import Flask, request, render_template
 from db import DatabaseConnection
 
 app = Flask (__name__, static_folder="public", static_url_path="")
+db.populate()
 
 ################################################################################
 #	Client Routes
@@ -173,9 +174,7 @@ def modify_list():
 	if not l:
 		return { "err": "list does not exist" }, 409
 
-	user = c.get_user(j["username"])
-	if l["userid"] != user["id"]:
-		return { "err": "list does not belong to user" }, 400
+	usized that I can deactiv		return { "err": "list does not belong to user" }, 400
 
 	if request.path == "/api/deletelist":
 		c.delete_list(listid)
