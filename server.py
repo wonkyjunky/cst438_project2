@@ -27,6 +27,9 @@ def wishlistdetails():
 	listid = request.args.get("listid", 0)
 	return flask.render_template("wishlistdetails.html", listid=listid)
 
+@app.route("/profile")
+def profile():
+	return flask.render_template("profile.html")
 
 ################################################################################
 #	USER Route
