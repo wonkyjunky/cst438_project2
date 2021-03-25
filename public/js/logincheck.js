@@ -11,6 +11,9 @@ $(async () =>
 		sessionStorage.clear();
 		location.href = "login";
 	});
+	$('#Profile-button').click(function() {
+		location.href = "profile";
+	});
 });
 
 async function is_logged_in()
