@@ -1,20 +1,21 @@
 "use strict";
 
-let username2 = sessionStorage.getItem("user");
-let password2 = sessionStorage.getItem("pass");
+// get credentials from session storage
+var username2 = sessionStorage.getItem("user");
+var password2 = sessionStorage.getItem("pass");
+// create api function
 var api = new Api(username2, password2);
-let userid2 = 0;
-let userId;
 
-$.get("/api/user", {username: username2}, (data) => {
-	userid2 = data.user.id;
-});
+var userId;
 
-$.get("/api/list", { username: username2 }, (data) => {
-  console.log(data);
-  for (let i = 0; i < data.lists.length; i++) {
+// updating lists
+$.get("/api/list", { username: username2 }, (data) =>
+{
+	console.log(data);
+	for (let i = 0; i < data.lists.length; i++)
+	{
 
-    $("#wishlists").append(`
+		$("#wishlists").append(`
 			<div class="col-sm-3 m-2" id="list-${i}">
 				<div class="container">
 					<div class="row">
@@ -32,50 +33,85 @@ $.get("/api/list", { username: username2 }, (data) => {
 
 		`)
 
-		$(`#wish-list-${i}`).click(async function() {
-			console.log(data.lists[i].userid);
-			let res = await api.get_users(username2)
-			console.log(res);
+		$(`#wish-list-${i}`).click(async function ()
+		{
+			// confirm the user wants to delete the list
+			if (!confirm("Are you sure?")) return;
+			
+			// get user from db
+			let res = await api.get_users(username2);
+
+			// alert user of any errors
+			if (res.err)
+			{
+				alert(res.err);
+				return;
+			}
+
+			// attempt to delete list
 			res = await api.delete_list(data.lists[i].id);
-			if (res.err) console.error(res.err);
+
+			// alert user of any errors
+			if (res.err)
+			{
+				alert(res.err);
+				return;
+			}
+
+			// delete the div
 			$(`#list-${i}`).remove()
 		});
 	}
 
 })
 
-$('#create').on('click', function(e) {
-	var label = document.getElementById('label').value;
-	var data = {"username": username2, "password":password2, "label": label};
-	if (confirm(`You want to create ${label}?`)){
-			var api = new Api(data.username, data.password);
-			api.add_list(label);
-			window.location.href = "/wishlists";
+// click listener for new wishlist
+$('#create').on('click', async () =>
+{
+	// get label
+	let label = $("#label").val()
+
+	// attempt to add list to db
+	let res = await api.add_list(label);
+
+	// notify user of any errors
+	if (res.err)
+	{
+		alert(res.err);
+		return;
 	}
-	});
-$('#editwishlist').on('click',function(e){
+
+	// reload page
+	window.location.href = "/wishlists";
+});
+
+// click listener for edit wish list
+$('#editwishlist').on('click', async () =>
+{
 	modal.style.display = "block";
 });
 
-$('#saveChange').on('click',function(e){
-	var label = document.getElementById('labelSave').value;
-	var data = {"username": username2, "password":password2, "label": label};
-	console.log(label);
-	if(confirm(`You want to change the wishlist name to ${label}?`)){
-		var api = new Api(data.username, data.password);
-		api.update_list(userId,label);
-		window.location.href = "/wishlists";
+// click listener for modal save edit
+$('#saveChange').on('click', async () =>
+{
+	// get label
+	let label = $("#labelSave").val();
+
+	// attempt to update list
+	let res = api.update_list(userId, label);
+
+	// notify user of any errors
+	if (res.err)
+	{
+		alert(res.err);
+		return;
 	}
+
+	// reload page
+	window.location.href = "/wishlists";
 })
 
-function delete_list(id, label) {
-  console.log(label);
-  let deleteData = { "username": username2, "password": password2, listid: id };
-  if (confirm(`You want to delete ${label}?`)) {
-	var api = new Api(deleteData.username, deleteData.password);
-    api.delete_list(id);
-    window.location.href = "/wishlists";
-  }
+function get_id(id)
+{
+	userId = id;
 }
-
-function get_id(id){ userId = id; }

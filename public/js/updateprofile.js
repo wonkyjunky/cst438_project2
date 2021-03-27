@@ -3,73 +3,99 @@ var user;
 var pass;
 var api
 
-$(async () =>
+$(async () => 
 {
-    user = sessionStorage.getItem('user');
-    pass = sessionStorage.getItem('pass');
+	// get credentials from session storage
+	user = sessionStorage.getItem('user');
+	pass = sessionStorage.getItem('pass');
 
-    api = new Api(user, pass);
+	// create api object
+	api = new Api(user, pass);
 
-    $("#delete-account-button").click(() =>
-    {
-        if (confirm("Are you sure"))
-        {
-            api.delete_user();
-            location.href="login";
-        }
-    });
+	// listener for delete button to delete user account
+	$("#delete-account-button").click(async () =>
+	{
+		if (confirm("Are you sure")) {
+			// attempt to delete user
+			let res = await api.delete_user();
+			// notify user of any errors
+			if (res.err)
+			{
+				alert(res.err);
+				return;
+			}
+			// redirect to login page
+			location.href = "login";
+		}
+	});
 });
 
-
-function validpassword(password)
+ /**
+  * Updates user with new username
+  */
+async function saveUserChange()
 {
-	if (password.length < 6) return false;
-	let specials = "`~!@#$%^&*()-_=+[{]}\\|'\":;?/>.<,";
-	
-	for (let i = 0; i < password.length; i++)
+	let username = $("#usernameEdit").val();
+	let password = $("#passwordEdit").val();
+
+	// if password matches current
+	if (pass == password)
 	{
-		for (let j = 0; j < specials.length; j++)
+		let res = await api.update_user(username, password);
+		if (res.err)
 		{
-			if (password[i] == specials[j])
-			{
-				return true;
-			}
+			alert(res.err);
+			return;
 		}
+		location.href = "/login";
 	}
-	return false
 }
 
+/**
+ * Updates user with new password
+ */
+async function changeUserPass()
+{
+	let oldPass = $("#currpassword").val();
+	let newPass = $("#newpassword").val()
 
-console.log("test");
+	// if correct password was put in
+	if (oldPass == pass)
+	{
+		// check if new 
+		if (!validpassword(newPass))
+		{
+			alert("Password must be at least 6 characters and contain 1 special character");
+			return;
+		}
 
-function saveUserChange(){
-    var username = document.getElementById('usernameEdit').value;
-    var password = document.getElementById('passwordEdit').value;
-    if(pass == password){
-        let api = new Api(user,pass);
-        api.update_user(username, password);
-        console.log("updated");
-        location.href = "/login";
-    }
+		// attempt to update user
+		let res = await api.update_user(user, newPass);
+
+		// notify user of any errors
+		if (res.err)
+		{
+			alert(res.err);
+			return;
+		}
+
+		// redirect to login page
+		location.href = "/login";
+	}
 }
-function changeUserPass(){
-    var oldPass = document.getElementById('currpassword').value;
-    var newPass = document.getElementById('newpassword').value;
-    console.log("test");
-    if(oldPass == pass){
-        if(validpassword(newPass)){
-        console.log("here");
-        let api = new Api(user,pass);
-        api.update_user(user, newPass);
-        console.log("updated");
-        location.href = "/login";
-        } else {
-            console.log("didnt meet reqs");
-        }
-    }
-}
-function deleteAccount(){
-    let api = new Api(user,pass);
-    api.delete_user();
-    location.href = "/login";
+
+async function deleteAccount()
+{
+	// attempt to delete user
+	let res = await api.delete_user();
+
+	// notify user of any errors
+	if (res.err)
+	{
+		alert(res.err);
+		return;
+	}
+
+	// redirect to login page
+	location.href = "/login";
 }

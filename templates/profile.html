@@ -1,161 +1,104 @@
 {% extends "layouts/layout.html" %} {% block head %}
-<script src="js/updateprofile.js"></script>
 <script src="js/logincheck.js"></script>
+<script src="js/validpassword.js"></script>
+<script src="js/updateprofile.js"></script>
 {% endblock %} {% block content %}
 
 <div class="row text-center">
-  <div class="col"></div>
-  <div class="col-5 m-5">
-    <div class="container">
-      <div class="row m-2">
-        <div class="col">
-          <button
-            id="change-username-button"
-            class="btn btn-warning"
-            data-toggle="modal"
-            data-target="#edit-usrname-modal"
-          >
-            Change Username
-          </button>
-        </div>
-      </div>
-      <div class="row m-2">
-        <div class="col">
-          <button
-            id="change-password-button"
-            class="btn btn-warning"
-            data-toggle="modal"
-            data-target="#edit-password-modal"
-          >
-            Change Pasword
-          </button>
-        </div>
-      </div>
-      <div class="row m-2">
-        <div class="col">
-          <button
-            id="delete-account-button"
-            class="btn btn-danger"
-            data-toggle="modal"
-            data-target="#delete-usr-modal"
-          >
-            Delete Account
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="col"></div>
+	<div class="col"></div>
+	<div class="col-5 m-5">
+		<div class="container">
+			<div class="row m-2">
+				<div class="col">
+					<button id="change-username-button" class="btn btn-warning" data-toggle="modal"
+						data-target="#edit-usrname-modal">
+						Change Username
+					</button>
+				</div>
+			</div>
+			<div class="row m-2">
+				<div class="col">
+					<button id="change-password-button" class="btn btn-warning" data-toggle="modal"
+						data-target="#edit-password-modal">
+						Change Pasword
+					</button>
+				</div>
+			</div>
+			<div class="row m-2">
+				<div class="col">
+					<button id="delete-account-button" class="btn btn-danger" data-toggle="modal"
+						data-target="#delete-usr-modal">
+						Delete Account
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="col"></div>
+</div>
+</div>
+</div>
+
+<!-- change usr name Modal -->
+<div class="modal fade" id="edit-usrname-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+	aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="exampleModalLabel">
+					Change Username
+				</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<form>
+					<input id="usernameEdit" placeholder="Username..." />
+					<br /><br />
+					<input id="passwordEdit" placeholder="Current password..." />
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">
+					Close
+				</button>
+				<button id="saveChange" type="button" class="btn btn-primary" onclick="saveUserChange()">
+					Save
+				</button>
+			</div>
 		</div>
 	</div>
 </div>
 
-            <!-- change usr name Modal -->
-            <div
-              class="modal fade"
-              id="edit-usrname-modal"
-              tabindex="-1"
-              role="dialog"
-              aria-labelledby="exampleModalLabel"
-              aria-hidden="true"
-            >
-              <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">
-                      Change Username
-                    </h5>
-                    <button
-                      type="button"
-                      class="close"
-                      data-dismiss="modal"
-                      aria-label="Close"
-                    >
-                      <span aria-hidden="true">&times;</span>
-                    </button>
-                  </div>
-                  <div class="modal-body">
-                    <form>
-                      <input id="usernameEdit" placeholder="Username..." />
-                      <br /><br />
-                      <input
-                        id="passwordEdit"
-                        placeholder="Current password..."
-                      />
-                    </form>
-                  </div>
-                  <div class="modal-footer">
-                    <button
-                      type="button"
-                      class="btn btn-secondary"
-                      data-dismiss="modal"
-                    >
-                      Close
-                    </button>
-                    <button
-                      id="saveChange"
-                      type="button"
-                      class="btn btn-primary"
-                      onclick="saveUserChange()"
-                    >
-                      Save
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- change password Modal -->
-            <div
-              class="modal fade"
-              id="edit-password-modal"
-              tabindex="-1"
-              role="dialog"
-              aria-labelledby="exampleModalLabel"
-              aria-hidden="true"
-            >
-              <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">
-                      Change Password
-                    </h5>
-                    <button
-                      type="button"
-                      class="close"
-                      data-dismiss="modal"
-                      aria-label="Close"
-                    >
-                      <span aria-hidden="true">&times;</span>
-                    </button>
-                  </div>
-                  <div class="modal-body">
-                    <form>
-                      <input
-                        id="currpassword"
-                        placeholder="Current Password"
-                      /><br /><br />
-                      <input id="newpassword" placeholder="New Password" />
-                    </form>
-                  </div>
-                  <div class="modal-footer">
-                    <button
-                      type="button"
-                      class="btn btn-secondary"
-                      data-dismiss="modal"
-                    >
-                      Close
-                    </button>
-                    <button
-                      id="saveChange"
-                      type="button"
-                      class="btn btn-primary"
-                      onclick="changeUserPass()"
-                    >
-                      Save
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
+<!-- change password Modal -->
+<div class="modal fade" id="edit-password-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+	aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="exampleModalLabel">
+					Change Password
+				</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<form>
+					<input id="currpassword" placeholder="Current Password" /><br /><br />
+					<input id="newpassword" placeholder="New Password" />
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">
+					Close
+				</button>
+				<button id="saveChange" type="button" class="btn btn-primary" onclick="changeUserPass()">
+					Save
+				</button>
+			</div>
+		</div>
+	</div>
+</div>
 {% endblock %}

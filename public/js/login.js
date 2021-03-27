@@ -1,89 +1,76 @@
 "use strict";
 
-let LOGIN	= 0;
-let CREATE	= 1;
-let EDIT	= 2;
-let e = -1;
+const LOGIN = 0;
+const CREATE = 1;
 
+// page has loaded
 $(async () =>
 {
+	// hiding all of the ui elements the use can't use
 	$("#lists-button").hide()
 	$("#logout-button").hide()
 	$("#profile-button").hide()
-	
-	$("#create-button").click(() =>	{ handle_input(CREATE) });
-	$("#login-button").click(() =>	{ handle_input(LOGIN) });
-	$("#delete-button").click(() =>	{ handle_input(EDIT)});
+
+	// handlers for given input
+	$("#create-button").click(() => { handle_input(CREATE) });
+	$("#login-button").click(() => { handle_input(LOGIN) });
 });
 
-function validpassword(password)
-{
-	if (password.length < 6) return false;
-	let specials = "`~!@#$%^&*()-_=+[{]}\\|'\":;?/>.<,";
-	
-	for (let i = 0; i < password.length; i++)
-	{
-		for (let j = 0; j < specials.length; j++)
-		{
-			if (password[i] == specials[j])
-			{
-				return true;
-			}
-		}
-	}
-	return false
-}
-
+/**
+ * Handles input on login page
+ * 
+ * @param	type	type of user action (login or account creation)
+ */
 async function handle_input(type)
 {
-	e = -1;
 	var username = $("#username-input").val();
 	var password = $("#password-input").val();
-	$("#login-response").empty()
 
+	// notify user if there is missing credentials
 	if (!username)
 	{
-		$("#username-input").addClass(".has-error");
-		$("#login-response").text("Username must not be empty");
+		alert("Username must not be empty!");
 		return;
 	}
 
+	if (!password)
+	{
+		alert("Password must not be empty!");
+		return;
+	}
+
+	// make connection to api
 	let api = new Api(username, password);
 	let res;
 
 	switch (type)
 	{
 	case LOGIN:
+		// attempt to authenticate the user
 		res = await api.login();
 		break;
+
 	case CREATE:
+		// check if password meets criteria, if not exit
 		if (!validpassword(password))
 		{
-			$("#login-response").text("enforcing a simple password rules (minimum length >=6 characters, alphanumeric with at least one special character)");
-			return;
+			alert("Password must be at least 6 characters long and contain 1 special character");
+			break;
 		}
+		// attempt to create user
 		res = await api.add_user();
-		break;
-	case EDIT:
-		res = await api.login();
-		e = 5;
 		break;
 	}
 
+	// notify user of any errors and exit if there is one
 	if (res.err)
 	{
-		console.log(res.err);
-		$("#login-response").text(res.err);
+		alert(res.err);
+		return;
 	}
-	else if(e == 5){
-		sessionStorage.setItem("user", username);
-		sessionStorage.setItem("pass", password);
-		location.href = "/profile";
-	}
-	else
-	{
-		sessionStorage.setItem("user", username);
-		sessionStorage.setItem("pass", password);
-		location.href = "/";
-	}
+
+	// store credentials and redirect to home pagee
+	sessionStorage.setItem("user", username);
+	sessionStorage.setItem("pass", password);
+	location.href = "/";
 }
